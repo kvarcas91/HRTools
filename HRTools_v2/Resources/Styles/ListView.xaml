@@ -1,0 +1,469 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+                    xmlns:converters="clr-namespace:HRTools_v2.Converters"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Base ListView Style -->
+    <Style x:Key="ListView" TargetType="{x:Type ListView}" BasedOn="{StaticResource MaterialDesignListView}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="ScrollViewer.CanContentScroll" Value="False"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+    <Style x:Key="ListViewOnMouseOverDisabled" TargetType="{x:Type ListView}" BasedOn="{StaticResource ListView}">
+        <!-- Disable onMouseOver and default style -->
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                <ContentPresenter />
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style  x:Key="SanctionsListView" TargetType="{x:Type ListView}" BasedOn="{StaticResource ListViewOnMouseOverDisabled}">
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Grid Margin="5" HorizontalAlignment="Stretch">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Sanction -->
+                        <TextBlock Grid.Column="0"  VerticalAlignment="Center" >
+                                    <StackPanel Orientation="Horizontal">
+                                         <Ellipse Fill="{Binding SanctionEndDate, Converter={converters:IsDateActiveToColorConverter}}"
+                                                 Width="5"
+                                                 Height="5"
+                                                  Margin="0 0 5 0"
+                                                 VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding Sanction}"
+                                           VerticalAlignment="Center" 
+                                   TextDecorations="{Binding SanctionEndDate, Converter={converters:SanctionTextDecorationConverter}}"
+                                       FontSize="{Binding SanctionEndDate, Converter={converters:SanctionTextSizeConverter}}"
+                                   Foreground="{Binding SanctionEndDate, Converter={converters:SanctionTextForegroundConverter}}"
+                                         Padding="0 0 5 2"/>
+                                       
+                                            
+                                    </StackPanel>
+                        </TextBlock>
+
+                        <!-- Sanction Dates -->
+                        <StackPanel Grid.Column="1" Orientation="Vertical"
+                                            Margin="5">
+                            <TextBlock 
+                                   Text="{Binding SanctionStartDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"
+                                FontSize="{StaticResource SecondaryListFontSize}"
+                                Foreground="Gray"/>
+                            <TextBlock 
+                                   Text="{Binding SanctionEndDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"
+                                TextDecorations="{Binding SanctionEndDate, Converter={converters:SanctionTextDecorationConverter}}"
+                                       FontSize="{Binding SanctionEndDate, Converter={converters:SanctionTextSizeConverter}}"
+                                   Foreground="{Binding SanctionEndDate, Converter={converters:SanctionTextForegroundConverter}}"/>
+
+                        </StackPanel>
+
+                        <Rectangle Grid.Column="2"
+                                    VerticalAlignment="Stretch" 
+                                           Fill="LightGray" Width="1"
+                                           Margin="5 2"/>
+
+                        <!-- Issued By -->
+                        <StackPanel Grid.Column="3" Orientation="Vertical"
+                                            Margin="5">
+                            <TextBlock 
+                                   Text="Issued by"
+                                FontSize="{StaticResource SecondaryListFontSize}"
+                                Foreground="Gray"/>
+                            <TextBlock 
+                                   Text="{Binding CreatedBy}"
+                                TextDecorations="{Binding SanctionEndDate, Converter={converters:SanctionTextDecorationConverter}}"
+                                       FontSize="{Binding SanctionEndDate, Converter={converters:SanctionTextSizeConverter}}"
+                                   Foreground="{Binding SanctionEndDate, Converter={converters:SanctionTextForegroundConverter}}"/>
+                        </StackPanel>
+
+                        <!-- Issued At -->
+                        <StackPanel Grid.Column="4" Orientation="Vertical"
+                                            Margin="5">
+                            <TextBlock 
+                                   Text="Issued At"
+                                FontSize="{StaticResource SecondaryListFontSize}"
+                                Foreground="Gray"/>
+                            <TextBlock 
+                                   Text="{Binding CreatedAt, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"
+                                TextDecorations="{Binding SanctionEndDate, Converter={converters:SanctionTextDecorationConverter}}"
+                                       FontSize="{Binding SanctionEndDate, Converter={converters:SanctionTextSizeConverter}}"
+                                   Foreground="{Binding SanctionEndDate, Converter={converters:SanctionTextForegroundConverter}}"/>
+                        </StackPanel>
+
+                        <Grid Grid.Column="5" Visibility="{Binding Overriden, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Rectangle Grid.Column="0"
+                                    VerticalAlignment="Stretch" 
+                                           Fill="LightGray" Width="1"
+                                           Margin="5 2"/>
+
+                            <!-- Overriden By -->
+                            <StackPanel Grid.Column="1" Orientation="Vertical"
+                                            Margin="5">
+                                <TextBlock 
+                                   Text="Overriden by"
+                                FontSize="{StaticResource SecondaryListFontSize}"
+                                Foreground="Gray"
+                                   TextTrimming="WordEllipsis"/>
+                                <TextBlock 
+                                   Text="{Binding OverridenBy}"
+                                FontSize="{StaticResource PrimaryListFontSize}"
+                                   TextTrimming="WordEllipsis"/>
+                            </StackPanel>
+
+                            <!-- Issued At -->
+                            <StackPanel Grid.Column="2" Orientation="Vertical"
+                                            Margin="5">
+                                <TextBlock 
+                                   Text="Overriden At"
+                                FontSize="{StaticResource SecondaryListFontSize}"
+                                Foreground="Gray"
+                                   TextTrimming="WordEllipsis"/>
+                                <TextBlock 
+                                   Text="{Binding OverridenAt, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"
+                                FontSize="{StaticResource PrimaryListFontSize}"
+                                   TextTrimming="WordEllipsis"/>
+                            </StackPanel>
+
+                        </Grid>
+
+                        <!-- Controls -->
+                        <StackPanel Grid.Column="6"
+                            Orientation="Horizontal"
+                                    HorizontalAlignment="Right">
+
+                            <Button 
+                                ToolTip="Re-open sanction"
+                                Command="{Binding ElementName=sanctionListView, Path=DataContext.OnSanctionReissueCommand}"
+                                          CommandParameter="{Binding}"
+                                        Style="{StaticResource MaterialDesignFlatButton}">
+                                <materialDesign:PackIcon Kind="AccountReactivateOutline"/>
+                            </Button>
+
+                            <Button 
+                                ToolTip="Override sanction"
+                                Command="{Binding ElementName=sanctionListView, Path=DataContext.OnSanctionOverrideCommand}"
+                                          CommandParameter="{Binding}"
+                                        Style="{StaticResource MaterialDesignFlatButton}">
+                                <materialDesign:PackIcon Kind="EditOff"/>
+                            </Button>
+
+                        </StackPanel>
+                        
+                       
+                    </Grid>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style  x:Key="TimelineListView" TargetType="{x:Type ListView}" BasedOn="{StaticResource ListViewOnMouseOverDisabled}">
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Visual -->
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <Rectangle Grid.Row="0"
+                                    VerticalAlignment="Stretch" 
+                                           Fill="DarkSlateGray" Width="1"/>
+
+                                <Grid Grid.Row="1">
+                                    <Ellipse 
+                                                         Width="10"
+                                                         Height="10"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                                         Fill="DarkSlateGray"/>
+                                    <Ellipse Grid.Row="1"
+                                                         Width="8.5"
+                                                         Height="8.5"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                                         Fill="White"/>
+                                </Grid>
+
+                                <Rectangle Grid.Row="2"
+                                    VerticalAlignment="Stretch" 
+                                           Fill="DarkSlateGray" Width="1"/>
+
+                            </Grid>
+
+                            <!-- Data -->
+                            <materialDesign:Card Grid.Column="1" Margin="20 5 10 5" Padding="10"
+                                                 
+                                                                 materialDesign:ShadowAssist.ShadowDepth="Depth1"
+                                                                 materialDesign:ShadowAssist.ShadowEdges="Right">
+                                
+                            <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="6*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Orientation="Vertical">
+                                        <TextBlock  Text="{Binding Date, Converter={converters:DateTimeToEmployeeSummaryConverter}, ConverterParameter='day'}"
+                                                   FontSize="{StaticResource TimelineDayFontSize}"
+                                                   FontWeight="Bold"
+                                                   HorizontalAlignment="Center"/>
+                                        <TextBlock 
+                                            FontSize="{StaticResource TimelineDateFontSize}"
+                                           Text="{Binding Date, Converter={converters:DateTimeToEmployeeSummaryConverter}, ConverterParameter='1'}"
+                                            HorizontalAlignment="Center"/>
+                                    </StackPanel>
+
+
+                                    <Rectangle Grid.Column="1"
+                                               Margin="40 0"
+                                    VerticalAlignment="Stretch" 
+                                           Fill="LightGray" Width="1"/>
+
+                                    <TextBlock Grid.Column="2"
+                                        Text="{Binding Event}"
+                                                FontSize="{StaticResource TimelineMessageFontSize}"
+                                               VerticalAlignment="Center"/>
+                                </Grid>
+                            </materialDesign:Card>
+
+                        </Grid>
+
+                    </Grid>
+                   
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style  x:Key="AwalListView" TargetType="{x:Type ListView}" BasedOn="{StaticResource ListViewOnMouseOverDisabled}">
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Grid>
+
+                        <Grid Margin="10" VerticalAlignment="Top">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="0.3*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="0.3*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="0.3*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- AWAL status -->
+                            <TextBlock Grid.Column="0"  VerticalAlignment="Center" >
+                                    <StackPanel Orientation="Horizontal">
+                                         <Ellipse Fill="{Binding AwalStatus, Converter={converters:AwalStatusToColorConverter}}"
+                                                 Width="5"
+                                                 Height="5"
+                                                  Margin="0 0 5 0"
+                                                 VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding AwalStatus}"
+                                           VerticalAlignment="Center" 
+                                   TextDecorations="{Binding AwalStatus, Converter={converters:AwalTextDecorationConverter}}"
+                                       FontSize="{Binding SanctionEndDate, Converter={converters:AwalTextSizeConverter}}"
+                                   Foreground="{Binding SanctionEndDate, Converter={converters:AwalTextForegroundConverter}}"
+                                         Padding="0 0 5 2"/>
+                                       
+                                            
+                                    </StackPanel>
+                        </TextBlock>
+
+                            <!-- First NCNS -->
+                            <StackPanel Grid.Column="1" Orientation="Vertical"
+                                            Margin="5">
+                                <TextBlock 
+                                   Text="First NCNS"
+                                FontSize="{StaticResource SecondaryListFontSize}"
+                                Foreground="Gray"/>
+                                <TextBlock 
+                                  Text="{Binding FirstNCNSDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"
+                                 TextDecorations="{Binding AwalStatus, Converter={converters:AwalTextDecorationConverter}}"
+                                       FontSize="{Binding SanctionEndDate, Converter={converters:AwalTextSizeConverter}}"
+                                   Foreground="{Binding SanctionEndDate, Converter={converters:AwalTextForegroundConverter}}"/>
+                            </StackPanel>
+
+                            <!-- Separator -->
+                            <Rectangle Grid.Column="2"
+                                    VerticalAlignment="Stretch" 
+                                           Fill="LightGray" Width="1"
+                                           Margin="5 2"/>
+
+                            <!-- AWAL 1 -->
+                            <StackPanel Grid.Column="3" Orientation="Vertical"
+                                            Margin="5">
+                                <TextBlock 
+                                   Text="AWAL 1 sent date"
+                                FontSize="{StaticResource SecondaryListFontSize}"
+                                Foreground="Gray"/>
+                                <TextBlock 
+                                  Text="{Binding Awal1SentDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"
+                                 TextDecorations="{Binding AwalStatus, Converter={converters:AwalTextDecorationConverter}}"
+                                       FontSize="{Binding SanctionEndDate, Converter={converters:AwalTextSizeConverter}}"
+                                   Foreground="{Binding SanctionEndDate, Converter={converters:AwalTextForegroundConverter}}"/>
+                            </StackPanel>
+
+                            <!-- AWAL 2 -->
+                            <StackPanel Grid.Column="4" Orientation="Vertical"
+                                            Margin="5">
+                                <TextBlock 
+                                   Text="AWAL 2 sent date"
+                                FontSize="{StaticResource SecondaryListFontSize}"
+                                Foreground="Gray"/>
+                                <TextBlock 
+                                  Text="{Binding Awal2SentDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"
+                                 TextDecorations="{Binding AwalStatus, Converter={converters:AwalTextDecorationConverter}}"
+                                       FontSize="{Binding SanctionEndDate, Converter={converters:AwalTextSizeConverter}}"
+                                   Foreground="{Binding SanctionEndDate, Converter={converters:AwalTextForegroundConverter}}"/>
+                            </StackPanel>
+
+                            <!-- Separator -->
+                            <Rectangle Grid.Column="5"
+                                    VerticalAlignment="Stretch" 
+                                           Fill="LightGray" Width="1"
+                                           Margin="5 2"/>
+
+                            <!-- Disciplinary Date -->
+                            <StackPanel Grid.Column="6" Orientation="Vertical"
+                                            Margin="5">
+                                <TextBlock 
+                                   Text="Disciplinary Date"
+                                FontSize="{StaticResource SecondaryListFontSize}"
+                                Foreground="Gray"/>
+                                <TextBlock 
+                                  Text="{Binding DisciplinaryDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"
+                                 TextDecorations="{Binding AwalStatus, Converter={converters:AwalTextDecorationConverter}}"
+                                       FontSize="{Binding SanctionEndDate, Converter={converters:AwalTextSizeConverter}}"
+                                   Foreground="{Binding SanctionEndDate, Converter={converters:AwalTextForegroundConverter}}"/>
+                            </StackPanel>
+
+                            <!-- Outcome -->
+                            <StackPanel Grid.Column="7" Orientation="Vertical"
+                                            Margin="5">
+                                <TextBlock 
+                                   Text="Outcome"
+                                FontSize="{StaticResource SecondaryListFontSize}"
+                                Foreground="Gray"/>
+                                <TextBlock 
+                                  Text="{Binding Outcome}"
+                                 TextDecorations="{Binding AwalStatus, Converter={converters:AwalTextDecorationConverter}}"
+                                       FontSize="{Binding SanctionEndDate, Converter={converters:AwalTextSizeConverter}}"
+                                   Foreground="{Binding SanctionEndDate, Converter={converters:AwalTextForegroundConverter}}"/>
+                            </StackPanel>
+
+                            <!-- Controls -->
+                            <StackPanel Grid.Column="9"
+                            Orientation="Horizontal"
+                                    HorizontalAlignment="Right">
+
+                                <Grid Background="Transparent">
+                                    <materialDesign:PackIcon Kind="InfoCircleOutline" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="DarkSlateGray"/>
+                                    <Grid.ToolTip>
+
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+
+                                            <TextBlock Grid.Row="0" Visibility="{Binding CreatedBy, Converter={converters:NullToVisibilityConverter}, ConverterParameter='tooltip'}">
+                                    <Run Text="{Binding CreatedBy, Converter={converters:UserToTextConverter}, ConverterParameter='created'}"/>
+                                    <Run Text="{Binding CreatedAt, Converter={converters:DateTimeToToolTipConverter}}"/>
+                                            </TextBlock>
+
+                                            <TextBlock Grid.Row="1" Visibility="{Binding UpdatedBy, Converter={converters:NullToVisibilityConverter}, ConverterParameter='tooltip'}">
+                                    <Run Text="{Binding UpdatedBy, Converter={converters:UserToTextConverter}, ConverterParameter='updated'}"/>
+                                    <Run Text="{Binding UpdatedAt, Converter={converters:DateTimeToToolTipConverter}}"/>
+                                            </TextBlock>
+                                            
+                                            <TextBlock Grid.Row="2" Visibility="{Binding BridgeCreatedBy, Converter={converters:NullToVisibilityConverter}, ConverterParameter='tooltip'}">
+                                    <Run Text="{Binding BridgeCreatedBy, Converter={converters:UserToTextConverter}, ConverterParameter='bridged'}"/>
+                                    <Run Text="{Binding BridgeCreatedAt, Converter={converters:DateTimeToToolTipConverter}}"/>
+                                            </TextBlock>
+
+                                            <TextBlock Grid.Row="3" Visibility="{Binding CloseBridge, Converter={converters:NullToVisibilityConverter}, ConverterParameter='tooltip'}"
+                                                       Margin="0 5 0 0">
+                                                <Run Text='"'/>
+                                                <Run Text="{Binding CloseBridge}" FontStyle="Italic"/>
+                                                 <Run Text='"'/>
+                                            </TextBlock>
+                                        </Grid>
+                                    </Grid.ToolTip>
+                                </Grid>
+
+                                <Button 
+                                ToolTip="Edit case"
+                                Command="{Binding ElementName=awalListView, Path=DataContext.OnAwalEditCommand}"
+                                          CommandParameter="{Binding}"
+                                        Style="{StaticResource MaterialDesignFlatButton}">
+                                    <materialDesign:PackIcon Kind="EditOutline"/>
+                                </Button>
+
+                                <Button 
+                                ToolTip="Close AWAL without outcome"
+                                Command="{Binding ElementName=awalListView, Path=DataContext.OnAwalCancelCommand}"
+                                          CommandParameter="{Binding}"
+                                        Style="{StaticResource MaterialDesignFlatButton}">
+                                    <materialDesign:PackIcon Kind="CloseOutline"/>
+                                </Button>
+
+                            </StackPanel>
+
+                        </Grid>
+
+                    </Grid>
+
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+</ResourceDictionary>

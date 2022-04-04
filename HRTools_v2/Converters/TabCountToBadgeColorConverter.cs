@@ -1,0 +1,27 @@
+﻿using HRTools_v2.Converters.Base;
+using System;
+using System.Globalization;
+
+namespace HRTools_v2.Converters
+{
+    public class TabCountToBadgeColorConverter : BaseValueConverter<TabCountToBadgeColorConverter>
+    {
+        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            try
+            {
+                int val = System.Convert.ToInt32(value);
+                return val > 0 ? "DarkSlateGray" : "Gray";
+            }
+            catch
+            {
+                return "Gray";
+            }
+        }
+
+        public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

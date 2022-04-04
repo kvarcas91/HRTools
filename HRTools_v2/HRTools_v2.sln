@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31911.196
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRTools_v2", "HRTools_v2.csproj", "{FB3CF2BA-55EC-482F-B7FF-23DCE02D824D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "..\Domain\Domain.csproj", "{6B379DB8-C9CD-4F9C-86E5-D1CFE6174D54}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FB3CF2BA-55EC-482F-B7FF-23DCE02D824D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB3CF2BA-55EC-482F-B7FF-23DCE02D824D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB3CF2BA-55EC-482F-B7FF-23DCE02D824D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB3CF2BA-55EC-482F-B7FF-23DCE02D824D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B379DB8-C9CD-4F9C-86E5-D1CFE6174D54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B379DB8-C9CD-4F9C-86E5-D1CFE6174D54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B379DB8-C9CD-4F9C-86E5-D1CFE6174D54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B379DB8-C9CD-4F9C-86E5-D1CFE6174D54}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4DE2E677-E03C-4A1D-B092-95D10BCDBE30}
+	EndGlobalSection
+EndGlobal

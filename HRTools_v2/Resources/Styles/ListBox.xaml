@@ -1,0 +1,49 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Base ListView Style -->
+    <Style x:Key="ListBox" TargetType="{x:Type ListBox}" BasedOn="{StaticResource MaterialDesignListBox}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="ScrollViewer.CanContentScroll" Value="False"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+    <Style  x:Key="SearchListBox" TargetType="{x:Type ListBox}" BasedOn="{StaticResource ListBox}">
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Grid VerticalAlignment="Center" 
+                          HorizontalAlignment="Stretch"
+                          Margin="5">
+
+                        <Grid.InputBindings>
+                            <MouseBinding Gesture="LeftClick" 
+                                          Command="{Binding ElementName=searchListBox, Path=DataContext.OnSearchItemClickedCommand}"
+                                          CommandParameter="{Binding}"/>
+                        </Grid.InputBindings>
+
+                        <StackPanel Orientation="Vertical" >
+
+                            <!-- Employee Name -->
+                            <TextBlock 
+                                   Text="{Binding EmployeeName}"
+                                FontSize="{StaticResource SearchPrimaryFontSize}"
+                                   TextTrimming="WordEllipsis"/>
+                            <TextBlock 
+                                   Text="{Binding ManagerName}"
+                                FontSize="{StaticResource SearchSecondaryFontSize}"
+                                Foreground="Gray"
+                                   TextTrimming="WordEllipsis"/>
+
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+   
+
+</ResourceDictionary>

@@ -1,0 +1,227 @@
+﻿<UserControl x:Class="HRTools_v2.Views.LoaderPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HRTools_v2.Views"
+             mc:Ignorable="d" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+              xmlns:prism="http://prismlibrary.com/"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:converters="clr-namespace:HRTools_v2.Converters"
+             Background="{DynamicResource Background}"
+             d:DesignHeight="450" d:DesignWidth="800"
+             Height="700" Width="1200">
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="1.5*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Loader animation -->
+        <StackPanel Orientation="Horizontal" Grid.Row="0" VerticalAlignment="Bottom"
+                    HorizontalAlignment="Center"
+                    Visibility="{Binding LoadingPageUIState, Converter={converters:LoadingUIComponentStateToVisibilityConverter}, ConverterParameter='LoadingWidgetOn'}" 
+                    Margin="0 0 0 20">
+
+
+            <Border Background="Transparent">
+                <Grid Width="140" Height="20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Ellipse x:Name="PART_Ellipse0" Grid.Column="0" Fill="{StaticResource LoaderElipseBackground}"/>
+                    <Ellipse x:Name="PART_Ellipse1" Grid.Column="2" Fill="{StaticResource LoaderElipseBackground}"/>
+                    <Ellipse x:Name="PART_Ellipse2" Grid.Column="4" Fill="{StaticResource LoaderElipseBackground}"/>
+                    <Ellipse x:Name="PART_Ellipse3" Grid.Column="6" Fill="{StaticResource LoaderElipseBackground}"/>
+                    <Ellipse x:Name="PART_Ellipse4" Grid.Column="8" Fill="{StaticResource LoaderElipseBackground}"/>
+                </Grid>
+                <Border.Resources>
+                    <Style TargetType="Ellipse">
+                        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                        <Setter Property="Width" Value="20"/>
+                        <Setter Property="Height" Value="20"/>
+                        <Setter Property="RenderTransform">
+                            <Setter.Value>
+                                <ScaleTransform ScaleX="0" ScaleY="0"/>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Border.Resources>
+                <Border.Triggers>
+                    <EventTrigger RoutedEvent="Loaded">
+                        <BeginStoryboard>
+                            <Storyboard RepeatBehavior="Forever" Duration="0:0:2.400">
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse0" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)">
+                                    <LinearDoubleKeyFrame KeyTime="0:0:0.000" Value="0"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:0.500" Value="1"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:0.600" Value="1"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:1.100" Value="0"/>
+                                </DoubleAnimationUsingKeyFrames>
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse1" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)">
+                                    <LinearDoubleKeyFrame KeyTime="0:0:0.250" Value="0"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:0.750" Value="1"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:0.850" Value="1"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:1.350" Value="0"/>
+                                </DoubleAnimationUsingKeyFrames>
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse2" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)">
+                                    <LinearDoubleKeyFrame KeyTime="0:0:0.500" Value="0"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:1.000" Value="1"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:1.100" Value="1"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:1.600" Value="0"/>
+                                </DoubleAnimationUsingKeyFrames>
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse3" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)">
+                                    <LinearDoubleKeyFrame KeyTime="0:0:0.750" Value="0"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:1.250" Value="1"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:1.350" Value="1"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:1.850" Value="0"/>
+                                </DoubleAnimationUsingKeyFrames>
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse4" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)">
+                                    <LinearDoubleKeyFrame KeyTime="0:0:1.000" Value="0"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:1.500" Value="1"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:1.600" Value="1"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:2.100" Value="0"/>
+                                </DoubleAnimationUsingKeyFrames>
+
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse0" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)">
+                                    <LinearDoubleKeyFrame KeyTime="0:0:0.000" Value="0"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:0.500" Value="1"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:0.600" Value="1"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:1.100" Value="0"/>
+                                </DoubleAnimationUsingKeyFrames>
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse1" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)">
+                                    <LinearDoubleKeyFrame KeyTime="0:0:0.250" Value="0"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:0.750" Value="1"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:0.850" Value="1"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:1.350" Value="0"/>
+                                </DoubleAnimationUsingKeyFrames>
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse2" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)">
+                                    <LinearDoubleKeyFrame KeyTime="0:0:0.500" Value="0"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:1.000" Value="1"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:1.100" Value="1"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:1.600" Value="0"/>
+                                </DoubleAnimationUsingKeyFrames>
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse3" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)">
+                                    <LinearDoubleKeyFrame KeyTime="0:0:0.750" Value="0"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:1.250" Value="1"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:1.350" Value="1"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:1.850" Value="0"/>
+                                </DoubleAnimationUsingKeyFrames>
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse4" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)">
+                                    <LinearDoubleKeyFrame KeyTime="0:0:1.000" Value="0"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:1.500" Value="1"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:1.600" Value="1"/>
+                                    <LinearDoubleKeyFrame KeyTime="0:0:2.100" Value="0"/>
+                                </DoubleAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Border.Triggers>
+            </Border>
+
+        </StackPanel>
+
+        <Grid Grid.Row="1" VerticalAlignment="Top" Margin="30">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <TextBlock HorizontalAlignment="Center"
+                       MaxWidth="600"
+                   Text="{Binding MainLoaderText}"
+                       TextWrapping="Wrap"
+                   Margin="30"/>
+
+            <!-- Site Setup Component -->
+            <Grid HorizontalAlignment="Center" Grid.Row="1"
+                Visibility="{Binding LoadingPageUIState, Converter={converters:LoadingUIComponentStateToVisibilityConverter}, ConverterParameter='SettingsFailedToLoad'}" >
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox Text="{Binding SiteIdText, Mode=TwoWay}"
+                         VerticalAlignment="Bottom"
+                         materialDesign:HintAssist.Hint="Site ID"
+                         materialDesign:HintAssist.IsFloating="True"/>
+
+                <Button Grid.Column="1" VerticalAlignment="Bottom"
+                        ToolTip="Submit your site"
+                    Style="{StaticResource MaterialDesignFlatButton}"
+                        Command="{Binding SetSiteIDCommand}">
+                    <materialDesign:PackIcon Kind="SendCheck"/>
+                </Button>
+            </Grid>
+
+            <!-- Roster manual load Component -->
+            <Grid HorizontalAlignment="Center" Grid.Row="1"
+                Visibility="{Binding LoadingPageUIState, Converter={converters:LoadingUIComponentStateToVisibilityConverter}, ConverterParameter='RosterFailedToLoad'}" >
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Button 
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        VerticalAlignment="Center"
+                ToolTip="Import Roster from CSV"
+                        Command="{Binding LoadRosterFromCSVCommand}">
+                    <materialDesign:PackIcon Kind="FolderOpen"/>
+                </Button>
+
+                <Button Grid.Column="1"
+                    Background="{DynamicResource CardBackground}" 
+                    BorderBrush="LightGray"
+                    materialDesign:ShadowAssist.ShadowEdges="None"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                         Command="{Binding SkipRosterLoadCommand}"
+                    >
+                    <TextBlock Text="Skip"/>
+                </Button>
+
+            </Grid>
+
+            <!-- Db Select Component -->
+            <Grid HorizontalAlignment="Center" Grid.Row="1"
+                Visibility="{Binding LoadingPageUIState, Converter={converters:LoadingUIComponentStateToVisibilityConverter}, ConverterParameter='DbPathFailedToLoad'}" >
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                   Text="Select Database Path"
+                       TextWrapping="Wrap"
+                   Margin="5"/>
+                
+                <Button Grid.Column="1"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        VerticalAlignment="Center"
+                ToolTip="Open Database folder"
+                        Command="{Binding SelectDbFolderCommand}">
+                    <materialDesign:PackIcon Kind="FolderOpen"/>
+                </Button>
+
+            </Grid>
+
+            
+        </Grid>
+        
+    </Grid>
+</UserControl>
