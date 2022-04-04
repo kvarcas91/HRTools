@@ -24,7 +24,6 @@ namespace HRTools_v2.Converters
             {
                 return value;
             }
-
         }
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
