@@ -109,6 +109,7 @@ namespace HRTools_v2.ViewModels
 
         private async void GetRosterFromWeb()
         {
+
             LoadingPageUIState = LoadingPageState.RosterLoading;
 
             if (string.IsNullOrEmpty(DataStorage.AppSettings.SiteID)) return;

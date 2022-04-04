@@ -1,4 +1,6 @@
-﻿using HRTools_v2.Helpers;
+﻿using Domain.DataManager;
+using Domain.Logs;
+using HRTools_v2.Helpers;
 using HRTools_v2.ViewModels;
 using Prism.Ioc;
 using Prism.Regions;
@@ -31,10 +33,18 @@ namespace HRTools_v2.Views
 
             RegionManager.SetRegionManager(this, regionManager);
 
+            LoggerManager.Init(new MessageBoxLogger(ShowLog));
+
             _container = container;
             _regionManager = regionManager;
 
             Loaded += MainWindow_Loaded;
+            var stuff = SystemParameters.WorkArea;
+        }
+
+        private void ShowLog(string message)
+        {
+            MessageBox.Show(message);
         }
 
         private void SetWindow()

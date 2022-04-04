@@ -322,7 +322,7 @@ namespace HRTools_v2.ViewModels
 
             var sRepo = new SanctionsRepository();
             var response = await sRepo.InsertAsync(sanction);
-            if (response)
+            if (response.Success)
             {
                 SanctionsList.Insert(0, sanction);
                 HasSanctionData = true;
@@ -406,7 +406,7 @@ namespace HRTools_v2.ViewModels
             }
 
             var successfullyUpdated = await _previewRepository.UpdateEmployeeStatusAsync(tempStatus, SelectedEmployee.EmployeeID);
-            if (successfullyUpdated)
+            if (successfullyUpdated.Success)
             {
                 EmplStatus = tempStatus;
                 //CacheManager.ResetTimer();
