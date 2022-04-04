@@ -162,7 +162,7 @@ namespace HRTools_v2.ViewModels
 
             if (DataStorage.RosterList != null && DataStorage.RosterList.Count > 0) DataStorage.RosterList.Clear(); 
 
-            var results = await _rosterDataManager.GetWebRosterAsync(new WebStream(), DataStorage.RosterURL);
+            var results = await _rosterDataManager.GetWebRosterAsync(new WebStream(), DataStorage.AppSettings.RosterURL);
             DataStorage.RosterList.AddRange(results);
 
             RosterComponentState = UIComponentState.Visible;

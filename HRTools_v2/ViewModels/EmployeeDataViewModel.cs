@@ -23,6 +23,20 @@ namespace HRTools_v2.ViewModels
 
         #region Properties
 
+        private uint _selectedTabIndex;
+        public uint SelectedTabIndex
+        {
+            get => _selectedTabIndex;
+            set { SetProperty(ref _selectedTabIndex, value); OnTabChange(value); }
+        }
+
+        private bool _isFileSectionVisible;
+        public bool IsFileSectionVisible
+        {
+            get => _isFileSectionVisible;
+            set { SetProperty(ref _isFileSectionVisible, value); }
+        }
+
         private Roster _selectedEmployee;
         public Roster SelectedEmployee
         {
@@ -91,6 +105,13 @@ namespace HRTools_v2.ViewModels
         {
             get => _widgedState;
             set { SetProperty(ref _widgedState, value); }
+        }
+
+        private SanctionWidgetState _sanctionState;
+        public SanctionWidgetState SanctionState
+        {
+            get => _sanctionState;
+            set { SetProperty(ref _sanctionState, value); }
         }
 
         #region Sanction Props
@@ -170,6 +191,9 @@ namespace HRTools_v2.ViewModels
             _previewRepository = new PreviewRepository();
             _isPageActive = false;
             Avatar = string.Empty;
+            SelectedTabIndex = 0;
+            IsFileSectionVisible = false;
+
             SanctionsList = new ObservableCollection<SanctionEntity>();
             AwalList = new ObservableCollection<AwalEntity>();
             Timeline = new ObservableCollection<EmployeeSummary>();
@@ -276,22 +300,24 @@ namespace HRTools_v2.ViewModels
         private async void GetAllSanctions(string id)
         {
             SanctionsList.Clear();
-            WidgedState &= ~HomePageWidgetState.EmployeeSanctionsLoaded;
-            WidgedState |= HomePageWidgetState.EmployeeSanctionsLoading;
+            SanctionState &= ~SanctionWidgetState.DataLoaded;
+            SanctionState |= SanctionWidgetState.DataLoading;
 
             var sanctRepo = new SanctionsRepository();
             SanctionsList.AddRange(await sanctRepo.GetEmployeeSanctionsAsync(id));
             HasSanctionData = SanctionsList.Count > 0;
 
-            WidgedState &= ~HomePageWidgetState.EmployeeSanctionsLoading;
-            WidgedState |= HomePageWidgetState.EmployeeSanctionsLoaded;
+            SanctionState &= ~SanctionWidgetState.DataLoading;
+            SanctionState |= SanctionWidgetState.DataLoaded;
         }
 
         private async void AddSanction()
         {
             if (string.IsNullOrEmpty(SelectedSanction) || SanctionStartDate.Equals(DateTime.MinValue)) return;
 
-            _eventAggregator.GetEvent<MainLoaderVisibilityArgs>().Publish(true);
+            SanctionState &= ~SanctionWidgetState.EditIdle;
+            SanctionState |= SanctionWidgetState.EditInProgress;
+
             var sanction = new SanctionEntity().Init().SetEmployee(SelectedEmployee).SetSanction(SelectedSanction, SanctionStartDate);
 
             var sRepo = new SanctionsRepository();
@@ -305,7 +331,8 @@ namespace HRTools_v2.ViewModels
                 GetHeaders(SelectedEmployee.EmployeeID);
             }
 
-            _eventAggregator.GetEvent<MainLoaderVisibilityArgs>().Publish(false);
+            SanctionState &= ~SanctionWidgetState.EditInProgress;
+            SanctionState |= SanctionWidgetState.EditIdle;
 
         }
 
@@ -414,6 +441,19 @@ namespace HRTools_v2.ViewModels
         }
 
         #region Navigation
+
+        private void OnTabChange(uint tabIndex)
+        {
+            switch (tabIndex)
+            {
+                case 3:
+                    IsFileSectionVisible = true;
+                    break;
+                default:
+                    IsFileSectionVisible = false;
+                    break;
+            }
+        }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {

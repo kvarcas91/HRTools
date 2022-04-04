@@ -413,7 +413,7 @@
                 <!-- Data -->
                 <TabControl Grid.Row="1" Margin="0 28 5 5" 
                             materialDesign:ShadowAssist.ShadowDepth="Depth0"
-                                    
+                                    SelectedIndex="{Binding SelectedTabIndex}"
                                     HorizontalContentAlignment="Left">
 
                     <!-- Timeline -->
@@ -465,9 +465,15 @@
                                 </Button.Triggers>
                             </Button>
 
+                            <ProgressBar IsIndeterminate="True" HorizontalAlignment="Right" 
+                                         Width="42" Height="42" Margin="0 0 3 0"
+                                         Visibility="{Binding SanctionState, Converter={converters:SanctionStateToVisibilityConverter}, ConverterParameter='EditInProgress'}"
+                                         Style="{StaticResource MaterialDesignCircularProgressBar}"/>
+
                             <Button x:Name="sanctionAddButton" Grid.Row="0" HorizontalAlignment="Right"
-                                        Style="{StaticResource MaterialDesignFlatButton}"  Visibility="Hidden"
+                                        Style="{StaticResource MaterialDesignFlatButton}" 
                                         Command="{Binding AddSanctionCommand}"
+                                    Visibility="{Binding SanctionState, Converter={converters:SanctionStateToVisibilityConverter}, ConverterParameter='EditIdle'}"
                                         ToolTip="Submit new sanction">
                                 <materialDesign:PackIcon Kind="Add"/>
 
@@ -484,7 +490,7 @@
                             </Button>
 
                             <DatePicker Grid.Row="0" x:Name="sanctionStartDatePicker" HorizontalAlignment="Right"
-                                            SelectedDate="{Binding SanctionStartDate}"
+                                            SelectedDate="{Binding SanctionStartDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"
                                             MinWidth="150" Visibility="Hidden" materialDesign:HintAssist.Hint="Sanction Start date"/>
 
                             <ComboBox Grid.Row="0" x:Name="sanctionSelectionCombo" HorizontalAlignment="Right" Visibility="Hidden"
@@ -500,12 +506,12 @@
                                              IsIndeterminate="True"
                                              Width="90"
                                              Height="90" 
-                                             Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='EmployeeSanctionsLoading'}"/>
+                                             Visibility="{Binding SanctionState, Converter={converters:SanctionStateToVisibilityConverter}, ConverterParameter='DataLoading'}"/>
 
                                 <ListView x:Name="sanctionListView"
                                     ItemsSource="{Binding SanctionsList}"
                                         Style="{StaticResource SanctionsListView}"
-                                          Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='EmployeeSanctionsLoaded'}"/>
+                                          Visibility="{Binding SanctionState, Converter={converters:SanctionStateToVisibilityConverter}, ConverterParameter='DataLoaded'}"/>
 
                                 <TextBlock Text="No Data"
                                            Visibility="{Binding HasSanctionData, Converter={StaticResource InverseBoolToVisConverter}}"
@@ -737,19 +743,62 @@
             <Grid Grid.Column="1">
 
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="1.2*"/>
+                    <RowDefinition Height="1.3*"/>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <materialDesign:Card Grid.Row="0" Margin="5 0 5 5" 
                              materialDesign:ShadowAssist.ShadowDepth="Depth0">
 
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Header -->
+                        <TextBlock Grid.Row="0" Text="Comments"
+                                        FontWeight="Bold"
+                                        Foreground="DarkSlateGray"
+                                        VerticalAlignment="Center"/>
+
+                        
+                        
+
+                    </Grid>
+                    
+
+                </materialDesign:Card>
+
+                <!-- Tasks -->
+                <materialDesign:Card Grid.Row="1" Margin="5 0 5 5" 
+                             materialDesign:ShadowAssist.ShadowDepth="Depth0">
+
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Header -->
+                        <TextBlock Grid.Row="0" Text="Tasks"
+                                        FontWeight="Bold"
+                                        Foreground="DarkSlateGray"
+                                        VerticalAlignment="Center"/>
+
+                    </Grid>
+
 
                 </materialDesign:Card>
 
                 <!-- Files / Documents -->
-                <materialDesign:Card Grid.Row="1" Margin="5 5 5 5" 
-                             materialDesign:ShadowAssist.ShadowDepth="Depth0">
+                <materialDesign:Card Grid.Row="2" Margin="5 5 5 5" 
+                                     Height="250"
+                             materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                     Visibility="{Binding IsFileSectionVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
 
                     <Grid Margin="10">
                         <Grid.RowDefinitions>
