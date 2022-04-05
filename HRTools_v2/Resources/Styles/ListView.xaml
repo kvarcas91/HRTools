@@ -243,13 +243,13 @@
                                     </Grid.ColumnDefinitions>
 
                                     <StackPanel Orientation="Vertical">
-                                        <TextBlock  Text="{Binding Date, Converter={converters:DateTimeToEmployeeSummaryConverter}, ConverterParameter='day'}"
+                                        <TextBlock  Text="{Binding CreatedAt, Converter={converters:DateTimeToEmployeeSummaryConverter}, ConverterParameter='day'}"
                                                    FontSize="{StaticResource TimelineDayFontSize}"
                                                    FontWeight="Bold"
                                                    HorizontalAlignment="Center"/>
                                         <TextBlock 
                                             FontSize="{StaticResource TimelineDateFontSize}"
-                                           Text="{Binding Date, Converter={converters:DateTimeToEmployeeSummaryConverter}, ConverterParameter='1'}"
+                                           Text="{Binding CreatedAt, Converter={converters:DateTimeToEmployeeSummaryConverter}, ConverterParameter='1'}"
                                             HorizontalAlignment="Center"/>
                                     </StackPanel>
 
@@ -260,7 +260,7 @@
                                            Fill="LightGray" Width="1"/>
 
                                     <TextBlock Grid.Column="2"
-                                        Text="{Binding Event}"
+                                        Text="{Binding EventMessage}"
                                                 FontSize="{StaticResource TimelineMessageFontSize}"
                                                VerticalAlignment="Center"/>
                                 </Grid>

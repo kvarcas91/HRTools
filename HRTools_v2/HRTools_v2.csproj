@@ -91,6 +91,12 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="ToastNotifications, Version=2.5.1.0, Culture=neutral, PublicKeyToken=e89d9d7314a7c797, processorArchitecture=MSIL">
+      <HintPath>packages\ToastNotifications.2.5.1\lib\net40\ToastNotifications.dll</HintPath>
+    </Reference>
+    <Reference Include="ToastNotifications.Messages, Version=2.5.1.0, Culture=neutral, PublicKeyToken=e89d9d7314a7c797, processorArchitecture=MSIL">
+      <HintPath>packages\ToastNotifications.Messages.2.5.1\lib\net40\ToastNotifications.Messages.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Abstractions, Version=5.11.7.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>packages\Unity.Abstractions.5.11.7\lib\net48\Unity.Abstractions.dll</HintPath>
     </Reference>
@@ -106,9 +112,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Views\Notifications\Notification.xaml.cs">
-      <DependentUpon>Notification.xaml</DependentUpon>
-    </Compile>
     <Page Include="Resources\Animations\Anim.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -148,7 +151,7 @@
     <Compile Include="Args\EmployeeSelectedArgs.cs" />
     <Compile Include="Args\MainLoaderVisibilityArgs.cs" />
     <Compile Include="Args\NavigationArgs.cs" />
-    <Compile Include="AttachedProps\ScaleToWindowSizeBehavior.cs" />
+    <Compile Include="Args\ShowToastArgs.cs" />
     <Compile Include="Converters\AwalConverter\AwalStatusToColorConverter.cs" />
     <Compile Include="Converters\AwalConverter\AwalTextDecorationConverter.cs" />
     <Compile Include="Converters\AwalConverter\AwalTextForegroundConverter.cs" />
@@ -174,6 +177,7 @@
     <Compile Include="Converters\TenureToStringConverter.cs" />
     <Compile Include="Converters\UIComponentStateToVisibilityConverter.cs" />
     <Compile Include="Converters\UserToTextConverter.cs" />
+    <Compile Include="DPI\DpiDecorator.cs" />
     <Compile Include="Helpers\DialogHelper.cs" />
     <Compile Include="Helpers\FolderPicker.cs" />
     <Compile Include="Helpers\WindowSizeHelper.cs" />
@@ -203,10 +207,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Values\Dim.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Notifications\Notification.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

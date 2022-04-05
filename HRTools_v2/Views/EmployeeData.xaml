@@ -31,25 +31,111 @@
                     Orientation="Horizontal" HorizontalAlignment="Right"
                     Margin="10">
 
-            <Button Background="Transparent" 
-                    Margin="0 0 10 0"
+
+
+            <materialDesign:PopupBox Margin="5 0 5 0"
+                                     HorizontalAlignment="Right"
+                                     Background="Transparent"
+                                     StaysOpen="True">
+
+                <materialDesign:PopupBox.ToggleContent>
+
+                    <Border Background="Transparent" 
+                    Padding="10"
                     materialDesign:ShadowAssist.ShadowEdges="None"
                     materialDesign:ShadowAssist.ShadowDepth="Depth0"
                                         BorderBrush="DarkSlateGray"
                     BorderThickness="0.5"
                     >
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="EmergencyExit" 
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="EmergencyExit" 
                                                                  VerticalAlignment="Center"
                                                                  Foreground="DarkSlateGray"/>
-                    <TextBlock Margin="10 0 0 0" Text="Submit resignation" Foreground="DarkSlateGray"
+                            <TextBlock Margin="10 0 0 0" Text="Submit resignation" Foreground="DarkSlateGray"
                                                    FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+
+                </materialDesign:PopupBox.ToggleContent>
+
+                <StackPanel Background="Transparent" Margin="10"
+                            Width="300"
+                            Orientation="Vertical">
+
+                    <DatePicker Grid.Row="5"
+                                Margin="5"
+                                materialDesign:HintAssist.Hint="Last Workig Day"
+                                materialDesign:HintAssist.IsFloating="True"
+                                Text="{Binding ResignationNewEntry.LastWorkingDay, Converter={converters:DateTimeToStringConverter}, ConverterParameter=5}"/>
+
+                    <ComboBox Grid.Row="6"
+                        BorderThickness="0"
+                        Margin="5"
+                        SelectedValue=""
+                                VerticalContentAlignment="Center"
+                        materialDesign:HintAssist.Hint="Reason for Resignation"
+                        materialDesign:HintAssist.IsFloating="True"
+                        ItemsSource="{Binding ResignationReasonList}"
+                        SelectedItem="{Binding ResignationNewEntry.ReasonForResignation, Mode=TwoWay}"
+                        IsSynchronizedWithCurrentItem="True">
+                    </ComboBox>
+
+                    <TextBox Grid.Row="7"
+                                    Text="{Binding ResignationNewEntry.TTLink, Mode=TwoWay}"
+                                    Background="Transparent"
+                                    materialDesign:HintAssist.Hint="TT"
+                                    materialDesign:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    Margin="5"
+                                    TextWrapping="Wrap" />
+
+                    <Separator Grid.Row="1" BorderBrush="LightGray" BorderThickness="1"
+                               Margin="5"/>
+
+                    <Grid>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Right"
+                                Margin="5 5 0 5"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                        Command="{Binding ClearResignationEntryCommand}">
+                            <materialDesign:PackIcon Kind="CancelCircleOutline"
+                                                 ToolTip="Clear"
+                                                 Foreground="DarkSlateGray"/>
+                        </Button>
+
+                        <Button Grid.Column="1"
+                                Margin="5"
+                            Background="Transparent" 
+                    materialDesign:ShadowAssist.ShadowEdges="None"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                        BorderBrush="DarkSlateGray"
+                    BorderThickness="1"
+                                Command="{Binding SubmitResignationCommand}"
+                    >
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="CreateOutline" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+                                <TextBlock Margin="10 0 0 0" Text="Submit" Foreground="DarkSlateGray"
+                                                   FontSize="12"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
                 </StackPanel>
-            </Button>
+
+            </materialDesign:PopupBox>
 
             <Button Style="{StaticResource MaterialDesignFlatButton}"
                         Command="{Binding CloseEmployeePreviewCommand}">
-                <materialDesign:PackIcon Kind="CloseBoxes"
+                <materialDesign:PackIcon Kind="CloseCircleOutline"
                                                  ToolTip="Close Employee Preview"
                                                  Foreground="DarkSlateGray"/>
             </Button>
@@ -149,7 +235,7 @@
                             <StackPanel Grid.Row="1"
                                 Orientation="Vertical"
                                     VerticalAlignment="Top"
-                                    Margin="20">
+                                    Margin="20 20 20 5">
 
                                 <!-- Badge -->
                                 <Ellipse Height="80" Width="80" Margin="5">
@@ -173,7 +259,7 @@
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal" Grid.Row="2"
-                                        Margin="20"
+                                        Margin="5"
                                         HorizontalAlignment="Center">
 
                                 <TextBlock Text="Employee Status"

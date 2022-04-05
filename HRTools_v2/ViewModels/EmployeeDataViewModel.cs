@@ -3,6 +3,7 @@ using Domain.Extensions;
 using Domain.Models;
 using Domain.Models.AWAL;
 using Domain.Models.DataSnips;
+using Domain.Models.Resignations;
 using Domain.Models.Sanctions;
 using Domain.Repository;
 using Domain.Storage;
@@ -72,8 +73,8 @@ namespace HRTools_v2.ViewModels
             set { SetProperty(ref _awalList, value); }
         }
 
-        private ObservableCollection<EmployeeSummary> _timeline;
-        public ObservableCollection<EmployeeSummary> Timeline
+        private ObservableCollection<Timeline> _timeline;
+        public ObservableCollection<Timeline> Timeline
         {
             get { return _timeline; }
             set { SetProperty(ref _timeline, value); }
@@ -139,6 +140,24 @@ namespace HRTools_v2.ViewModels
 
         #endregion
 
+        #region Resignation Props
+
+        private List<string> _resignationReasonList;
+        public List<string> ResignationReasonList
+        {
+            get { return _resignationReasonList; }
+            set { SetProperty(ref _resignationReasonList, value); }
+        }
+
+        private ResignationEntry _resignationNewEntry;
+        public ResignationEntry ResignationNewEntry
+        {
+            get => _resignationNewEntry;
+            set { SetProperty(ref _resignationNewEntry, value); }
+        }
+
+        #endregion
+
         #region Data List Count Properties
 
         private bool _hasSanctionData = true;
@@ -163,6 +182,12 @@ namespace HRTools_v2.ViewModels
 
         private DelegateCommand _closeEmployeePreviewCommand = null;
         public DelegateCommand CloseEmployeePreviewCommand => _closeEmployeePreviewCommand ?? (_closeEmployeePreviewCommand = new DelegateCommand(CloseEmployeePreview));
+
+        private DelegateCommand _clearResignationEntryCommand = null;
+        public DelegateCommand ClearResignationEntryCommand => _clearResignationEntryCommand ?? (_clearResignationEntryCommand = new DelegateCommand(() => ResignationNewEntry = new ResignationEntry()));
+
+        private DelegateCommand _submitResignationCommand = null;
+        public DelegateCommand SubmitResignationCommand => _submitResignationCommand ?? (_submitResignationCommand = new DelegateCommand(SubmitResignation));
 
         private DelegateCommand<string> _changeEmployeeStatusCommand = null;
         public DelegateCommand<string> ChangeEmployeeStatusCommand => _changeEmployeeStatusCommand ?? (_changeEmployeeStatusCommand = new DelegateCommand<string>(ChangeEmploymentStatus));
@@ -196,12 +221,39 @@ namespace HRTools_v2.ViewModels
 
             SanctionsList = new ObservableCollection<SanctionEntity>();
             AwalList = new ObservableCollection<AwalEntity>();
-            Timeline = new ObservableCollection<EmployeeSummary>();
+            Timeline = new ObservableCollection<Timeline>();
+
 
             SanctionList = SanctionManager.GetSanctions();
 
             AwalNewEntry = new AwalEntry();
+            ResignationNewEntry = new ResignationEntry();
+
+            SetResignationCategories();
+            
         }
+
+        private void SetResignationCategories() => ResignationReasonList = new List<string>
+            {
+                "Bureaucracy - Ability to Bld",
+                "Career Choice Grad",
+                "Challenging Work",
+                "Compensation",
+                "Develop/Career/Promo",
+                "End of Assignment",
+                "Family Move or Circumstances",
+                "Manager/Leadership",
+                "Med-unable to perfessent fxn",
+                "Mutual Agreement (vol)",
+                "Operational Support burden",
+                "Recognition for Great Work",
+                "Resignation in Lieu of Term",
+                "Return to School",
+                "Tools and Resources",
+                "Work Eligibility",
+                "Work Environment",
+                "Working Conditions (Facility)"
+            };
 
         private void GetEmployeeData(string selectedEmployeeId)
         {
@@ -227,11 +279,15 @@ namespace HRTools_v2.ViewModels
             Timeline.Clear();
 
             Timeline.AddRange(await _previewRepository.GetTimelineAsync(id));
+
             try
             {
-                Timeline.Add(new EmployeeSummary { Date = System.DateTime.Parse(SelectedEmployee.LastHireDate), Event = "AA has been hired" });
+                Timeline.Add(new Timeline { CreatedAt = DateTime.Parse(SelectedEmployee.LastHireDate), EventMessage = "AA has been hired" });
             }
-            catch { }
+            catch (Exception e) 
+            {
+                LoggerManager.Log("EmployeeDataViewModel.GetTimeline()", e.Message);
+            }
 
             WidgedState &= ~HomePageWidgetState.EmployeeTimelineLoading;
             WidgedState |= HomePageWidgetState.EmployeeTimelineLoaded;
@@ -250,10 +306,13 @@ namespace HRTools_v2.ViewModels
 
         private void AddAwal()
         {
-            if (AwalNewEntry.CanAdd())
+            if (!AwalNewEntry.CanAdd())
             {
-
+                SendToast("Failed to insert AWAL. Are you sure all the data is correct?", NotificationType.Information);
+                return;
             }
+            
+
         }
 
         private async void GetAwal(string id)
@@ -273,7 +332,15 @@ namespace HRTools_v2.ViewModels
 
         #endregion
 
+        #region Resignations
 
+
+        private async void SubmitResignation()
+        {
+
+        }
+
+        #endregion
 
         private void GetCustomMeetings(string id)
         {
@@ -324,11 +391,16 @@ namespace HRTools_v2.ViewModels
             var response = await sRepo.InsertAsync(sanction);
             if (response.Success)
             {
+                SendToast("Sanction has been recorded!", NotificationType.Success);
                 SanctionsList.Insert(0, sanction);
                 HasSanctionData = true;
                 GetSanctionPreview(SelectedEmployee.EmployeeID);
                 GetTimeline(SelectedEmployee.EmployeeID);
                 GetHeaders(SelectedEmployee.EmployeeID);
+            }
+            else
+            {
+                SendToast("Failed to insert sancion..", NotificationType.Warning);
             }
 
             SanctionState &= ~SanctionWidgetState.EditInProgress;
@@ -343,40 +415,81 @@ namespace HRTools_v2.ViewModels
 
         private async void OnSanctionOverride(SanctionEntity? sanction)
         {
-            if (!sanction.HasValue) return;
+            if (!sanction.HasValue)
+            {
+                LoggerManager.Log("EmployeeDataViewModel.OnSanctionOverride", "sanction is NULL");
+                return;
+            }
 
             var sanct = sanction.Value;
-            if (sanct.Overriden || sanct.SanctionEndDate <= System.DateTime.Now) return;
+            if (sanct.Overriden || sanct.SanctionEndDate <= DateTime.Now)
+            {
+                SendToast("You cannot override this sanction as it already expired!", NotificationType.Information);
+                return;
+            }
 
             var sanctionRepo = new SanctionsRepository();
             var results = await sanctionRepo.OverrideSanctionAsync(sanct);
 
-            try
+            if (results.OverridenAt.Equals(sanction.Value.OverridenAt))
             {
-                SanctionsList.Swap(sanct, results);
-                GetSanctionPreview(SelectedEmployee.EmployeeID);
-                GetTimeline(SelectedEmployee.EmployeeID);
+                SendToast("You cannot override this sanction", NotificationType.Warning);
             }
-            catch { }
+            else
+            {
+                SendToast("Sanction has been overriden!", NotificationType.Success);
+                try
+                {
+                    SanctionsList.Swap(sanct, results);
+                    GetSanctionPreview(SelectedEmployee.EmployeeID);
+                    GetTimeline(SelectedEmployee.EmployeeID);
+                }
+                catch (Exception e)
+                {
+                    LoggerManager.Log("EmployeeDataViewModel.OnSanctionOverride", e.Message);
+                }
+            }
+           
+
+            
         }
 
         private async void OnSanctionReissue(SanctionEntity? sanction)
         {
-            if (!sanction.HasValue) return;
+            if (!sanction.HasValue)
+            {
+                LoggerManager.Log("EmployeeDataViewModel.OnSanctionOverride", "sanction is NULL");
+                return;
+            }
 
             var sanct = sanction.Value;
-            if (!sanct.Overriden && sanct.SanctionEndDate <= System.DateTime.Now) return;
+            if (!sanct.Overriden && sanct.SanctionEndDate <= DateTime.Now)
+            {
+                SendToast("You cannot re-issue this sanction as it already expired!", NotificationType.Information);
+                return;
+            }
 
             var sanctionRepo = new SanctionsRepository();
             var results = await sanctionRepo.ReissueSanctionAsync(sanct);
 
-            try
+            if (results.OverridenAt.Equals(sanction.Value.OverridenAt))
             {
-                SanctionsList.Swap(sanct, results);
-                GetSanctionPreview(SelectedEmployee.EmployeeID);
-                GetTimeline(SelectedEmployee.EmployeeID);
+                SendToast("You cannot re-issue this sanction", NotificationType.Warning);
             }
-            catch { }
+            else
+            {
+                SendToast("Sanction has been re-issued!", NotificationType.Success);
+                try
+                {
+                    SanctionsList.Swap(sanct, results);
+                    GetSanctionPreview(SelectedEmployee.EmployeeID);
+                    GetTimeline(SelectedEmployee.EmployeeID);
+                }
+                catch (Exception e)
+                {
+                    LoggerManager.Log("EmployeeDataViewModel.OnSanctionReissue", e.Message);
+                }
+            }     
         }
 
         #endregion
@@ -391,7 +504,7 @@ namespace HRTools_v2.ViewModels
         private async void ChangeEmploymentStatus(string caller)
         {
             WidgedState |= HomePageWidgetState.EmployeeStatusLoading;
-            var tempStatus = EmploymentStatus.Default;
+            EmploymentStatus tempStatus;
             switch (caller)
             {
                 case "Activate":
@@ -408,8 +521,9 @@ namespace HRTools_v2.ViewModels
             var successfullyUpdated = await _previewRepository.UpdateEmployeeStatusAsync(tempStatus, SelectedEmployee.EmployeeID);
             if (successfullyUpdated.Success)
             {
+                SendToast("Employment status has been set", NotificationType.Success);
                 EmplStatus = tempStatus;
-                //CacheManager.ResetTimer();
+                GetTimeline(SelectedEmployee.EmployeeID);
             }
 
             WidgedState &= ~HomePageWidgetState.EmployeeStatusLoading;
@@ -438,6 +552,11 @@ namespace HRTools_v2.ViewModels
             SelectedEmployee = selectedEmployee;
             Avatar = DataStorage.AppSettings.UserImgURL.Replace("{UserID}", SelectedEmployee.UserID);
             GetEmployeeData(selectedEmployee.EmployeeID);
+        }
+
+        private void SendToast(string message, NotificationType notificationType)
+        {
+            _eventAggregator.GetEvent<ShowToastArgs>().Publish((message, notificationType));
         }
 
         #region Navigation

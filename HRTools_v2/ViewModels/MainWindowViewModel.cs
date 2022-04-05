@@ -1,5 +1,7 @@
 ﻿using Domain.Data;
+using Domain.DataManager;
 using Domain.IO;
+using Domain.Logs;
 using Domain.Models;
 using Domain.Networking;
 using Domain.Storage;
@@ -10,8 +12,14 @@ using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows;
+using ToastNotifications;
+using ToastNotifications.Lifetime;
+using ToastNotifications.Messages;
+using ToastNotifications.Position;
 
 namespace HRTools_v2.ViewModels
 {
@@ -102,6 +110,7 @@ namespace HRTools_v2.ViewModels
         private readonly IEventAggregator _eventAggregator;
         private readonly IRegionManager _regionManager;
         private string _currentRegion;
+        private Notifier _notifier;
 
         public MainWindowViewModel(IEventAggregator eventAggregator, IRegionManager regionManager)
         {
@@ -120,9 +129,61 @@ namespace HRTools_v2.ViewModels
             _regionManager = regionManager;
             _currentRegion = "LoaderPage";
 
+            SetNotifier();
+
             _ = eventAggregator.GetEvent<NavigationArgs>().Subscribe(Navigate);
             _ = eventAggregator.GetEvent<NavigationEmplArgs>().Subscribe(Navigate);
             _ = eventAggregator.GetEvent<MainLoaderVisibilityArgs>().Subscribe(SetLoaderVisibility);
+            _ = eventAggregator.GetEvent<ShowToastArgs>().Subscribe(ShowMessage);
+        }
+
+        private void SetNotifier()
+        {
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                _notifier = new Notifier(cfg =>
+                {
+                    cfg.PositionProvider = new WindowPositionProvider(
+                        parentWindow: Application.Current.MainWindow,
+                        corner: Corner.TopRight,
+                        offsetX: 10,
+                        offsetY: 10);
+
+                    cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
+                        notificationLifetime: TimeSpan.FromSeconds(5),
+                        maximumNotificationCount: MaximumNotificationCount.FromCount(5));
+
+                    cfg.Dispatcher = Application.Current.Dispatcher;
+                });
+            });
+
+            LoggerManager.Init(new ToastLogger(ShowMessage));
+
+        }
+
+        private void ShowMessage((string, NotificationType) message)
+        {
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                switch (message.Item2)
+                {
+                    case NotificationType.Information:
+                        _notifier.ShowInformation(message.Item1);
+                        break;
+                    case NotificationType.Success:
+                        _notifier.ShowSuccess(message.Item1);
+                        break;
+                    case NotificationType.Warning:
+                        _notifier.ShowWarning(message.Item1);
+                        break;
+                    case NotificationType.Error:
+                        _notifier.ShowError(message.Item1);
+                        break;
+                    default:
+                        _notifier.ShowInformation(message.Item1);
+                        break;
+                }
+            });
         }
 
         #region Roster Methods
@@ -138,7 +199,15 @@ namespace HRTools_v2.ViewModels
 
             var csvStream = new CSVStream(path);
             var rosterList = await _rosterDataManager.GetRosterAsync(csvStream);
-            DataStorage.RosterList.AddRange(rosterList);
+            if (rosterList is null || rosterList.Count == 0)
+            {
+                _eventAggregator.GetEvent<ShowToastArgs>().Publish(("Failed to read roster data from csv", NotificationType.Warning));
+            }
+            else
+            {
+                DataStorage.RosterList.AddRange(rosterList);
+            }
+            
             RosterComponentState = UIComponentState.Visible;
         }
 
@@ -162,8 +231,15 @@ namespace HRTools_v2.ViewModels
 
             if (DataStorage.RosterList != null && DataStorage.RosterList.Count > 0) DataStorage.RosterList.Clear(); 
 
-            var results = await _rosterDataManager.GetWebRosterAsync(new WebStream(), DataStorage.AppSettings.RosterURL);
-            DataStorage.RosterList.AddRange(results);
+            var results = await _rosterDataManager.GetWebRosterAsync(new WebStream(), DataStorage.AppSettings.RosterURL.Replace("{siteID}", DataStorage.AppSettings.SiteID));
+            if (results is null || results.Count == 0)
+            {
+                _eventAggregator.GetEvent<ShowToastArgs>().Publish(("Failed to get roster from web", NotificationType.Warning));
+            }
+            else
+            {
+                DataStorage.RosterList.AddRange(results);
+            }
 
             RosterComponentState = UIComponentState.Visible;
            

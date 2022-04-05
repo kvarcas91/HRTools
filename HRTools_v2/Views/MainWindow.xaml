@@ -10,21 +10,21 @@
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
         xmlns:converters="clr-namespace:HRTools_v2.Converters"
-        xmlns:inf="clr-namespace:HRTools_v2.AttachedProps"
+        xmlns:local="clr-namespace:HRTools_v2.DPI"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
         WindowStyle="None"
         x:Name="MainView"
-        Height="700" Width="1200">
+        Height="900" Width="1600">
 
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="42"/>
     </WindowChrome.WindowChrome>
 
-    <Grid inf:ScaleToWindowSizeBehavior.Denominators="1600, 900"
-      inf:ScaleToWindowSizeBehavior.ParentWindow="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
+    <local:DpiDecorator>
+        <Grid>
 
-        <Grid.ColumnDefinitions>
+            <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="80"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
@@ -260,119 +260,119 @@
                     <ContentControl 
                       prism:RegionManager.RegionName="ContentRegion"/>
 
-                <Border Background="Transparent"
+                    <Border Background="Transparent"
                         Grid.Row="1"
                         Margin="10 0 0 0"
                         HorizontalAlignment="Left"
                         Visibility="{Binding IsMainLoaderVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <Grid Width="140" Height="10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="5"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="5"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="5"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="5"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+                        <Grid Width="140" Height="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="5"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="5"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="5"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="5"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                        <Ellipse x:Name="PART_Ellipse0" Grid.Column="0" Fill="{StaticResource LoaderElipseBackground}"/>
-                        <Ellipse x:Name="PART_Ellipse1" Grid.Column="2" Fill="{StaticResource LoaderElipseBackground}"/>
-                        <Ellipse x:Name="PART_Ellipse2" Grid.Column="4" Fill="{StaticResource LoaderElipseBackground}"/>
-                        <Ellipse x:Name="PART_Ellipse3" Grid.Column="6" Fill="{StaticResource LoaderElipseBackground}"/>
-                        <Ellipse x:Name="PART_Ellipse4" Grid.Column="8" Fill="{StaticResource LoaderElipseBackground}"/>
-                    </Grid>
-                    <Border.Resources>
-                        <Style TargetType="Ellipse">
-                            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
-                            <Setter Property="Width" Value="10"/>
-                            <Setter Property="Height" Value="10"/>
-                            <Setter Property="RenderTransform">
-                                <Setter.Value>
-                                    <ScaleTransform ScaleX="0" ScaleY="0"/>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </Border.Resources>
-                    <Border.Triggers>
-                        <EventTrigger RoutedEvent="Loaded">
-                            <BeginStoryboard>
-                                <Storyboard RepeatBehavior="Forever" Duration="0:0:2.400">
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse0" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)">
-                                        <LinearDoubleKeyFrame KeyTime="0:0:0.000" Value="0"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:0.500" Value="1"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:0.600" Value="1"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:1.100" Value="0"/>
-                                    </DoubleAnimationUsingKeyFrames>
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse1" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)">
-                                        <LinearDoubleKeyFrame KeyTime="0:0:0.250" Value="0"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:0.750" Value="1"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:0.850" Value="1"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:1.350" Value="0"/>
-                                    </DoubleAnimationUsingKeyFrames>
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse2" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)">
-                                        <LinearDoubleKeyFrame KeyTime="0:0:0.500" Value="0"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:1.000" Value="1"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:1.100" Value="1"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:1.600" Value="0"/>
-                                    </DoubleAnimationUsingKeyFrames>
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse3" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)">
-                                        <LinearDoubleKeyFrame KeyTime="0:0:0.750" Value="0"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:1.250" Value="1"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:1.350" Value="1"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:1.850" Value="0"/>
-                                    </DoubleAnimationUsingKeyFrames>
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse4" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)">
-                                        <LinearDoubleKeyFrame KeyTime="0:0:1.000" Value="0"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:1.500" Value="1"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:1.600" Value="1"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:2.100" Value="0"/>
-                                    </DoubleAnimationUsingKeyFrames>
+                            <Ellipse x:Name="PART_Ellipse0" Grid.Column="0" Fill="{StaticResource LoaderElipseBackground}"/>
+                            <Ellipse x:Name="PART_Ellipse1" Grid.Column="2" Fill="{StaticResource LoaderElipseBackground}"/>
+                            <Ellipse x:Name="PART_Ellipse2" Grid.Column="4" Fill="{StaticResource LoaderElipseBackground}"/>
+                            <Ellipse x:Name="PART_Ellipse3" Grid.Column="6" Fill="{StaticResource LoaderElipseBackground}"/>
+                            <Ellipse x:Name="PART_Ellipse4" Grid.Column="8" Fill="{StaticResource LoaderElipseBackground}"/>
+                        </Grid>
+                        <Border.Resources>
+                            <Style TargetType="Ellipse">
+                                <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                                <Setter Property="Width" Value="10"/>
+                                <Setter Property="Height" Value="10"/>
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0" ScaleY="0"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Border.Resources>
+                        <Border.Triggers>
+                            <EventTrigger RoutedEvent="Loaded">
+                                <BeginStoryboard>
+                                    <Storyboard RepeatBehavior="Forever" Duration="0:0:2.400">
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse0" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)">
+                                            <LinearDoubleKeyFrame KeyTime="0:0:0.000" Value="0"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:0.500" Value="1"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:0.600" Value="1"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:1.100" Value="0"/>
+                                        </DoubleAnimationUsingKeyFrames>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse1" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)">
+                                            <LinearDoubleKeyFrame KeyTime="0:0:0.250" Value="0"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:0.750" Value="1"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:0.850" Value="1"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:1.350" Value="0"/>
+                                        </DoubleAnimationUsingKeyFrames>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse2" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)">
+                                            <LinearDoubleKeyFrame KeyTime="0:0:0.500" Value="0"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:1.000" Value="1"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:1.100" Value="1"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:1.600" Value="0"/>
+                                        </DoubleAnimationUsingKeyFrames>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse3" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)">
+                                            <LinearDoubleKeyFrame KeyTime="0:0:0.750" Value="0"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:1.250" Value="1"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:1.350" Value="1"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:1.850" Value="0"/>
+                                        </DoubleAnimationUsingKeyFrames>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse4" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)">
+                                            <LinearDoubleKeyFrame KeyTime="0:0:1.000" Value="0"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:1.500" Value="1"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:1.600" Value="1"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:2.100" Value="0"/>
+                                        </DoubleAnimationUsingKeyFrames>
 
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse0" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)">
-                                        <LinearDoubleKeyFrame KeyTime="0:0:0.000" Value="0"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:0.500" Value="1"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:0.600" Value="1"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:1.100" Value="0"/>
-                                    </DoubleAnimationUsingKeyFrames>
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse1" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)">
-                                        <LinearDoubleKeyFrame KeyTime="0:0:0.250" Value="0"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:0.750" Value="1"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:0.850" Value="1"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:1.350" Value="0"/>
-                                    </DoubleAnimationUsingKeyFrames>
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse2" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)">
-                                        <LinearDoubleKeyFrame KeyTime="0:0:0.500" Value="0"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:1.000" Value="1"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:1.100" Value="1"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:1.600" Value="0"/>
-                                    </DoubleAnimationUsingKeyFrames>
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse3" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)">
-                                        <LinearDoubleKeyFrame KeyTime="0:0:0.750" Value="0"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:1.250" Value="1"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:1.350" Value="1"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:1.850" Value="0"/>
-                                    </DoubleAnimationUsingKeyFrames>
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse4" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)">
-                                        <LinearDoubleKeyFrame KeyTime="0:0:1.000" Value="0"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:1.500" Value="1"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:1.600" Value="1"/>
-                                        <LinearDoubleKeyFrame KeyTime="0:0:2.100" Value="0"/>
-                                    </DoubleAnimationUsingKeyFrames>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                    </Border.Triggers>
-                </Border>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse0" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)">
+                                            <LinearDoubleKeyFrame KeyTime="0:0:0.000" Value="0"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:0.500" Value="1"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:0.600" Value="1"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:1.100" Value="0"/>
+                                        </DoubleAnimationUsingKeyFrames>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse1" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)">
+                                            <LinearDoubleKeyFrame KeyTime="0:0:0.250" Value="0"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:0.750" Value="1"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:0.850" Value="1"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:1.350" Value="0"/>
+                                        </DoubleAnimationUsingKeyFrames>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse2" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)">
+                                            <LinearDoubleKeyFrame KeyTime="0:0:0.500" Value="0"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:1.000" Value="1"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:1.100" Value="1"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:1.600" Value="0"/>
+                                        </DoubleAnimationUsingKeyFrames>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse3" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)">
+                                            <LinearDoubleKeyFrame KeyTime="0:0:0.750" Value="0"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:1.250" Value="1"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:1.350" Value="1"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:1.850" Value="0"/>
+                                        </DoubleAnimationUsingKeyFrames>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse4" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)">
+                                            <LinearDoubleKeyFrame KeyTime="0:0:1.000" Value="0"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:1.500" Value="1"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:1.600" Value="1"/>
+                                            <LinearDoubleKeyFrame KeyTime="0:0:2.100" Value="0"/>
+                                        </DoubleAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Border.Triggers>
+                    </Border>
 
-                <StackPanel Orientation="Horizontal"
+                    <StackPanel Orientation="Horizontal"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Right"
                     Grid.Row="1"
                     Margin="5">
-                        
+
                         <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
                          IsIndeterminate="True"
                          Visibility="{Binding RosterComponentState, Converter={converters:UIComponentStateToVisibilityConverter}, ConverterParameter='Loader'}"
@@ -522,9 +522,12 @@
                 </Grid>
             </Grid>
 
-            
-            
-            
+
+
+
         </Grid>
+    </local:DpiDecorator>
+    
+    
 
 </Window>
