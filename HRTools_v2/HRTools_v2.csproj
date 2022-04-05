@@ -168,6 +168,7 @@
     <Compile Include="Converters\LoadingUIComponentStateToVisibilityConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Converters\ProgressConverter.cs" />
+    <Compile Include="Converters\StateConverters\ResignationStateToVisibilityConverter.cs" />
     <Compile Include="Converters\SanctionsConverter\SanctionTextSizeConverter.cs" />
     <Compile Include="Converters\SanctionsConverter\SanctionTextDecorationConverter.cs" />
     <Compile Include="Converters\SanctionsConverter\SanctionTextForegroundConverter.cs" />

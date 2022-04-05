@@ -6,6 +6,7 @@ using Domain.Models.DataSnips;
 using Domain.Models.Resignations;
 using Domain.Models.Sanctions;
 using Domain.Repository;
+using Domain.States;
 using Domain.Storage;
 using Domain.Types;
 using HRTools_v2.Args;
@@ -142,6 +143,13 @@ namespace HRTools_v2.ViewModels
 
         #region Resignation Props
 
+        private ResignationWidgetState _resignationState;
+        public ResignationWidgetState ResignationState
+        {
+            get => _resignationState;
+            set { SetProperty(ref _resignationState, value); }
+        }
+
         private List<string> _resignationReasonList;
         public List<string> ResignationReasonList
         {
@@ -188,6 +196,9 @@ namespace HRTools_v2.ViewModels
 
         private DelegateCommand _submitResignationCommand = null;
         public DelegateCommand SubmitResignationCommand => _submitResignationCommand ?? (_submitResignationCommand = new DelegateCommand(SubmitResignation));
+
+        private DelegateCommand _cancelResignationCommand = null;
+        public DelegateCommand CancelResignationCommand => _cancelResignationCommand ?? (_cancelResignationCommand = new DelegateCommand(CancelResignation));
 
         private DelegateCommand<string> _changeEmployeeStatusCommand = null;
         public DelegateCommand<string> ChangeEmployeeStatusCommand => _changeEmployeeStatusCommand ?? (_changeEmployeeStatusCommand = new DelegateCommand<string>(ChangeEmploymentStatus));
@@ -260,6 +271,7 @@ namespace HRTools_v2.ViewModels
             GetHeaders(selectedEmployeeId);
             GetSanctionPreview(selectedEmployeeId);
             GetEmployeeStatus(selectedEmployeeId);
+            GetResignationData(selectedEmployeeId);
             GetTimeline(selectedEmployeeId);
             GetAllSanctions(selectedEmployeeId);
             GetAwal(selectedEmployeeId);
@@ -337,7 +349,31 @@ namespace HRTools_v2.ViewModels
 
         private async void SubmitResignation()
         {
+            ResignationState |= ResignationWidgetState.ResignationSubmitInProgress;
 
+
+            ResignationState = ResignationWidgetState.ResignationExists;
+            ResignationState |= ResignationWidgetState.DataLoading;
+
+        }
+
+        private async void CancelResignation()
+        {
+            ResignationState = ResignationWidgetState.DataLoading;
+
+
+
+            ResignationState = ResignationWidgetState.ResignationDoesNotExist;
+        }
+
+        private async void GetResignationData(string id)
+        {
+            ResignationState = ResignationWidgetState.DataLoading;
+            var repo = new ResignationsRepository();
+
+            var count = await repo.IsResignedAsync(id);
+            if (count > 0) ResignationState = ResignationWidgetState.ResignationExists;
+            else ResignationState = ResignationWidgetState.ResignationDoesNotExist;
         }
 
         #endregion

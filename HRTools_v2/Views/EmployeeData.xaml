@@ -32,43 +32,44 @@
                     Margin="10">
 
 
-
-            <materialDesign:PopupBox Margin="5 0 5 0"
-                                     HorizontalAlignment="Right"
+            <Grid Margin="5 0 5 0"
+                  HorizontalAlignment="Right">
+                
+                <materialDesign:PopupBox 
                                      Background="Transparent"
-                                     StaysOpen="True">
+                                     StaysOpen="True"
+                                     Visibility="{Binding ResignationState, Converter={converters:ResignationStateToVisibilityConverter}, ConverterParameter='ResignationDoesNotExist'}">
 
-                <materialDesign:PopupBox.ToggleContent>
+                    <materialDesign:PopupBox.ToggleContent>
 
-                    <Border Background="Transparent" 
+                        <Border Background="Transparent" 
                     Padding="10"
                     materialDesign:ShadowAssist.ShadowEdges="None"
                     materialDesign:ShadowAssist.ShadowDepth="Depth0"
                                         BorderBrush="DarkSlateGray"
-                    BorderThickness="0.5"
-                    >
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="EmergencyExit" 
+                    BorderThickness="0.5">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="EmergencyExit" 
                                                                  VerticalAlignment="Center"
                                                                  Foreground="DarkSlateGray"/>
-                            <TextBlock Margin="10 0 0 0" Text="Submit resignation" Foreground="DarkSlateGray"
+                                <TextBlock Margin="10 0 0 0" Text="Submit resignation" Foreground="DarkSlateGray"
                                                    FontSize="12"/>
-                        </StackPanel>
-                    </Border>
+                            </StackPanel>
+                        </Border>
 
-                </materialDesign:PopupBox.ToggleContent>
+                    </materialDesign:PopupBox.ToggleContent>
 
-                <StackPanel Background="Transparent" Margin="10"
+                    <StackPanel Background="Transparent" Margin="10 0 10 0"
                             Width="300"
                             Orientation="Vertical">
 
-                    <DatePicker Grid.Row="5"
+                        <DatePicker 
                                 Margin="5"
                                 materialDesign:HintAssist.Hint="Last Workig Day"
                                 materialDesign:HintAssist.IsFloating="True"
                                 Text="{Binding ResignationNewEntry.LastWorkingDay, Converter={converters:DateTimeToStringConverter}, ConverterParameter=5}"/>
 
-                    <ComboBox Grid.Row="6"
+                        <ComboBox 
                         BorderThickness="0"
                         Margin="5"
                         SelectedValue=""
@@ -78,39 +79,52 @@
                         ItemsSource="{Binding ResignationReasonList}"
                         SelectedItem="{Binding ResignationNewEntry.ReasonForResignation, Mode=TwoWay}"
                         IsSynchronizedWithCurrentItem="True">
-                    </ComboBox>
+                        </ComboBox>
 
-                    <TextBox Grid.Row="7"
-                                    Text="{Binding ResignationNewEntry.TTLink, Mode=TwoWay}"
-                                    Background="Transparent"
-                                    materialDesign:HintAssist.Hint="TT"
-                                    materialDesign:HintAssist.IsFloating="True"
-                                    BorderThickness="0"
-                                    Margin="5"
-                                    TextWrapping="Wrap" />
+                        <Button Padding="4" 
+                            Style="{StaticResource MaterialDesignOutlinedButton}"
+                            HorizontalAlignment="Right"
+                             Background="{DynamicResource CardBackground}" 
+                    materialDesign:ShadowAssist.ShadowEdges="None"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                        BorderThickness="0">
+                            <TextBlock Text="Create TT here" FontStyle="Italic"
+                                 HorizontalAlignment="Right"
+                                   FontSize="12"
+                                   VerticalAlignment="Center"/>
+                        </Button>
 
-                    <Separator Grid.Row="1" BorderBrush="LightGray" BorderThickness="1"
-                               Margin="5"/>
+                        <TextBox 
+                    Text="{Binding ResignationNewEntry.TTLink, Mode=TwoWay}"
+                    Background="Transparent"
+                    materialDesign:HintAssist.Hint="TT"
+                    materialDesign:HintAssist.IsFloating="True"
+                    BorderThickness="0"
+                    Margin="5"
+                    TextWrapping="Wrap" />
 
-                    <Grid>
+                        <Separator Grid.Row="1" BorderBrush="LightGray" BorderThickness="1"
+                               Margin="1"/>
 
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+                        <Grid>
 
-                        <Button Grid.Column="0"
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button Grid.Column="0"
                                 VerticalAlignment="Center"
                                 HorizontalAlignment="Right"
                                 Margin="5 5 0 5"
                             Style="{StaticResource MaterialDesignFlatButton}"
                         Command="{Binding ClearResignationEntryCommand}">
-                            <materialDesign:PackIcon Kind="CancelCircleOutline"
+                                <materialDesign:PackIcon Kind="CancelCircleOutline"
                                                  ToolTip="Clear"
                                                  Foreground="DarkSlateGray"/>
-                        </Button>
+                            </Button>
 
-                        <Button Grid.Column="1"
+                            <Button Grid.Column="1"
                                 Margin="5"
                             Background="Transparent" 
                     materialDesign:ShadowAssist.ShadowEdges="None"
@@ -119,19 +133,64 @@
                     BorderThickness="1"
                                 Command="{Binding SubmitResignationCommand}"
                     >
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="CreateOutline" 
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="CreateOutline" 
                                                                  VerticalAlignment="Center"
                                                                  Foreground="DarkSlateGray"/>
-                                <TextBlock Margin="10 0 0 0" Text="Submit" Foreground="DarkSlateGray"
+                                    <TextBlock Margin="10 0 0 0" Text="Submit" Foreground="DarkSlateGray"
                                                    FontSize="12"/>
-                            </StackPanel>
-                        </Button>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+
+                    </StackPanel>
+
+                </materialDesign:PopupBox>
+
+                <Border Background="Transparent"
+                        Grid.Row="1"
+                        Margin="10 0 0 0"
+                        HorizontalAlignment="Left"
+                        Visibility="{Binding ResignationState, Converter={converters:ResignationStateToVisibilityConverter}, ConverterParameter='DataLoading'}">
+                    <Grid Width="140" Height="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Ellipse x:Name="PART_Ellipse0" Grid.Column="0" Fill="{StaticResource LoaderElipseBackground}"/>
+                        <Ellipse x:Name="PART_Ellipse1" Grid.Column="2" Fill="{StaticResource LoaderElipseBackground}"/>
+                        <Ellipse x:Name="PART_Ellipse2" Grid.Column="4" Fill="{StaticResource LoaderElipseBackground}"/>
+                        <Ellipse x:Name="PART_Ellipse3" Grid.Column="6" Fill="{StaticResource LoaderElipseBackground}"/>
+                        <Ellipse x:Name="PART_Ellipse4" Grid.Column="8" Fill="{StaticResource LoaderElipseBackground}"/>
                     </Grid>
+                    <Border.Resources>
+                        <Style TargetType="Ellipse">
+                            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                            <Setter Property="Width" Value="10"/>
+                            <Setter Property="Height" Value="10"/>
+                            <Setter Property="RenderTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleX="0" ScaleY="0"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Border.Resources>
+                    <Border.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard Storyboard="{StaticResource loader}"/>
+                        </EventTrigger>
+                    </Border.Triggers>
+                </Border>
 
-                </StackPanel>
-
-            </materialDesign:PopupBox>
+            </Grid>
 
             <Button Style="{StaticResource MaterialDesignFlatButton}"
                         Command="{Binding CloseEmployeePreviewCommand}">

@@ -1,6 +1,70 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
+    <Storyboard x:Key="loader" RepeatBehavior="Forever" Duration="0:0:2.400">
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse0" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)">
+            <LinearDoubleKeyFrame KeyTime="0:0:0.000" Value="0"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:0.500" Value="1"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:0.600" Value="1"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:1.100" Value="0"/>
+        </DoubleAnimationUsingKeyFrames>
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse1" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)">
+            <LinearDoubleKeyFrame KeyTime="0:0:0.250" Value="0"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:0.750" Value="1"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:0.850" Value="1"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:1.350" Value="0"/>
+        </DoubleAnimationUsingKeyFrames>
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse2" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)">
+            <LinearDoubleKeyFrame KeyTime="0:0:0.500" Value="0"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:1.000" Value="1"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:1.100" Value="1"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:1.600" Value="0"/>
+        </DoubleAnimationUsingKeyFrames>
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse3" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)">
+            <LinearDoubleKeyFrame KeyTime="0:0:0.750" Value="0"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:1.250" Value="1"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:1.350" Value="1"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:1.850" Value="0"/>
+        </DoubleAnimationUsingKeyFrames>
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse4" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)">
+            <LinearDoubleKeyFrame KeyTime="0:0:1.000" Value="0"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:1.500" Value="1"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:1.600" Value="1"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:2.100" Value="0"/>
+        </DoubleAnimationUsingKeyFrames>
+
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse0" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)">
+            <LinearDoubleKeyFrame KeyTime="0:0:0.000" Value="0"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:0.500" Value="1"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:0.600" Value="1"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:1.100" Value="0"/>
+        </DoubleAnimationUsingKeyFrames>
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse1" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)">
+            <LinearDoubleKeyFrame KeyTime="0:0:0.250" Value="0"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:0.750" Value="1"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:0.850" Value="1"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:1.350" Value="0"/>
+        </DoubleAnimationUsingKeyFrames>
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse2" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)">
+            <LinearDoubleKeyFrame KeyTime="0:0:0.500" Value="0"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:1.000" Value="1"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:1.100" Value="1"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:1.600" Value="0"/>
+        </DoubleAnimationUsingKeyFrames>
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse3" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)">
+            <LinearDoubleKeyFrame KeyTime="0:0:0.750" Value="0"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:1.250" Value="1"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:1.350" Value="1"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:1.850" Value="0"/>
+        </DoubleAnimationUsingKeyFrames>
+        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="PART_Ellipse4" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)">
+            <LinearDoubleKeyFrame KeyTime="0:0:1.000" Value="0"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:1.500" Value="1"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:1.600" Value="1"/>
+            <LinearDoubleKeyFrame KeyTime="0:0:2.100" Value="0"/>
+        </DoubleAnimationUsingKeyFrames>
+    </Storyboard>
+
     <Storyboard x:Key="SanctionOpenDrawer">
         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="sanctionShowDrawerButton">
             <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Hidden}"/>
