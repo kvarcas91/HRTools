@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Domain.DataManager;
 using Domain.IO;
 using Domain.Storage;
 using Domain.Types;
@@ -12,7 +13,9 @@ namespace Domain.Repository
     public abstract class BaseRepository
     {
 
-        internal bool Execute(string query)
+        private const string NAME = nameof(BaseRepository);
+
+        internal Response Execute(string query)
         {
             var connection = OpenConnection();
             var transaction = connection.BeginTransaction();
@@ -21,17 +24,49 @@ namespace Domain.Repository
             {
                 IEnumerable<dynamic> results = connection.Query(query, transaction: transaction);
                 transaction.Commit();
-                return results != null;
+                CacheManager.ResetTimer();
+                var output = results != null;
+                return new Response { Success = output, Message = output ? "" : "Failed to execute action" };
             }
-            catch
+            catch (Exception e)
             {
-                return false;
+                LoggerManager.Log($"{NAME}.Execute",e.Message);
+                return new Response { Success = false, Message = e.Message };
             }
             finally
             {
                 transaction.Dispose();
                 CloseConnection(connection);
             }
+
+        }
+
+        internal Task<Response> ExecuteAsync(string query)
+        {
+            return Task.Run(() =>
+            {
+                var connection = OpenConnection();
+                var transaction = connection.BeginTransaction();
+
+                try
+                {
+                    IEnumerable<dynamic> results = connection.Query(query, transaction: transaction);
+                    transaction.Commit();
+                    CacheManager.ResetTimer();
+                    var output = results != null;
+                    return new Response { Success = output, Message = output ? "" : "Failed to execute action" };
+                }
+                catch (Exception e)
+                {
+                    LoggerManager.Log($"{NAME}.ExecuteAsync", e.Message);
+                    return new Response { Success = false, Message = e.Message };
+                }
+                finally
+                {
+                    transaction.Dispose();
+                    CloseConnection(connection);
+                }
+            });
 
         }
 
@@ -43,8 +78,9 @@ namespace Domain.Repository
                 var output = connection.QueryFirstOrDefault<T>(query);
                 return output;
             }
-            catch 
+            catch (Exception e)
             {
+                LoggerManager.Log($"{NAME}.ExecuteGetScalar<T>", e.Message);
                 return default; 
             }
             finally
@@ -61,8 +97,9 @@ namespace Domain.Repository
                 var output = connection.QueryFirstOrDefault<T>(query);
                 return output;
             }
-            catch 
+            catch (Exception e)
             {
+                LoggerManager.Log($"{NAME}.GetCachedScalar<T>", e.Message);
                 return default; 
             }
             finally
@@ -79,41 +116,15 @@ namespace Domain.Repository
                 var output = connection.Query<T>(query);
                 return output;
             }
-            catch 
+            catch (Exception e)
             {
+                LoggerManager.Log($"{NAME}.GetCached<T>", e.Message);
                 return default; 
             }
             finally
             {
                 CloseConnection(connection);
             }
-        }
-
-        internal Task<bool> ExecuteAsync(string query)
-        {
-            return Task.Run(() =>
-            {
-                var connection = OpenConnection();
-                var transaction = connection.BeginTransaction();
-
-                try
-                {
-                    IEnumerable<dynamic> results = connection.Query(query, transaction: transaction);
-                    transaction.Commit();
-                    CacheManager.ResetTimer();
-                    return results != null;
-                }
-                catch (Exception e)
-                {
-                    return false;
-                }
-                finally
-                {
-                    transaction.Dispose();
-                    CloseConnection(connection);
-                }
-            });
-
         }
 
         internal Task<T> GetScalarAsync<T>(string query)
@@ -126,8 +137,9 @@ namespace Domain.Repository
                     var output = connection.QueryFirstOrDefault<T>(query);
                     return output;
                 }
-                catch
+                catch (Exception e)
                 {
+                    LoggerManager.Log($"{NAME}.GetScalarAsync<T>", e.Message);
                     return default;
                 }
                 finally
@@ -153,8 +165,9 @@ namespace Domain.Repository
                     var output = connection.QueryFirstOrDefault<T>(query);
                     return output;
                 }
-                catch
+                catch (Exception e)
                 {
+                    LoggerManager.Log($"{NAME}.GetCachedScalarAsync<T>", e.Message);
                     return default;
                 }
                 finally
@@ -178,8 +191,9 @@ namespace Domain.Repository
                     var output = connection.Query<T>(query);
                     return output;
                 }
-                catch
+                catch (Exception e)
                 {
+                    LoggerManager.Log($"{NAME}.GetCachedAsync<T>", e.Message);
                     return default;
                 }
                 finally
@@ -209,7 +223,10 @@ namespace Domain.Repository
             {
                 if (connection.State == System.Data.ConnectionState.Closed) connection.Open();
             }
-            catch { }
+            catch (Exception e) 
+            {
+                LoggerManager.Log($"{NAME}.GetCachedConnection", e.Message);
+            }
             return connection;
         }
 
@@ -247,8 +264,9 @@ namespace Domain.Repository
                 SQLiteConnection.CreateFile(path);
                 return true;
             }
-            catch
+            catch (Exception e)
             {
+                LoggerManager.Log($"{NAME}.CreateDbFile", e.Message);
                 return false;
             }
         }

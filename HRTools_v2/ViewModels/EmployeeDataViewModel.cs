@@ -354,7 +354,7 @@ namespace HRTools_v2.ViewModels
 
             ResignationState = ResignationWidgetState.ResignationExists;
             ResignationState |= ResignationWidgetState.DataLoading;
-
+`
         }
 
         private async void CancelResignation()

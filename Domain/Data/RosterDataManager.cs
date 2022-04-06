@@ -1,7 +1,4 @@
-﻿using CsvHelper;
-using CsvHelper.Configuration;
-using Domain.Converters;
-using Domain.Interfaces;
+﻿using Domain.Interfaces;
 using Domain.Models;
 using Domain.Storage;
 using System;
@@ -22,13 +19,10 @@ namespace Domain.Data
 
         public Task<IList<Roster>> GetWebRosterAsync(IWebStream dataStream, string rosterUrl)
         {
-            string site = DataStorage.AppSettings.SiteID;
-
-            string siteUrl = rosterUrl.Replace("{site}", site);
 
             return Task.Run(() =>
             {
-                return dataStream.Get<Roster>(siteUrl, RegisterRosterMap);
+                return dataStream.Get(rosterUrl, RequiredRosterHeaders(), CreateRosterObject);
             });
         }
 
@@ -53,15 +47,14 @@ namespace Domain.Data
 
                 if (map["EmploymentStartDate"] >= 0)
                 {
-                    try
-                    {
-                        employee.EmploymentStartDate = DateTime.Parse(fields[map["EmploymentStartDate"]]);
-                    }
-                    catch
+                    if (fields[map["EmploymentStartDate"]].Contains("UTC"))
                     {
                         DateTime.TryParseExact(fields[map["EmploymentStartDate"]], DataStorage.AppSettings.RosterWebDateFormat, null, System.Globalization.DateTimeStyles.None, out DateTime date);
                         employee.EmploymentStartDate = date;
-                        throw;
+                    }
+                    else
+                    {
+                         employee.EmploymentStartDate = DateTime.Parse(fields[map["EmploymentStartDate"]]);
                     }
                 }
 
@@ -83,26 +76,6 @@ namespace Domain.Data
         public string[] RequiredRosterHeaders()
         {
             return new string[] { "EmployeeID", "UserID", "EmployeeName", "DepartmentID", "EmploymentStartDate", "EmploymentType", "ManagerName", "TempAgencyCode", "JobTitle", "ManagementAreaID", "ShiftPattern" };
-        }
-
-        private void RegisterRosterMap(CsvReader csv) => csv.Context.RegisterClassMap<RosterMap>();
-
-        public sealed class RosterMap : ClassMap<Roster>
-        {
-            public RosterMap()
-            {
-                Map(m => m.EmployeeID).Name("Employee ID");
-                Map(m => m.UserID).Name("User ID");
-                Map(m => m.EmployeeName).Name("Employee Name");
-                Map(m => m.DepartmentID).Name("Department ID");
-                Map(m => m.EmploymentStartDate).Name("Employment Start Date").TypeConverter<DateConverter<Roster>>();
-                Map(m => m.EmploymentType).Name("Employment Type");
-                Map(m => m.ManagerName).Name("Manager Name");
-                Map(m => m.AgencyCode).Name("Temp Agency Code");
-                Map(m => m.JobTitle).Name("Job Title");
-                Map(m => m.FCLM).Name("Management Area ID");
-                Map(m => m.ShiftPattern).Name("Shift Pattern");
-            }
         }
     }
 }

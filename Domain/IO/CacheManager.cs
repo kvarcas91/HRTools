@@ -36,6 +36,8 @@ namespace Domain.IO
 
         public static void ResetTimer()
         {
+            if (_timer is null) return;
+
             _timer.Stop();
             Update(null, null);
             _timer.Start();
@@ -44,7 +46,6 @@ namespace Domain.IO
         private static async void Update(object source, ElapsedEventArgs e)
         {
             CacheState = CacheState.InProgress;
-            Console.WriteLine("Check Cache");
             var fromFileInfo = FileHelper.GetLastWriteTime(MoveFrom);
             var toFileInfo = FileHelper.GetLastWriteTime(MoveTo);
             if (fromFileInfo.Equals(toFileInfo))
@@ -52,9 +53,6 @@ namespace Domain.IO
                 CacheState = CacheState.Stable;
                 return;
             }
-            Console.WriteLine("Update Cache");
-
-            
 
             if (_loader != null) _loader.Invoke(true);
             await FileHelper.CopyAndReplaceFileAsync(MoveFrom, MoveTo);

@@ -18,12 +18,12 @@ namespace Domain.Repository
             string query = $@"SELECT (SELECT COUNT(*) FROM awal) as 'TotalAWALCount', 
                                      (SELECT COUNT(*) FROM awal where awalStatus = '{(int)AwalStatus.Active}') as 'OpenAWALCount', 
                                      (SELECT COUNT(*) FROM resignations) as 'TotalResignationsCount',
-                                     (SELECT COUNT(*) FROM meetings where superseded = '0') as 'TotalERMeetingsCount',
+                                     (SELECT COUNT(*) FROM meetings) as 'TotalERMeetingsCount',
                                      (SELECT COUNT(*) FROM meetings where meetingStatus in ('{CaseStatus.Open}','{CaseStatus.Pending}')) as 'OpenERMeetingsCount',
                                      (SELECT COUNT(*) FROM custom_meetings) as 'TotalMeetingsCount',
                                      (SELECT COUNT(*) FROM custom_meetings where meetingStatus in ('{CaseStatus.Open}','{CaseStatus.Pending}')) as 'OpenMeetingsCount',
-                                     (SELECT COUNT(*) FROM sanctions where sanction <> 'NFA' AND overriden = '0') as TotalSanctionsCount,
-                                     (SELECT COUNT(*) FROM sanctions where sanction <> 'NFA'  AND overriden = '0' AND sanctionEndDate > '{DateTime.Now.ToString(DataStorage.ShortDBDateFormat)}%') as OpenSanctionsCount;";
+                                     (SELECT COUNT(*) FROM sanctions where sanction <> 'NFA') as TotalSanctionsCount,
+                                     (SELECT COUNT(*) FROM sanctions where sanction <> 'NFA' AND sanctionEndDate > '{DateTime.Now.ToString(DataStorage.ShortDBDateFormat)}%') as OpenSanctionsCount;";
             return GetCachedScalarAsync<DataPreview>(query);
         }
 
@@ -53,22 +53,29 @@ namespace Domain.Repository
             });
         }
 
-        public  Task<bool> UpdateEmployeeStatusAsync (EmploymentStatus status, string emplId)
+        public  Task<Response> UpdateEmployeeStatusAsync (EmploymentStatus status, string emplId)
         {
             return Task.Run(async () =>
             {
                 string query = "";
-                Suspension? susp = await GetCachedScalarAsync<Suspension>($"SELECT * from suspensions WHERE employeeID = '{emplId}';");
+                var timelineEntry = new Timeline().Create(emplId);
+                string timelineQuery = string.Empty;
+
+                Suspension? susp = GetCachedScalar<Suspension>($"SELECT * from suspensions WHERE employeeID = '{emplId}';");
                 switch (status)
                 {
                     case EmploymentStatus.Active:
                         
-                        if (susp is null || !string.IsNullOrEmpty(susp.GetValueOrDefault().SuspensionRemovedBy)) return false;
+                        if (susp is null || !string.IsNullOrEmpty(susp.GetValueOrDefault().SuspensionRemovedBy)) return new Response { Success = false };
 
                         var updatableSuspension = susp.GetValueOrDefault().SetResolver();
-                        
-                        query = $"UPDATE suspensions SET suspensionRemovedBy = '{updatableSuspension.SuspensionRemovedBy}', suspensionRemovedAt = '{updatableSuspension.SuspensionRemovedAt.ToString(DataStorage.LongDBDateFormat)}' WHERE id = '{updatableSuspension.ID}';";
+
+                        timelineEntry.EventMessage = $"AA has been activated by {Environment.UserName}";
+                        timelineQuery = $"INSERT INTO timeline {timelineEntry.GetHeader()} VALUES {timelineEntry.GetValues()};";
+
+                        query = $"UPDATE suspensions SET suspensionRemovedBy = '{updatableSuspension.SuspensionRemovedBy}', suspensionRemovedAt = '{updatableSuspension.SuspensionRemovedAt.ToString(DataStorage.LongDBDateFormat)}' WHERE id = '{updatableSuspension.ID}'; {timelineQuery}";
                         return await ExecuteAsync(query);
+
                     case EmploymentStatus.Suspended:
                         var sSquery = string.Empty;
 
@@ -82,48 +89,29 @@ namespace Domain.Repository
                             var s = new Suspension().SetId().SetCreator().SetEmployeeId(emplId);
                             query = $"INSERT INTO suspensions (id,employeeID,createdAt,createdBy,suspensionRemovedAt) VALUES ('{s.ID}', '{s.EmployeeID}', '{s.CreatedAt.ToString(DataStorage.LongDBDateFormat)}', '{s.CreatedBy}', '{s.SuspensionRemovedAt.ToString(DataStorage.LongDBDateFormat)}');";
                         }
-                        
-                        return await ExecuteAsync(query);
+
+                        timelineEntry.EventMessage = $"AA has been suspended by {Environment.UserName}";
+                        timelineQuery = $"INSERT INTO timeline {timelineEntry.GetHeader()} VALUES {timelineEntry.GetValues()}; {timelineQuery}";
+                        return await ExecuteAsync($"{query} {timelineQuery}");
                     default:
-                        return false;
+                        return new Response { Success = false };
                 }
             });
         }
 
         public Task<EmployeeDataPreview> GetEmployeePreviewAsync(string emplId)
         {
-            return Task.Run(() =>
-            {
-                string query = $@"SELECT (SELECT COUNT(*) FROM awal WHERE employeeID = '{emplId}') as 'TotalAWALCount',
+            string query = $@"SELECT (SELECT COUNT(*) FROM awal WHERE employeeID = '{emplId}') as 'TotalAWALCount',
                                      (SELECT COUNT(*) FROM meetings WHERE employeeID = '{emplId}') as 'TotalERMeetingsCount',
                                      (SELECT COUNT(*) FROM custom_meetings WHERE claimantID = '{emplId}' OR respondentID = '{emplId}') as 'TotalMeetingsCount',
                                      (SELECT COUNT(*) FROM sanctions where employeeID = '{emplId}') as TotalSanctionsCount;";
-                return GetCachedScalarAsync<EmployeeDataPreview>(query);
-            });
+            return GetCachedScalarAsync<EmployeeDataPreview>(query);
         }
 
-        public Task<List<EmployeeSummary>> GetTimelineAsync(string emplId)
+        public Task<IEnumerable<Timeline>> GetTimelineAsync(string emplId)
         {
-            List<EmployeeSummary> list = new List<EmployeeSummary>();
-
-            return Task.Run(() =>
-            {
-                var sanctionList = GetCached<SanctionEntity>($"SELECT * FROM sanctions where employeeID = '{emplId}'").ToList();
-                foreach (var item in sanctionList)
-                {
-                    list.AddRange(item.GetSummary());
-                }
-
-                var awalList = GetCached<AwalEntity>($"SELECT * FROM awal where employeeID = '{emplId}'").ToList();
-                foreach (var item in awalList)
-                {
-                    list.AddRange(item.GetSummary());
-                }
-
-                return list.OrderByDescending(x => x.Date).ToList();
-            });
-
-            
+            var query = $"SELECT * FROM timeline WHERE employeeID = '{emplId}' ORDER BY createdAt DESC";
+            return GetCachedAsync<Timeline>(query);
         }
     }
 }

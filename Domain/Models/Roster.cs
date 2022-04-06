@@ -54,8 +54,19 @@ namespace Domain.Models
 
         public bool HasValue(string key)
         {
-            return !string.IsNullOrEmpty(key) && (EmployeeID.ToUpper().Contains(key.ToUpper()) || UserID.ToUpper().Contains(key.ToUpper()) || EmployeeName.ToUpper().Contains(key.ToUpper()) ||
-                ManagerName.ToUpper().Contains(key.ToUpper())|| JobTitle.ToUpper().Contains(key.ToUpper()) || ShiftPattern.ToUpper().Contains(key.ToUpper()));
+            if (string.IsNullOrEmpty(key)) return false;
+            bool hasValue = false;
+
+            
+            var arr = key.Trim().Split(new char[] {' '});
+
+            foreach (var item in arr)
+            {
+                hasValue |= EmployeeID.Contains(item) || UserID.ToUpper().Contains(item.ToUpper()) || EmployeeName.ToUpper().Contains(item.ToUpper()) || DepartmentID.Contains(item) ||
+                    ManagerName.ToUpper().Contains(item.ToUpper()) || JobTitle.ToUpper().Contains(item.ToUpper()) || ShiftPattern.ToUpper().Contains(item.ToUpper());
+            }
+
+            return hasValue;
         }
 
         public string GetHeader()

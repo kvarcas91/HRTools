@@ -1,4 +1,6 @@
-﻿using Domain.Interfaces;
+﻿using Domain.DataManager;
+using Domain.Interfaces;
+using Domain.Types;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -53,13 +55,14 @@ namespace Domain.Data
                 foreach (T item in _list)
                 {
                     if (item.HasValue(lookupValue)) output.Add(item);
+                    
                 }
 
                 _searchIteration = 0;
                 IsSearching = false;
+
                 return output;
             });
-
         }
     }
 }

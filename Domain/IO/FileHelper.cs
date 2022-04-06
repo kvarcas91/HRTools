@@ -1,4 +1,5 @@
-﻿using Domain.Repository;
+﻿using Domain.DataManager;
+using Domain.Repository;
 using Domain.Storage;
 using System;
 using System.Diagnostics;
@@ -9,6 +10,8 @@ namespace Domain.IO
 {
     public static class FileHelper
     {
+        private const string NAME = nameof(FileHelper);
+
         public static string VerifyCSV(string data)
         {
             if (string.IsNullOrEmpty(data)) return string.Empty;
@@ -94,7 +97,11 @@ namespace Domain.IO
                     File.Copy(from, to);
                     return true;
                 }
-                catch { return false; }
+                catch (Exception e) 
+                {
+                    LoggerManager.Log($"{NAME}.CopyFileAsync", e.Message);
+                    return false; 
+                }
                 
             });
         }
@@ -113,7 +120,11 @@ namespace Domain.IO
                     
                     return true;
                 }
-                catch (Exception e) { return false; }
+                catch (Exception e) 
+                {
+                    LoggerManager.Log($"{NAME}.CopyAndReplaceFileAsync", e.Message);
+                    return false; 
+                }
 
             });
         }

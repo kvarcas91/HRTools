@@ -1,4 +1,6 @@
-﻿namespace Domain.Repository
+﻿using Domain.Types;
+
+namespace Domain.Repository
 {
     public class RepositoryHelper : BaseRepository
     {
@@ -10,11 +12,10 @@
                             userID TEXT,
                             employeeName TEXT,
                             departmentID TEXT,
-                            employmentStartDate TEXT NOT NULL,
+                            employmentStartDate TEXT,
                             employmentType TEXT,
                             managerName TEXT,
                             shiftPattern TEXT,
-                            tenureInDays INTEGER,
                             probationStatus INTEGER,
                             awalStatus INTEGER,
                             firstNCNSDate TEXT NOT NULL,
@@ -34,32 +35,137 @@
                             bridgeCreatedAt TEXT
                             );
 
-                            CREATE table sanctions(
-                            
+                            CREATE table timeline (
+                            employeeID TEXT NOT NULL,
+                            createdBy TEXT,
+                            createdAt TEXT,
+                            eventMessage TEXT
                             );
 
-                            CREATE table suspensions(
-                            
+                            CREATE table sanctions (
+                            id TEXT NOT NULL PRIMARY KEY,
+                            employeeID TEXT NOT NULL,
+                            userID text,
+                            employeeName TEXT,
+                            shift TEXT,
+                            manager TEXT,
+                            sanction TEXT,
+                            sanctionStartDate TEXT,
+                            sanctionEndDate TEXT,
+                            createdBy TEXT,
+                            createdAt TEXT,
+                            meetingType TEXT,
+                            overriden BOOLEAN NOT NULL Check (overriden IN (0, 1)),
+                            overridenBy TEXT,
+                            overridenAt TEXT
                             );
 
-                            CREATE table resignations(
-                            
+                            CREATE table suspensions (
+                            id TEXT NOT NULL PRIMARY KEY,
+                            employeeID TEXT NOT NULL,
+                            createdAt TEXT,
+                            createdBy TEXT,
+                            suspensionRemovedAt TEXT,
+                            suspensionRemovedBy TEXT
                             );
 
-                            CREATE table meetings(
-                            
+                            CREATE table resignations (
+                            id TEXT NOT NULL PRIMARY KEY,
+                            employeeID TEXT NOT NULL,
+                            userID TEXT,
+                            name TEXT,
+                            manager TEXT,
+                            shift TEXT,
+                            lastWorkingDay TEXT,
+                            ttLink TEXT,
+                            createdBy TEXT,
+                            createdAt TEXT,
+                            reasonForResignation TEXT
                             );
 
-                            CREATE table custom_meetings(
-                            
+                            CREATE table meetings (
+                            id TEXT NOT NULL PRIMARY KEY,
+                            employeeID TEXT NOT NULL,
+                            userID TEXT,
+                            employeeName TEXT,
+                            manager TEXT,
+                            shift TEXT,
+                            departmentID TEXT,
+                            meetingType TEXT TEXT,
+                            firstMeetingDate TEXT,
+                            firstMeetingOwner TEXT,
+                            firstMeetingOutcome TEXT,
+                            secondMeetingDate TEXT,
+                            secondMeetingOwner TEXT,
+                            secondMeetingOutcome TEXT,
+                            createdAt TEXT,
+                            createdBy TEXT,
+                            updatedAt TEXT,
+                            updatedBy TEXT,
+                            meetingStatus TEXT,
+                            isERCaseStatusOpen TEXT,
+                            paperless TEXT
                             );
 
-                            CREATE table comments(
-                            
+                            CREATE table custom_meetings (
+                            id TEXT NOT NULL PRIMARY KEY,
+                            createdAt TEXT,
+                            createdBy TEXT,
+                            updatedAt TEXT,
+                            updatedBy TEXT,
+                            closedAt TEXT,
+                            closedBy TEXT,
+                            meetingStatus TEXT,
+                            exactCaseID TEXT,
+                            meetingType TEXT,
+                            claimantID TEXT,
+                            claimantName TEXT,
+                            claimantManager TEXT,
+                            claimantUserID TEXT,
+                            claimantDepartment TEXT,
+                            claimantShift TEXT,
+                            claimantEmploymentStartDate TEXT,
+                            respondentID TEXT,
+                            respondentName TEXT,
+                            respondentManager TEXT,
+                            respondentUserID TEXT,
+                            respondentDepartment TEXT,
+                            respondentShift TEXT,
+                            respondentEmploymentStartDate TEXT,
+                            firstMeetingDate TEXT,
+                            firstMeetingOwner TEXT,
+                            firstMeetingHRSupport TEXT,
+                            firstMeetingOutcome TEXT,
+                            secondMeetingDate TEXT,
+                            secondMeetingOwner TEXT,
+                            secondMeetingHRSupport TEXT,
+                            secondMeetingOutcome TEXT,
+                            paperless BOOLEAN NOT NULL Check (paperless IN (0, 1)),
+                            isSuspended BOOLEAN NOT NULL Check (isSuspended IN (0, 1)),
+                            isUnionPresent BOOLEAN NOT NULL Check (isUnionPresent IN (0, 1)),
+                            isWIMRaised BOOLEAN NOT NULL Check (isWIMRaised IN (0, 1))
                             );
 
-                            CREATE table tasks(
-                            
+                            CREATE table comments (
+                            id TEXT NOT NULL PRIMARY KEY,
+                            employeeID TEXT NOT NULL,
+                            commentID TEXT,
+                            createdAt TEXT,
+                            createdBy TEXT,
+                            content TEXT
+                            );
+
+                            CREATE table tasks (
+                            id TEXT NOT NULL PRIMARY KEY,
+                            employeeID TEXT NOT NULL,
+                            taskID TEXT,
+                            createdAt TEXT,
+                            createdBy TEXT,
+                            content TEXT,
+                            isCompleted BOOLEAN NOT NULL Check (isCompleted IN (0, 1)),
+                            taskDueDate TEXT,
+                            completedBy TEXT,
+                            completedAt
                             );";
             return query;
         }
@@ -71,7 +177,7 @@
 
             string tableQuery = GetDbInitQuery();
 
-            return Execute(tableQuery);
+            return Execute(tableQuery).Success;
         }
 
         public bool CheckDbHealth()

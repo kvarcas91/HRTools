@@ -33,7 +33,6 @@ namespace Domain.IO
 
                 while (!csvParser.EndOfData)
                 {
-
                     string[] fields = csvParser.ReadFields();
                     var results = createNewObj(fields, map);
                     if (results != null) outputList.Add(results);

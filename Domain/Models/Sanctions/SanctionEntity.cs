@@ -53,33 +53,6 @@ namespace Domain.Models.Sanctions
             return this;
         }
 
-        public IEnumerable<EmployeeSummary> GetSummary()
-        {
-            List<EmployeeSummary> list = new List<EmployeeSummary>();
-
-            string overridenMessage = Overriden ? $"{Sanction} has been overriden by {OverridenBy} on {OverridenAt}" : "";
-            DateTime sanctionEndDate = SanctionManager.GetSanctionEndDate(this);
-            string conjuction = sanctionEndDate > DateTime.Now ? "is" : "was";
-            string nfaMessage = Sanction.Equals("NFA") ? "" : $"and {conjuction} active until {sanctionEndDate.ToString(DataStorage.ShortPreviewDateFormat)}";
-
-            list.Add(new EmployeeSummary
-            {
-                Date = CreatedAt,
-                Event = $"{Sanction} has been recorded by {CreatedBy} {nfaMessage}"
-            });
-
-            if (Overriden)
-            {
-                list.Add(new EmployeeSummary
-                {
-                    Date = OverridenAt,
-                    Event = $"{overridenMessage}"
-                });
-            }
-
-            return list;
-        }
-
         internal string GetDbInsertHeader()
         {
             return @"(id, employeeID, userID, employeeName, shift, manager, sanction, sanctionStartDate, sanctionEndDate, createdBy, createdAt, 

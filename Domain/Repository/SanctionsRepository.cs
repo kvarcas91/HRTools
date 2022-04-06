@@ -1,6 +1,8 @@
 ﻿using Domain.DataManager;
+using Domain.Models;
 using Domain.Models.Sanctions;
 using Domain.Storage;
+using Domain.Types;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -38,10 +40,15 @@ namespace Domain.Repository
 
                 var overrideDate = DateTime.Now;
 
+                var timelineEntry = new Timeline().Create(sanct.EmployeeID);
+                timelineEntry.EventMessage = $"{sanct.Sanction} has been overriden by {Environment.UserName}";
+                var timelineQuery = $"INSERT INTO timeline {timelineEntry.GetHeader()} VALUES {timelineEntry.GetValues()};";
+
                 string query = $@"UPDATE sanctions SET sanctionEndDate = '{DateTime.Now.ToString(DataStorage.ShortDBDateFormat)}', overriden = '{1}', overridenBy = '{Environment.UserName}', 
-                                overridenAt = '{overrideDate.ToString(DataStorage.LongDBDateFormat)}' WHERE id ='{sanction.ID}';";
+                                overridenAt = '{overrideDate.ToString(DataStorage.LongDBDateFormat)}' WHERE id ='{sanction.ID}'; {timelineQuery}";
                 var response = Execute(query);
-                if (response)
+
+                if (response.Success)
                 {
                     sanct.OverridenAt = overrideDate;
                     sanct.SanctionEndDate = DateTime.Now;
@@ -61,11 +68,16 @@ namespace Domain.Repository
                 if (!CanModify(sanction)) return sanct;
 
                 var sanctionEndDate = SanctionManager.GetSanctionEndDate(sanction.Sanction, sanction.SanctionStartDate);
+                if (sanctionEndDate.Equals(sanct.SanctionEndDate)) return sanct;
+
+                var timelineEntry = new Timeline().Create(sanct.EmployeeID);
+                timelineEntry.EventMessage = $"{sanct.Sanction} has been re-issued by {Environment.UserName}";
+                var timelineQuery = $"INSERT INTO timeline {timelineEntry.GetHeader()} VALUES {timelineEntry.GetValues()};";
 
                 string query = $@"UPDATE sanctions SET sanctionEndDate = '{sanctionEndDate.ToString(DataStorage.ShortDBDateFormat)}', overriden = '{0}', overridenBy = '', 
-                                overridenAt = '{DateTime.MinValue.ToString(DataStorage.LongDBDateFormat)}' WHERE id ='{sanction.ID}';";
+                                overridenAt = '{DateTime.MinValue.ToString(DataStorage.LongDBDateFormat)}' WHERE id ='{sanction.ID}'; {timelineQuery}";
                 var response = Execute(query);
-                if (response)
+                if (response.Success)
                 {
                     sanct.OverridenAt = DateTime.MinValue;
                     sanct.SanctionEndDate = sanctionEndDate;
@@ -76,9 +88,13 @@ namespace Domain.Repository
             });
         }
 
-        public Task<bool> InsertAsync(SanctionEntity sanction)
+        public Task<Response> InsertAsync(SanctionEntity sanction)
         {
-            string query = $@"INSERT INTO sanctions {sanction.GetDbInsertHeader()} VALUES {sanction.GetDbInsertValues()};";
+            var timelineEntry = new Timeline().Create(sanction.EmployeeID);
+            timelineEntry.EventMessage = $"{sanction.Sanction} has been recorded by {Environment.UserName} and is active until {sanction.SanctionEndDate.ToString(DataStorage.ShortPreviewDateFormat)}";
+            var timelineQuery = $"INSERT INTO timeline {timelineEntry.GetHeader()} VALUES {timelineEntry.GetValues()};";
+
+            string query = $@"INSERT INTO sanctions {sanction.GetDbInsertHeader()} VALUES {sanction.GetDbInsertValues()}; {timelineQuery}";
             return ExecuteAsync(query);
         }
 
