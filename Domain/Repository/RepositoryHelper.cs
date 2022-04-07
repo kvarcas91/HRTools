@@ -2,7 +2,7 @@
 
 namespace Domain.Repository
 {
-    public class RepositoryHelper : BaseRepository
+    public sealed class RepositoryHelper : BaseRepository
     {
         public string GetDbInitQuery()
         {
@@ -13,16 +13,14 @@ namespace Domain.Repository
                             employeeName TEXT,
                             departmentID TEXT,
                             employmentStartDate TEXT,
-                            employmentType TEXT,
                             managerName TEXT,
                             shiftPattern TEXT,
-                            probationStatus INTEGER,
                             awalStatus INTEGER,
                             firstNCNSDate TEXT NOT NULL,
                             awal1SentDate TEXT,
                             awal2SentDate TEXT,
                             disciplinaryDate TEXT,
-                            outcome INTEGER,
+                            outcome TEXT,
                             ukPendingEndDate TEXT,
                             createdBy TEXT NOT NULL,
                             createdAt TEXT NOT NULL,

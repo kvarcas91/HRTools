@@ -1,5 +1,4 @@
 ﻿using Domain.Models;
-using Domain.Models.AWAL;
 using Domain.Models.DataSnips;
 using Domain.Models.Sanctions;
 using Domain.Storage;
@@ -11,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Repository
 {
-    public class PreviewRepository : BaseRepository
+    public sealed class PreviewRepository : BaseRepository
     {
         public Task<DataPreview> GetPreviewAsync()
         {

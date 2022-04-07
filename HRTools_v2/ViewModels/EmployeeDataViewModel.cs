@@ -18,6 +18,7 @@ using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace HRTools_v2.ViewModels
 {
@@ -60,20 +61,6 @@ namespace HRTools_v2.ViewModels
             set { SetProperty(ref _employeeLiveSanctions, value); }
         }
 
-        private ObservableCollection<SanctionEntity> _sanctionsList;
-        public ObservableCollection<SanctionEntity> SanctionsList
-        {
-            get { return _sanctionsList; }
-            set { SetProperty(ref _sanctionsList, value); }
-        }
-
-        private ObservableCollection<AwalEntity> _awalList;
-        public ObservableCollection<AwalEntity> AwalList
-        {
-            get { return _awalList; }
-            set { SetProperty(ref _awalList, value); }
-        }
-
         private ObservableCollection<Timeline> _timeline;
         public ObservableCollection<Timeline> Timeline
         {
@@ -109,14 +96,39 @@ namespace HRTools_v2.ViewModels
             set { SetProperty(ref _widgedState, value); }
         }
 
+        #region Awal
+
+        private ObservableCollection<AwalEntity> _awalList;
+        public ObservableCollection<AwalEntity> AwalList
+        {
+            get { return _awalList; }
+            set { SetProperty(ref _awalList, value); }
+        }
+
+        private bool _isOnAwal;
+        public bool IsOnAwal
+        {
+            get => _isOnAwal;
+            set { SetProperty(ref _isOnAwal, value); }
+        }
+
+        #endregion
+
+        #region Sanction Props
+
+        private ObservableCollection<SanctionEntity> _sanctionsList;
+        public ObservableCollection<SanctionEntity> SanctionsList
+        {
+            get { return _sanctionsList; }
+            set { SetProperty(ref _sanctionsList, value); }
+        }
+
         private SanctionWidgetState _sanctionState;
         public SanctionWidgetState SanctionState
         {
             get => _sanctionState;
             set { SetProperty(ref _sanctionState, value); }
         }
-
-        #region Sanction Props
 
         private List<string> _sanctionList;
         public List<string> SanctionList
@@ -170,14 +182,14 @@ namespace HRTools_v2.ViewModels
 
         #region Data List Count Properties
 
-        private bool _hasSanctionData = true;
+        private bool _hasSanctionData;
         public bool HasSanctionData
         {
             get => _hasSanctionData;
             set { SetProperty(ref _hasSanctionData, value); }
         }
 
-        private bool _hasAwalData = true;
+        private bool _hasAwalData;
         public bool HasAwalData
         {
             get => _hasAwalData;
@@ -190,11 +202,20 @@ namespace HRTools_v2.ViewModels
 
         #region Delegates
 
+        #region Empl
+
         private DelegateCommand _closeEmployeePreviewCommand = null;
         public DelegateCommand CloseEmployeePreviewCommand => _closeEmployeePreviewCommand ?? (_closeEmployeePreviewCommand = new DelegateCommand(CloseEmployeePreview));
 
         private DelegateCommand _refreshEmployeeDataCommand = null;
         public DelegateCommand RefreshEmployeeDataCommand => _refreshEmployeeDataCommand ?? (_refreshEmployeeDataCommand = new DelegateCommand(RefreshEmployeeData));
+
+        private DelegateCommand<string> _changeEmployeeStatusCommand = null;
+        public DelegateCommand<string> ChangeEmployeeStatusCommand => _changeEmployeeStatusCommand ?? (_changeEmployeeStatusCommand = new DelegateCommand<string>(ChangeEmploymentStatus));
+
+        #endregion
+
+        #region Resignation
 
         private DelegateCommand _clearResignationEntryCommand = null;
         public DelegateCommand ClearResignationEntryCommand => _clearResignationEntryCommand ?? (_clearResignationEntryCommand = new DelegateCommand(() => ResignationNewEntry = new ResignationEntry()));
@@ -211,20 +232,28 @@ namespace HRTools_v2.ViewModels
         private DelegateCommand _openResignationQuicklinkCommand = null;
         public DelegateCommand OpenResignationQuicklinkCommand => _openResignationQuicklinkCommand ?? (_openResignationQuicklinkCommand = new DelegateCommand(OpenResignationQuicklink));
 
-        private DelegateCommand<string> _changeEmployeeStatusCommand = null;
-        public DelegateCommand<string> ChangeEmployeeStatusCommand => _changeEmployeeStatusCommand ?? (_changeEmployeeStatusCommand = new DelegateCommand<string>(ChangeEmploymentStatus));
+        #endregion
+
+        #region Sanction
 
         private DelegateCommand _addSanctionCommand = null;
         public DelegateCommand AddSanctionCommand => _addSanctionCommand ?? (_addSanctionCommand = new DelegateCommand(AddSanction));
-
-        private DelegateCommand _addAwalCommand = null;
-        public DelegateCommand AddAwalCommand => _addAwalCommand ?? (_addAwalCommand = new DelegateCommand(AddAwal));
 
         private DelegateCommand<SanctionEntity?> _onSanctionOverrideCommand = null;
         public DelegateCommand<SanctionEntity?> OnSanctionOverrideCommand => _onSanctionOverrideCommand ?? (_onSanctionOverrideCommand = new DelegateCommand<SanctionEntity?>(OnSanctionOverride));
 
         private DelegateCommand<SanctionEntity?> _onSanctionReissueCommand = null;
         public DelegateCommand<SanctionEntity?> OnSanctionReissueCommand => _onSanctionReissueCommand ?? (_onSanctionReissueCommand = new DelegateCommand<SanctionEntity?>(OnSanctionReissue));
+
+        #endregion
+
+        #region AWAL
+
+        private DelegateCommand _addAwalCommand = null;
+        public DelegateCommand AddAwalCommand => _addAwalCommand ?? (_addAwalCommand = new DelegateCommand(AddAwal));
+
+        #endregion
+
 
         #endregion
 
@@ -240,6 +269,9 @@ namespace HRTools_v2.ViewModels
             Avatar = string.Empty;
             SelectedTabIndex = 0;
             IsFileSectionVisible = false;
+            HasAwalData = true;
+            HasSanctionData = true;
+            IsOnAwal = false;
 
             SanctionsList = new ObservableCollection<SanctionEntity>();
             AwalList = new ObservableCollection<AwalEntity>();
@@ -253,8 +285,6 @@ namespace HRTools_v2.ViewModels
             SetResignationCategories();
             
         }
-
-        
 
         private void RefreshEmployeeData() => GetEmployeeData(SelectedEmployee.EmployeeID);
 
@@ -308,15 +338,24 @@ namespace HRTools_v2.ViewModels
 
         #region AWAL
 
-        private void AddAwal()
+        private async void AddAwal()
         {
-            if (!AwalNewEntry.CanAdd())
+            var awalRepo = new AWALRepository();
+            var awalEntry = new AwalEntity(SelectedEmployee).Add(AwalNewEntry);
+            var response = await awalRepo.InsertAsync(awalEntry);
+            if (response.Success)
             {
-                SendToast("Failed to insert AWAL. Are you sure all the data is correct?", NotificationType.Information);
-                return;
+                SendToast("AWAL case has been created!", NotificationType.Success);
+                AwalList.Insert(0, awalEntry);
+                IsOnAwal = true;
+                GetTimeline(SelectedEmployee.EmployeeID);
+                GetHeaders(SelectedEmployee.EmployeeID);
+            }
+            else
+            {
+                SendToast(response.Message, NotificationType.Warning);
             }
             
-
         }
 
         private async void GetAwal(string id)
@@ -329,9 +368,16 @@ namespace HRTools_v2.ViewModels
 
             AwalList.AddRange(await awalRepo.GetEmployeeAwalAsync(id));
             HasAwalData = AwalList.Count > 0;
+            SetIsOnAwal();
 
             WidgedState &= ~HomePageWidgetState.EmployeeAwalSummaryLoading;
             WidgedState |= HomePageWidgetState.EmployeeAwalSummaryLoaded;
+        }
+
+        private void SetIsOnAwal()
+        {
+            var activeAwal = AwalList.Where(x => x.AwalStatus.Equals(AwalStatus.Active)).FirstOrDefault();
+            IsOnAwal = activeAwal != null;
         }
 
         #endregion

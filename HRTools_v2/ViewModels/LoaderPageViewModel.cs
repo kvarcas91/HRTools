@@ -220,6 +220,7 @@ namespace HRTools_v2.ViewModels
             CacheManager.Initialize(DataStorage.AppSettings.CacheRefreshRateInSeconds, visibility => _eventAggregator.GetEvent<MainLoaderVisibilityArgs>().Publish(visibility));
 
             MainLoaderText = string.Empty;
+            DataStorage.CanLoad = true;
             _eventAggregator.GetEvent<NavigationArgs>().Publish("HomePage");
         }
 

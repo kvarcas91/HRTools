@@ -21,6 +21,7 @@ namespace HRTools_v2.Views
         private LoaderPage _loaderPage;
         private HomePage _homePage;
         private EmployeeData _employeeData;
+        private AppSettings _appSettings;
 
         public MainWindow(IContainerExtension container, IRegionManager regionManager)
         {
@@ -72,11 +73,13 @@ namespace HRTools_v2.Views
             _loaderPage = _container.Resolve<LoaderPage>();
             _homePage = _container.Resolve<HomePage>();
             _employeeData = _container.Resolve<EmployeeData>();
+            _appSettings = _container.Resolve<AppSettings>();
 
             _region = _regionManager.Regions["ContentRegion"];
             _ = _region.Add(_loaderPage);
             _ = _region.Add(_homePage);
             _ = _region.Add(_employeeData);
+            _ = _region.Add(_appSettings);
         }
 
         private void OnSearchBoxKeyDown(object sender, System.Windows.Input.KeyEventArgs e)

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Repository
 {
-    public class SanctionsRepository : BaseRepository
+    public sealed class SanctionsRepository : BaseRepository
     {
         public bool CanModify (SanctionEntity sanction)
         {
@@ -75,7 +75,7 @@ namespace Domain.Repository
                 var timelineQuery = $"INSERT INTO timeline {timelineEntry.GetHeader()} VALUES {timelineEntry.GetValues()};";
 
                 string query = $@"UPDATE sanctions SET sanctionEndDate = '{sanctionEndDate.ToString(DataStorage.ShortDBDateFormat)}', overriden = '{0}', overridenBy = '', 
-                                overridenAt = '{DateTime.MinValue.ToString(DataStorage.LongDBDateFormat)}' WHERE id ='{sanction.ID}'; {timelineQuery}";
+                                overridenAt = NULL WHERE id ='{sanction.ID}'; {timelineQuery}";
                 var response = Execute(query);
                 if (response.Success)
                 {

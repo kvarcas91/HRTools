@@ -8,7 +8,7 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             Background="{DynamicResource Background}"
+             d:Background="{DynamicResource Background}"
              xmlns:converters="clr-namespace:HRTools_v2.Converters"
              d:DesignHeight="750" d:DesignWidth="1400">
     <!-- Employee Content -->
@@ -31,13 +31,28 @@
                     Orientation="Horizontal" HorizontalAlignment="Right"
                     Margin="10">
 
+            <Border Padding="10"
+                    Background="Transparent"
+                    ToolTip="AA is on AWAL"
+                    Visibility="{Binding IsOnAwal, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid>
+                    <materialDesign:PackIcon Kind="EmergencyExit"
+                                                 Foreground="DarkSlateGray"/>
+                    <Ellipse Fill="Red"
+                                                 Width="6"
+                                                 Height="6"
+                                                 VerticalAlignment="Top"
+                                                 HorizontalAlignment="Right"/>
+                </Grid>
+
+            </Border>
 
             <Button Style="{StaticResource MaterialDesignFlatButton}"
                         Command="{Binding OpenResignationTTCommand}"
+                    ToolTip="Open resignation TT"
                     Visibility="{Binding ResignationState, Converter={converters:ResignationStateToVisibilityConverter}, ConverterParameter='ResignationExists'}">
                 <Grid>
-                    <materialDesign:PackIcon Kind="EmergencyExit"
-                                                 ToolTip="Open resignation TT"
+                    <materialDesign:PackIcon Kind="PersonRemoveOutline"
                                                  Foreground="DarkSlateGray"/>
                     <Ellipse Fill="Orange"
                                                  Width="6"
@@ -59,7 +74,7 @@
                          Visibility="{Binding ResignationState, Converter={converters:ResignationStateToVisibilityConverter}, ConverterParameter='ResignationExists'}"
                     BorderThickness="0.5">
                     <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="EmergencyExit" 
+                        <materialDesign:PackIcon Kind="PersonRemoveOutline" 
                                                                  VerticalAlignment="Center"
                                                                  Foreground="DarkSlateGray"/>
                         <TextBlock Margin="10 0 0 0" Text="Cancel resignation" Foreground="DarkSlateGray"
@@ -81,7 +96,7 @@
                                         BorderBrush="DarkSlateGray"
                     BorderThickness="0.5">
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="EmergencyExit" 
+                                <materialDesign:PackIcon Kind="PersonRemoveOutline" 
                                                                  VerticalAlignment="Center"
                                                                  Foreground="DarkSlateGray"/>
                                 <TextBlock Margin="10 0 0 0" Text="Submit resignation" Foreground="DarkSlateGray"

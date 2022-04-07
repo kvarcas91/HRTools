@@ -23,7 +23,9 @@
     <core:Double x:Key="TimelineMessageFontSize">12</core:Double>
 
     <core:Double x:Key="AwalInputFontSize">12</core:Double>
-    
+
+    <core:Double x:Key="SettingsHeaderFontSize">16</core:Double>
+
     <!-- Widths -->
     <core:Double x:Key="DashboardSeparatorWidth">100</core:Double>
     

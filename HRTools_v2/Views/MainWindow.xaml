@@ -38,9 +38,6 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <ScrollViewer HorizontalScrollBarVisibility="Disabled"
-                              
-                              VerticalScrollBarVisibility="Auto">
                     <StackPanel Orientation="Vertical">
 
                         <!-- Home -->
@@ -68,7 +65,7 @@
                             Command="{Binding NavigateCommand}"
                             CommandParameter="AWAL">
                             <StackPanel Orientation="Vertical">
-                                <materialDesign:PackIcon Kind="AccountArrowLeft"
+                                <materialDesign:PackIcon Kind="EmergencyExit"
                                                              HorizontalAlignment="Center"
                                                          Width="20" Height="20"/>
 
@@ -85,7 +82,7 @@
                             Command="{Binding NavigateCommand}"
                             CommandParameter="Resignations">
                             <StackPanel Orientation="Vertical">
-                                <materialDesign:PackIcon Kind="EmergencyExit"
+                                <materialDesign:PackIcon Kind="PersonRemoveOutline"
                                                              HorizontalAlignment="Center"
                                                          Width="20" Height="20"/>
 
@@ -128,41 +125,6 @@
                                    Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
                             </StackPanel>
                         </Button>
-
-                        <!-- Time Fraud -->
-                        <Grid Margin="0 8 0 8"
-                              Visibility="Collapsed">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <materialDesign:Badged 
-                        Badge=""
-                        BadgeBackground="Orange"
-                           >
-
-                                <Button 
-                            Style="{StaticResource MaterialDesignFlatButton}"
-                            VerticalAlignment="Center"
-                            Width="50"
-                            Height="50"
-                                IsEnabled="False"
-                            Command="{Binding NavigateCommand}"
-                            CommandParameter="WebPunch">
-                                    <materialDesign:PackIcon Kind="Clock"
-                                                         Width="20"
-                                             Height="20"/>
-                                </Button>
-                            </materialDesign:Badged>
-
-                            <TextBlock Text="Time Fraud"
-                               Grid.Row="1"
-                               Typography.Capitals="AllSmallCaps"
-                               VerticalAlignment="Center"
-                               HorizontalAlignment="Center"
-                                   Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
-                        </Grid>
 
                         <!-- Leaves -->
                         <Grid Margin="0 8 0 8" Visibility="Collapsed">
@@ -232,11 +194,23 @@
                                   Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
                         </Grid>
 
-
-
                     </StackPanel>
-                </ScrollViewer>
 
+                <!-- Home -->
+                <Button Margin="0 0 0 10"
+                                VerticalAlignment="Bottom"
+                                    Padding="0 8 0 8"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                                Height="50"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="AppSettings">
+                   
+                        <materialDesign:PackIcon Kind="Settings"
+                                                             HorizontalAlignment="Center"
+                                                         Width="20" Height="20"/>
+
+                   
+                </Button>
 
             </Grid>
 

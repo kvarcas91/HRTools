@@ -304,6 +304,7 @@ namespace HRTools_v2.ViewModels
 
         private void Navigate((string, Roster) data)
         {
+            if (!DataStorage.CanLoad) return;
             if (_currentRegion.Equals(data.Item1) && !_currentRegion.Equals("EmployeeData")) return;
 
             NavigationParameters param = new NavigationParameters
@@ -321,6 +322,7 @@ namespace HRTools_v2.ViewModels
 
         private void Navigate(string navigatePath)
         {
+            if (!DataStorage.CanLoad) return;
             if (_currentRegion.Equals(navigatePath) && !_currentRegion.Equals("EmployeeData")) return;
             if (navigatePath != null)
             {

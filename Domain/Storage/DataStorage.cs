@@ -9,7 +9,7 @@ namespace Domain.Storage
 
         public static List<Roster> RosterList = new List<Roster>();
 
-        //public static readonly string BaseAvatarPlaceholder = $@"{AppContext.BaseDirectory}Resources\Assets\person.png";
+        public static bool CanLoad { get; set; } = false;
 
         public readonly static string AttendanceDateFormat = "M/d/yyyy h:mm ";
 

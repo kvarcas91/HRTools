@@ -1,8 +1,7 @@
-﻿using Domain.Models.DataSnips;
+﻿using Domain.Extensions;
 using Domain.Storage;
 using Domain.Types;
 using System;
-using System.Collections.Generic;
 
 namespace Domain.Models.AWAL
 {
@@ -14,7 +13,6 @@ namespace Domain.Models.AWAL
         public string EmployeeName { get; set; }
         public string DepartmentID { get; set; }
         public DateTime EmploymentStartDate { get; set; }
-        public string EmploymentType { get; set; }
         public string ManagerName { get; set; }
         public string ShiftPattern { get; set; }
         public AwalStatus AwalStatus { get; set; }
@@ -23,7 +21,6 @@ namespace Domain.Models.AWAL
         public DateTime Awal2SentDate { get; set; }
         public DateTime DisciplinaryDate { get; set; }
         public string Outcome { get; set; }
-        public DateTime UKPendingEndDate { get; set; }
         public string CloseBridge { get; set; }
         public string BridgeCreatedBy { get; set; }
         public DateTime BridgeCreatedAt { get; set; }
@@ -32,9 +29,13 @@ namespace Domain.Models.AWAL
         public DateTime UpdatedAt { get; set; }
         public string UpdatedBy { get; set; }
 
-        public AwalEntity() { }
+        public AwalEntity() 
+        {
+            CreatedAt = DateTime.Now;
+            CreatedBy = Environment.UserName;
+        }
 
-        public AwalEntity(Roster empl)
+        public AwalEntity(Roster empl) : this()
         {
             ID = Guid.NewGuid().ToString();
             EmployeeID = empl.EmployeeID;
@@ -42,7 +43,6 @@ namespace Domain.Models.AWAL
             EmployeeName = empl.EmployeeName;
             DepartmentID = empl.DepartmentID;
             EmploymentStartDate = empl.EmploymentStartDate;
-            EmploymentType = empl.EmploymentType;
             ManagerName = empl.ManagerName;
             ShiftPattern = empl.ShiftPattern;
             AwalStatus = AwalStatus.Active;
@@ -54,6 +54,20 @@ namespace Domain.Models.AWAL
             Awal1SentDate = entry.Awal1SentDate;
             Awal2SentDate = entry.Awal2SentDate;
             return this;
+        }
+
+        public string GetHeader()
+        {
+            return "(id, employeeID, userID, employeeName, departmentID, employmentStartDate,managerName, shiftPattern,awalStatus,firstNCNSDate,awal1SentDate,awal2SentDate,disciplinaryDate,outcome,closeBridge,bridgeCreatedBy,bridgeCreatedAt,createdBy,createdAt,updatedAt,updatedBy)";
+        }
+        public string GetValues()
+        {
+            return $@"('{ID}','{EmployeeID}','{UserID}','{EmployeeName.DbSanityCheck()}','{DepartmentID}',{EmploymentStartDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)},
+                        '{ManagerName.DbSanityCheck()}','{ShiftPattern}','{(int)AwalStatus}',{FirstNCNSDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)},
+                        {Awal1SentDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)},{Awal2SentDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)},
+                        {DisciplinaryDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)},'{Outcome}','{CloseBridge.DbSanityCheck()}', '{BridgeCreatedBy}',
+                        {BridgeCreatedAt.DbNullableSanityCheck(DataStorage.LongDBDateFormat)},'{CreatedBy}',{CreatedAt.DbNullableSanityCheck(DataStorage.LongDBDateFormat)},
+                        {UpdatedAt.DbNullableSanityCheck(DataStorage.LongDBDateFormat)}, '{UpdatedBy}')";
         }
 
     }

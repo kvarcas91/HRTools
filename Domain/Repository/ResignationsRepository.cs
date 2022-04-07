@@ -1,4 +1,5 @@
 ﻿using Domain.DataValidation;
+using Domain.DataValidation.Resignation;
 using Domain.Models;
 using Domain.Models.Resignations;
 using Domain.Storage;
@@ -8,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace Domain.Repository
 {
-    public class ResignationsRepository : BaseRepository
+    public sealed class ResignationsRepository : BaseRepository
     {
 
-        private DataValidator _validator;
+        private readonly IDataValidation _validator;
         public ResignationsRepository()
         {
-            _validator = new ResignationValidator();
+            _validator = new ResignationValidation();
         }
         public Task<Response> InsertAsync(ResignationEntity resignation)
         {
