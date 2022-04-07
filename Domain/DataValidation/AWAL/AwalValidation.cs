@@ -3,7 +3,7 @@ using Domain.Types;
 
 namespace Domain.DataValidation.AWAL
 {
-    internal sealed class AwalValidation : IDataValidation
+    public sealed class AwalValidation : IDataValidation
     {
         public Response Validate<T>(T awal)
         {

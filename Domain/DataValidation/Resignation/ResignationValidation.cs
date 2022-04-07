@@ -3,7 +3,7 @@ using Domain.Types;
 
 namespace Domain.DataValidation.Resignation
 {
-    internal class ResignationValidation : IDataValidation
+    public class ResignationValidation : IDataValidation
     {
         public Response Validate<T>(T resignation)
         {

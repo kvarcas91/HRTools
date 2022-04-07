@@ -621,17 +621,156 @@
 
                         <Grid Margin="10">
 
-                            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <ListBox Grid.Row="0"
+                                     Background="Transparent"
+                                     Style="{StaticResource MaterialDesignToolToggleFlatListBox}"
+                                     Margin="-10 0 0 10">
+                                <ListBox.Items>
+
+                                    <!-- All -->
+                                    <ListBoxItem IsSelected="{Binding TimeLineToggleSelection, Converter={converters:TimelineToggleToOriginConverter}, ConverterParameter='ALL'}"
+			                             Background="Transparent"
+			                            Width="{StaticResource TimeLineSelectorWidth}"
+			                             HorizontalContentAlignment="Center">
+                                                                    <ListBoxItem.Content>
+                                                                        <StackPanel 
+			                            Orientation="Vertical">
+                                                                            <materialDesign:PackIcon Kind="AllInclusive" 
+						                             HorizontalAlignment="Center"
+					                             Width="20" Height="20"/>
+
+                                                                        <TextBlock Text="All"
+                            Typography.Capitals="AllSmallCaps"
+					                               HorizontalAlignment="Center"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
+                                            </StackPanel>
+                                        </ListBoxItem.Content>
+                                    </ListBoxItem>
+
+                                    <!-- Meetings -->
+                                    <ListBoxItem IsSelected="{Binding TimeLineToggleSelection, Converter={converters:TimelineToggleToOriginConverter}, ConverterParameter='Meetings'}"
+                                                 Background="Transparent"
+                                                 Width="{StaticResource TimeLineSelectorWidth}"
+                                                 HorizontalContentAlignment="Center">
+                                        <ListBoxItem.Content>
+                                            <StackPanel Orientation="Vertical">
+                                                <materialDesign:PackIcon Kind="Handshake"
+                                                             HorizontalAlignment="Center"
+                                                         Width="20" Height="20"/>
+
+                                                <TextBlock Text="Meetings"
+                               Typography.Capitals="AllSmallCaps"
+                                                           HorizontalAlignment="Center"
+                                   Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
+                                            </StackPanel>
+                                        </ListBoxItem.Content>
+                                    </ListBoxItem>
+
+                                    <!-- Suspensions -->
+                                    <ListBoxItem IsSelected="{Binding TimeLineToggleSelection, Converter={converters:TimelineToggleToOriginConverter}, ConverterParameter='Suspensions'}"
+                                                 Background="Transparent"
+                                                 HorizontalContentAlignment="Center"
+                                                 Width="{StaticResource TimeLineSelectorWidth}">
+                                        <ListBoxItem.Content>
+                                            <StackPanel Orientation="Vertical">
+                                                <materialDesign:PackIcon Kind="SelectRemove"
+                                                             HorizontalAlignment="Center"
+                                                         Width="20" Height="20"/>
+
+                                                <TextBlock Text="Suspensions"
+                               Typography.Capitals="AllSmallCaps"
+                                                           HorizontalAlignment="Center"
+                                   Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
+                                            </StackPanel>
+                                        </ListBoxItem.Content>
+                                    </ListBoxItem>
+                                    
+                                    <!-- Sanctions -->
+                                    <ListBoxItem IsSelected="{Binding TimeLineToggleSelection, Converter={converters:TimelineToggleToOriginConverter}, ConverterParameter='Sanctions'}"
+                                                 Background="Transparent"
+                                                 HorizontalContentAlignment="Center"
+                                                 Width="{StaticResource TimeLineSelectorWidth}">
+                                        <ListBoxItem.Content>
+                                            <StackPanel Orientation="Vertical">
+                                                <materialDesign:PackIcon Kind="ScaleBalance"
+                                                             HorizontalAlignment="Center"
+                                                         Width="20" Height="20"/>
+
+                                                <TextBlock Text="Sanctions"
+                               Typography.Capitals="AllSmallCaps"
+                                                           HorizontalAlignment="Center"
+                                   Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
+                                            </StackPanel>
+                                        </ListBoxItem.Content>
+                                    </ListBoxItem>
+
+                                    <!-- AWAL -->
+                                    <ListBoxItem IsSelected="{Binding TimeLineToggleSelection, Converter={converters:TimelineToggleToOriginConverter}, ConverterParameter='AWAL'}"
+                                                 Background="Transparent"
+                                                 HorizontalContentAlignment="Center"
+                                                 Width="{StaticResource TimeLineSelectorWidth}">
+                                        <ListBoxItem.Content>
+                                            <StackPanel Orientation="Vertical">
+                                                <materialDesign:PackIcon Kind="EmergencyExit"
+                                                             HorizontalAlignment="Center"
+                                                         Width="20" Height="20"/>
+
+                                                <TextBlock Text="AWAL"
+                                                           HorizontalAlignment="Center"
+                               Typography.Capitals="AllSmallCaps"
+                                   Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
+                                            </StackPanel>
+                                        </ListBoxItem.Content>
+                                    </ListBoxItem>
+
+                                    <!-- Resignations -->
+                                    <ListBoxItem IsSelected="{Binding TimeLineToggleSelection, Converter={converters:TimelineToggleToOriginConverter}, ConverterParameter='Resignations'}"
+                                                 Background="Transparent"
+                                                 HorizontalContentAlignment="Center"
+                                                 Width="{StaticResource TimeLineSelectorWidth}">
+                                        <ListBoxItem.Content>
+                                            <StackPanel Orientation="Vertical">
+                                                <materialDesign:PackIcon Kind="PersonRemoveOutline"
+                                                             HorizontalAlignment="Center"
+                                                         Width="20" Height="20"/>
+
+                                                <TextBlock Text="Resignations"
+                               Typography.Capitals="AllSmallCaps"
+                                                           HorizontalAlignment="Center"
+                                   Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
+                                            </StackPanel>
+                                        </ListBoxItem.Content>
+                                    </ListBoxItem>
+                                    
+                                </ListBox.Items>
+                               
+                            </ListBox>
+                            
+                            <ProgressBar Grid.Row="1"
+                                Style="{StaticResource MaterialDesignCircularProgressBar}"
                                              IsIndeterminate="True"
                                              Width="90"
                                              Height="90" 
                                              Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='EmployeeTimelineLoading'}"/>
 
-                            <ListView
+                            <ListView Grid.Row="1"
                                ItemsSource="{Binding Timeline}"
                                 Style="{StaticResource TimelineListView}"
                                     Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='EmployeeTimelineLoaded'}"/>
 
+
+                            <TextBlock Grid.Row="1"
+                                Text="No Data"
+                                           Visibility="{Binding HasTimelineData, Converter={StaticResource InverseBoolToVisConverter}}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           Foreground="Gray"
+                                           FontSize="{StaticResource NoDataFontSize}"/>
 
                         </Grid>
                     </TabItem>

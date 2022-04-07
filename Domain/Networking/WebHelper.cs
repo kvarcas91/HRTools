@@ -20,7 +20,7 @@ namespace Domain.Networking
 
         public static bool IsLink(string url)
         {
-            return url.ToUpper().Contains("AMAZON.COM");
+            return url.ToUpper().Contains("AMAZON.COM") || url.ToUpper().Contains("AMAZON.CO.UK");
         }
     }
 }

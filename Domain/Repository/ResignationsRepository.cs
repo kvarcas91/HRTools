@@ -26,13 +26,9 @@ namespace Domain.Repository
             var ttLink = resignation.TTLink.Split('/');
             var ttID = ttLink[ttLink.Length-1];
 
-            var timeLine = new Timeline
-            {
-                EmployeeID = resignation.EmployeeID,
-                CreatedAt = DateTime.Now,
-                CreatedBy = resignation.CreatedBy,
-                EventMessage = $"Resignation request has been submitted by {resignation.CreatedBy} due to ''{resignation.ReasonForResignation}'' (TT id: {ttID}). Last working day - {resignation.LastWorkingDay.ToString(DataStorage.ShortPreviewDateFormat)}"
-            };
+            var timeLine = new Timeline().Create(resignation.EmployeeID, TimelineOrigin.Resignations);
+            timeLine.EventMessage = $"Resignation request has been submitted by {resignation.CreatedBy} due to ''{resignation.ReasonForResignation}'' (TT id: {ttID}). Last working day - {resignation.LastWorkingDay.ToString(DataStorage.ShortPreviewDateFormat)}";
+            
 
             string tlQuery = $"INSERT INTO timeline {timeLine.GetHeader()} VALUES {timeLine.GetValues()};";
 
@@ -48,13 +44,8 @@ namespace Domain.Repository
 
         public Task<Response> CancelResignationAsync(string emplId)
         {
-            var timeLine = new Timeline
-            {
-                EmployeeID = emplId,
-                CreatedAt = DateTime.Now,
-                CreatedBy = Environment.UserName,
-                EventMessage = $"Resignation has been cancelled by {Environment.UserName}"
-            };
+            var timeLine = new Timeline().Create(emplId, TimelineOrigin.Resignations);
+            timeLine.EventMessage = $"Resignation has been cancelled by {Environment.UserName}";
 
             string tlQuery = $"INSERT INTO timeline {timeLine.GetHeader()} VALUES {timeLine.GetValues()};";
 

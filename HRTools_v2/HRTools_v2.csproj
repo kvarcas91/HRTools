@@ -180,6 +180,7 @@
     <Compile Include="Converters\TabCountToBadgeColorConverter.cs" />
     <Compile Include="Converters\TenureToProbationStringConverter.cs" />
     <Compile Include="Converters\TenureToStringConverter.cs" />
+    <Compile Include="Converters\TimelineToggleToOriginConverter.cs" />
     <Compile Include="Converters\UIComponentStateToVisibilityConverter.cs" />
     <Compile Include="Converters\UserToTextConverter.cs" />
     <Compile Include="DPI\DpiDecorator.cs" />

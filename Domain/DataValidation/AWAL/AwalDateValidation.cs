@@ -92,7 +92,7 @@ namespace Domain.DataValidation.AWAL
                 return;
             }
 
-            if (validation.Data.DisciplinaryDate != DateTime.MinValue && validation.Data.DisciplinaryDate < validation.Data.Awal2SentDate)
+            if (validation.Data.DisciplinaryDate != DateTime.MinValue && validation.Data.DisciplinaryDate <= validation.Data.Awal2SentDate)
             {
                 validation.ValidationResponse = new Response
                 {

@@ -57,7 +57,7 @@ namespace Domain.Repository
             return Task.Run(async () =>
             {
                 string query = "";
-                var timelineEntry = new Timeline().Create(emplId);
+                var timelineEntry = new Timeline().Create(emplId, TimelineOrigin.Suspensions);
                 string timelineQuery = string.Empty;
 
                 Suspension? susp = GetCachedScalar<Suspension>($"SELECT * from suspensions WHERE employeeID = '{emplId}';");
@@ -107,9 +107,10 @@ namespace Domain.Repository
             return GetCachedScalarAsync<EmployeeDataPreview>(query);
         }
 
-        public Task<IEnumerable<Timeline>> GetTimelineAsync(string emplId)
+        public Task<IEnumerable<Timeline>> GetTimelineAsync(string emplId, TimelineOrigin origin)
         {
-            var query = $"SELECT * FROM timeline WHERE employeeID = '{emplId}' ORDER BY createdAt DESC";
+            var selector = origin == TimelineOrigin.ALL ? "" : $"AND origin = '{origin.ToString()}'";
+            var query = $"SELECT * FROM timeline WHERE employeeID = '{emplId}' {selector} ORDER BY createdAt DESC";
             return GetCachedAsync<Timeline>(query);
         }
     }

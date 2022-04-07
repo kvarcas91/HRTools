@@ -150,6 +150,7 @@
     <Compile Include="Types\Response.cs" />
     <Compile Include="States\SanctionWidgetState.cs" />
     <Compile Include="States\UIComponentState.cs" />
+    <Compile Include="Types\TimelineOrigin.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

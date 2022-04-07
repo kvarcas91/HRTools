@@ -61,19 +61,7 @@ namespace HRTools_v2.ViewModels
             set { SetProperty(ref _employeeLiveSanctions, value); }
         }
 
-        private ObservableCollection<Timeline> _timeline;
-        public ObservableCollection<Timeline> Timeline
-        {
-            get { return _timeline; }
-            set { SetProperty(ref _timeline, value); }
-        }
-
-        private AwalEntry _awalNewEntry;
-        public AwalEntry AwalNewEntry
-        {
-            get => _awalNewEntry;
-            set { SetProperty(ref _awalNewEntry, value); }
-        }
+       
 
         private string _avatar;
         public string Avatar
@@ -98,6 +86,13 @@ namespace HRTools_v2.ViewModels
 
         #region Awal
 
+        private AwalEntry _awalNewEntry;
+        public AwalEntry AwalNewEntry
+        {
+            get => _awalNewEntry;
+            set { SetProperty(ref _awalNewEntry, value); }
+        }
+
         private ObservableCollection<AwalEntity> _awalList;
         public ObservableCollection<AwalEntity> AwalList
         {
@@ -111,6 +106,28 @@ namespace HRTools_v2.ViewModels
             get => _isOnAwal;
             set { SetProperty(ref _isOnAwal, value); }
         }
+
+        #endregion
+
+        #region Timeline
+
+        private ObservableCollection<Timeline> _timeline;
+        public ObservableCollection<Timeline> Timeline
+        {
+            get { return _timeline; }
+            set { SetProperty(ref _timeline, value); }
+        }
+
+        private TimelineOrigin _timeLineToggleSelection;
+        public TimelineOrigin TimeLineToggleSelection
+        {
+            get => _timeLineToggleSelection;
+            set { 
+                SetProperty(ref _timeLineToggleSelection, value);
+                if (SelectedEmployee != null) GetTimeline(SelectedEmployee.EmployeeID, value);
+            }
+        }
+
 
         #endregion
 
@@ -196,6 +213,13 @@ namespace HRTools_v2.ViewModels
             set { SetProperty(ref _hasAwalData, value); }
         }
 
+        private bool _hasTimelineData;
+        public bool HasTimelineData
+        {
+            get => _hasTimelineData;
+            set { SetProperty(ref _hasTimelineData, value); }
+        }
+
         #endregion
 
         #endregion
@@ -270,8 +294,10 @@ namespace HRTools_v2.ViewModels
             SelectedTabIndex = 0;
             IsFileSectionVisible = false;
             HasAwalData = true;
+            HasTimelineData = true;
             HasSanctionData = true;
             IsOnAwal = false;
+            TimeLineToggleSelection = TimelineOrigin.ALL;
 
             SanctionsList = new ObservableCollection<SanctionEntity>();
             AwalList = new ObservableCollection<AwalEntity>();
@@ -294,7 +320,7 @@ namespace HRTools_v2.ViewModels
             GetSanctionPreview(selectedEmployeeId);
             GetEmployeeStatus(selectedEmployeeId);
             GetResignationData(selectedEmployeeId);
-            GetTimeline(selectedEmployeeId);
+            GetTimeline(selectedEmployeeId, TimeLineToggleSelection);
             GetAllSanctions(selectedEmployeeId);
             GetAwal(selectedEmployeeId);
             GetMeetings(selectedEmployeeId);
@@ -305,23 +331,17 @@ namespace HRTools_v2.ViewModels
 
         #region Data Getters
 
-        private async void GetTimeline(string id)
+        private async void GetTimeline(string id, TimelineOrigin origin)
         {
             WidgedState |= HomePageWidgetState.EmployeeTimelineLoading;
             WidgedState &= ~HomePageWidgetState.EmployeeTimelineLoaded;
 
             Timeline.Clear();
 
-            Timeline.AddRange(await _previewRepository.GetTimelineAsync(id));
+            
+            Timeline.AddRange(await _previewRepository.GetTimelineAsync(id, origin));
+            HasTimelineData = Timeline.Count > 0;
 
-            try
-            {
-                Timeline.Add(new Timeline { CreatedAt = DateTime.Parse(SelectedEmployee.LastHireDate), EventMessage = "AA has been hired" });
-            }
-            catch (Exception e) 
-            {
-                LoggerManager.Log("EmployeeDataViewModel.GetTimeline()", e.Message);
-            }
 
             WidgedState &= ~HomePageWidgetState.EmployeeTimelineLoading;
             WidgedState |= HomePageWidgetState.EmployeeTimelineLoaded;
@@ -347,8 +367,10 @@ namespace HRTools_v2.ViewModels
             {
                 SendToast("AWAL case has been created!", NotificationType.Success);
                 AwalList.Insert(0, awalEntry);
+                HasAwalData = true;
+
                 IsOnAwal = true;
-                GetTimeline(SelectedEmployee.EmployeeID);
+                if (TimeLineToggleSelection == TimelineOrigin.AWAL || TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimeLineToggleSelection);
                 GetHeaders(SelectedEmployee.EmployeeID);
             }
             else
@@ -417,7 +439,7 @@ namespace HRTools_v2.ViewModels
                 SendToast("Resignation has been submitted!", NotificationType.Success);
                 _resignationTT = ResignationNewEntry.TTLink;
                 ResignationState = ResignationWidgetState.ResignationExists;
-                GetTimeline(SelectedEmployee.EmployeeID);
+                if (TimeLineToggleSelection == TimelineOrigin.Resignations || TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimeLineToggleSelection);
                 ResignationNewEntry = new ResignationEntry();
             }
             else
@@ -439,7 +461,7 @@ namespace HRTools_v2.ViewModels
             {
                 SendToast("Resignation has been cancelled!", NotificationType.Success);
                 ResignationState = ResignationWidgetState.ResignationDoesNotExist;
-                GetTimeline(SelectedEmployee.EmployeeID);
+                if (TimeLineToggleSelection == TimelineOrigin.Resignations || TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimeLineToggleSelection);
             }
             else
             {
@@ -527,7 +549,7 @@ namespace HRTools_v2.ViewModels
                 SanctionsList.Insert(0, sanction);
                 HasSanctionData = true;
                 GetSanctionPreview(SelectedEmployee.EmployeeID);
-                GetTimeline(SelectedEmployee.EmployeeID);
+                if (TimeLineToggleSelection == TimelineOrigin.Sanctions || TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimeLineToggleSelection);
                 GetHeaders(SelectedEmployee.EmployeeID);
             }
             else
@@ -574,7 +596,7 @@ namespace HRTools_v2.ViewModels
                 {
                     SanctionsList.Swap(sanct, results);
                     GetSanctionPreview(SelectedEmployee.EmployeeID);
-                    GetTimeline(SelectedEmployee.EmployeeID);
+                    if (TimeLineToggleSelection == TimelineOrigin.Sanctions || TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimeLineToggleSelection);
                 }
                 catch (Exception e)
                 {
@@ -615,7 +637,7 @@ namespace HRTools_v2.ViewModels
                 {
                     SanctionsList.Swap(sanct, results);
                     GetSanctionPreview(SelectedEmployee.EmployeeID);
-                    GetTimeline(SelectedEmployee.EmployeeID);
+                    if (TimeLineToggleSelection == TimelineOrigin.Sanctions || TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimeLineToggleSelection);
                 }
                 catch (Exception e)
                 {
@@ -655,7 +677,7 @@ namespace HRTools_v2.ViewModels
             {
                 SendToast("Employment status has been set", NotificationType.Success);
                 EmplStatus = tempStatus;
-                GetTimeline(SelectedEmployee.EmployeeID);
+                if (TimeLineToggleSelection == TimelineOrigin.Suspensions || TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimeLineToggleSelection);
             }
 
             WidgedState &= ~HomePageWidgetState.EmployeeStatusLoading;

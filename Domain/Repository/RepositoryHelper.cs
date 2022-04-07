@@ -35,6 +35,7 @@ namespace Domain.Repository
 
                             CREATE table timeline (
                             employeeID TEXT NOT NULL,
+                            origin TEXT,
                             createdBy TEXT,
                             createdAt TEXT,
                             eventMessage TEXT

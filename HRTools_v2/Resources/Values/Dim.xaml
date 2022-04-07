@@ -28,5 +28,6 @@
 
     <!-- Widths -->
     <core:Double x:Key="DashboardSeparatorWidth">100</core:Double>
+    <core:Double x:Key="TimeLineSelectorWidth">90</core:Double>
     
 </ResourceDictionary>
