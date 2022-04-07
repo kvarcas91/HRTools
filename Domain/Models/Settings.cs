@@ -11,6 +11,7 @@
         public string RosterURL { get; set; }
         public string PunchURL { get; set; }
         public string RosterWebDateFormat { get; set; }
+        public string ResignationsQuicklinkURL { get; set; }
 
         public Settings()
         {
@@ -21,6 +22,7 @@
             UserImgURL = string.Empty;
             RosterURL = string.Empty;
             PunchURL = string.Empty;
+            ResignationsQuicklinkURL = string.Empty;
             RosterWebDateFormat = "ddd MMM dd hh:mm:ss 'UTC' yyyy";
             CacheRefreshRateInSeconds = 30;
         }

@@ -28,7 +28,6 @@ namespace Domain.Models
         public string JobTitle { get; set; }
         public string FCLM { get; set; }
         public string ShiftPattern { get; set; }
-        public int TenureInDays { get; set; }
 
         public Roster()
         {
@@ -42,14 +41,6 @@ namespace Domain.Models
             JobTitle = string.Empty;
             FCLM = string.Empty;
             ShiftPattern = string.Empty;
-            TenureInDays = -1;
-        }
-
-        public void SetTenure()
-        {
-            if (EmploymentStartDate.Equals(DateTime.MinValue)) return;
-
-            TenureInDays = (DateTime.Now - EmploymentStartDate).Days;
         }
 
         public bool HasValue(string key)

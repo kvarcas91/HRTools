@@ -1,4 +1,5 @@
-﻿using Domain.Models;
+﻿using Domain.DataValidation;
+using Domain.Models;
 using Domain.Models.Resignations;
 using Domain.Storage;
 using Domain.Types;
@@ -10,14 +11,26 @@ namespace Domain.Repository
     public class ResignationsRepository : BaseRepository
     {
 
+        private DataValidator _validator;
+        public ResignationsRepository()
+        {
+            _validator = new ResignationValidator();
+        }
         public Task<Response> InsertAsync(ResignationEntity resignation)
         {
+
+            var validationResponse = _validator.Validate(resignation);
+            if (!validationResponse.Success) return Task.Run(() => validationResponse);
+           
+            var ttLink = resignation.TTLink.Split('/');
+            var ttID = ttLink[ttLink.Length-1];
+
             var timeLine = new Timeline
             {
                 EmployeeID = resignation.EmployeeID,
                 CreatedAt = DateTime.Now,
                 CreatedBy = resignation.CreatedBy,
-                EventMessage = $"Resignation request has been submitted by {resignation.CreatedBy} (''{resignation.ReasonForResignation}''). Last working day - {resignation.LastWorkingDay.ToString(DataStorage.ShortPreviewDateFormat)}"
+                EventMessage = $"Resignation request has been submitted by {resignation.CreatedBy} due to ''{resignation.ReasonForResignation}'' (TT id: {ttID}). Last working day - {resignation.LastWorkingDay.ToString(DataStorage.ShortPreviewDateFormat)}"
             };
 
             string tlQuery = $"INSERT INTO timeline {timeLine.GetHeader()} VALUES {timeLine.GetValues()};";
@@ -26,10 +39,10 @@ namespace Domain.Repository
             return ExecuteAsync(query);
         }
 
-        public Task<int> IsResignedAsync(string emplId)
+        public Task<string> IsResignedAsync(string emplId)
         {
-            string query = $"SELECT COUNT(*) FROM resignations WHERE employeeID = '{emplId}'";
-            return GetCachedScalarAsync<int>(query);
+            string query = $"SELECT ttLink FROM resignations WHERE employeeID = '{emplId}'";
+            return GetCachedScalarAsync<string>(query);
         }
 
         public Task<Response> CancelResignationAsync(string emplId)

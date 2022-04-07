@@ -32,6 +32,22 @@
                     Margin="10">
 
 
+            <Button Style="{StaticResource MaterialDesignFlatButton}"
+                        Command="{Binding OpenResignationTTCommand}"
+                    Visibility="{Binding ResignationState, Converter={converters:ResignationStateToVisibilityConverter}, ConverterParameter='ResignationExists'}">
+                <Grid>
+                    <materialDesign:PackIcon Kind="EmergencyExit"
+                                                 ToolTip="Open resignation TT"
+                                                 Foreground="DarkSlateGray"/>
+                    <Ellipse Fill="Orange"
+                                                 Width="6"
+                                                 Height="6"
+                                                 VerticalAlignment="Top"
+                                                 HorizontalAlignment="Right"/>
+                </Grid>
+               
+            </Button>
+            
             <Grid Margin="5 0 5 0"
                   HorizontalAlignment="Right">
 
@@ -103,6 +119,7 @@
                              Background="{DynamicResource CardBackground}" 
                     materialDesign:ShadowAssist.ShadowEdges="None"
                     materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                Command="{Binding OpenResignationQuicklinkCommand}"
                                         BorderThickness="0">
                             <TextBlock Text="Create TT here" FontStyle="Italic"
                                  HorizontalAlignment="Right"
@@ -113,7 +130,7 @@
                         <TextBox 
                     Text="{Binding ResignationNewEntry.TTLink, Mode=TwoWay}"
                     Background="Transparent"
-                    materialDesign:HintAssist.Hint="TT"
+                    materialDesign:HintAssist.Hint="TT link"
                     materialDesign:HintAssist.IsFloating="True"
                     BorderThickness="0"
                     Margin="5"
@@ -208,6 +225,13 @@
 
             </Grid>
 
+            <Button Style="{StaticResource MaterialDesignFlatButton}"
+                        Command="{Binding RefreshEmployeeDataCommand}">
+                <materialDesign:PackIcon Kind="Refresh"
+                                                 ToolTip="Refresh employee data"
+                                                 Foreground="DarkSlateGray"/>
+            </Button>
+            
             <Button Style="{StaticResource MaterialDesignFlatButton}"
                         Command="{Binding CloseEmployeePreviewCommand}">
                 <materialDesign:PackIcon Kind="CloseCircleOutline"

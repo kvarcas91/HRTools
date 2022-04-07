@@ -5,6 +5,7 @@ using Domain.Models.AWAL;
 using Domain.Models.DataSnips;
 using Domain.Models.Resignations;
 using Domain.Models.Sanctions;
+using Domain.Networking;
 using Domain.Repository;
 using Domain.States;
 using Domain.Storage;
@@ -142,6 +143,8 @@ namespace HRTools_v2.ViewModels
 
         #region Resignation Props
 
+        private string _resignationTT;
+
         private ResignationWidgetState _resignationState;
         public ResignationWidgetState ResignationState
         {
@@ -190,6 +193,9 @@ namespace HRTools_v2.ViewModels
         private DelegateCommand _closeEmployeePreviewCommand = null;
         public DelegateCommand CloseEmployeePreviewCommand => _closeEmployeePreviewCommand ?? (_closeEmployeePreviewCommand = new DelegateCommand(CloseEmployeePreview));
 
+        private DelegateCommand _refreshEmployeeDataCommand = null;
+        public DelegateCommand RefreshEmployeeDataCommand => _refreshEmployeeDataCommand ?? (_refreshEmployeeDataCommand = new DelegateCommand(RefreshEmployeeData));
+
         private DelegateCommand _clearResignationEntryCommand = null;
         public DelegateCommand ClearResignationEntryCommand => _clearResignationEntryCommand ?? (_clearResignationEntryCommand = new DelegateCommand(() => ResignationNewEntry = new ResignationEntry()));
 
@@ -198,6 +204,12 @@ namespace HRTools_v2.ViewModels
 
         private DelegateCommand _cancelResignationCommand = null;
         public DelegateCommand CancelResignationCommand => _cancelResignationCommand ?? (_cancelResignationCommand = new DelegateCommand(CancelResignation));
+
+        private DelegateCommand _openResignationTTCommand = null;
+        public DelegateCommand OpenResignationTTCommand => _openResignationTTCommand ?? (_openResignationTTCommand = new DelegateCommand(OpenResignationTT));
+
+        private DelegateCommand _openResignationQuicklinkCommand = null;
+        public DelegateCommand OpenResignationQuicklinkCommand => _openResignationQuicklinkCommand ?? (_openResignationQuicklinkCommand = new DelegateCommand(OpenResignationQuicklink));
 
         private DelegateCommand<string> _changeEmployeeStatusCommand = null;
         public DelegateCommand<string> ChangeEmployeeStatusCommand => _changeEmployeeStatusCommand ?? (_changeEmployeeStatusCommand = new DelegateCommand<string>(ChangeEmploymentStatus));
@@ -233,7 +245,6 @@ namespace HRTools_v2.ViewModels
             AwalList = new ObservableCollection<AwalEntity>();
             Timeline = new ObservableCollection<Timeline>();
 
-
             SanctionList = SanctionManager.GetSanctions();
 
             AwalNewEntry = new AwalEntry();
@@ -243,27 +254,9 @@ namespace HRTools_v2.ViewModels
             
         }
 
-        private void SetResignationCategories() => ResignationReasonList = new List<string>
-            {
-                "Bureaucracy - Ability to Bld",
-                "Career Choice Grad",
-                "Challenging Work",
-                "Compensation",
-                "Develop/Career/Promo",
-                "End of Assignment",
-                "Family Move or Circumstances",
-                "Manager/Leadership",
-                "Med-unable to perfessent fxn",
-                "Mutual Agreement (vol)",
-                "Operational Support burden",
-                "Recognition for Great Work",
-                "Resignation in Lieu of Term",
-                "Return to School",
-                "Tools and Resources",
-                "Work Eligibility",
-                "Work Environment",
-                "Working Conditions (Facility)"
-            };
+        
+
+        private void RefreshEmployeeData() => GetEmployeeData(SelectedEmployee.EmployeeID);
 
         private void GetEmployeeData(string selectedEmployeeId)
         {
@@ -345,6 +338,28 @@ namespace HRTools_v2.ViewModels
 
         #region Resignations
 
+        private void SetResignationCategories() => ResignationReasonList = new List<string>
+            {
+                "Bureaucracy - Ability to Bld",
+                "Career Choice Grad",
+                "Challenging Work",
+                "Compensation",
+                "Develop/Career/Promo",
+                "End of Assignment",
+                "Family Move or Circumstances",
+                "Manager/Leadership",
+                "Med-unable to perfessent fxn",
+                "Mutual Agreement (vol)",
+                "Operational Support burden",
+                "Recognition for Great Work",
+                "Resignation in Lieu of Term",
+                "Return to School",
+                "Tools and Resources",
+                "Work Eligibility",
+                "Work Environment",
+                "Working Conditions (Facility)"
+            };
+
         private async void SubmitResignation()
         {
             ResignationState |= ResignationWidgetState.ResignationSubmitInProgress;
@@ -354,13 +369,14 @@ namespace HRTools_v2.ViewModels
             if (response.Success)
             {
                 SendToast("Resignation has been submitted!", NotificationType.Success);
+                _resignationTT = ResignationNewEntry.TTLink;
                 ResignationState = ResignationWidgetState.ResignationExists;
                 GetTimeline(SelectedEmployee.EmployeeID);
                 ResignationNewEntry = new ResignationEntry();
             }
             else
             {
-                SendToast("Failed to submit resignation", NotificationType.Warning);
+                SendToast(response.Message, NotificationType.Warning);
                 ResignationState = ResignationWidgetState.ResignationDoesNotExist;
             }
         }
@@ -391,9 +407,23 @@ namespace HRTools_v2.ViewModels
             ResignationState = ResignationWidgetState.DataLoading;
             var repo = new ResignationsRepository();
 
-            var count = await repo.IsResignedAsync(id);
-            if (count > 0) ResignationState = ResignationWidgetState.ResignationExists;
+            var resignationTT = await repo.IsResignedAsync(id);
+            if (!string.IsNullOrEmpty(resignationTT))
+            {
+                ResignationState = ResignationWidgetState.ResignationExists;
+                _resignationTT = resignationTT;
+            }
             else ResignationState = ResignationWidgetState.ResignationDoesNotExist;
+        }
+
+        private void OpenResignationQuicklink()
+        {
+            WebHelper.OpenLink(DataStorage.AppSettings.ResignationsQuicklinkURL);
+        }
+
+        private void OpenResignationTT()
+        {
+            WebHelper.OpenLink(_resignationTT);
         }
 
         #endregion
@@ -604,7 +634,6 @@ namespace HRTools_v2.ViewModels
         {
             if (!_isPageActive) return;
 
-            selectedEmployee.SetTenure();
             SelectedEmployee = selectedEmployee;
             Avatar = DataStorage.AppSettings.UserImgURL.Replace("{UserID}", SelectedEmployee.UserID);
             GetEmployeeData(selectedEmployee.EmployeeID);

@@ -25,6 +25,7 @@ namespace Domain.Data
                 output.RosterURL = settings["RosterURL"].Value;
                 output.PunchURL = settings["PunchURL"].Value;
                 output.RosterWebDateFormat = settings["RosterWebDateFormat"].Value;
+                output.ResignationsQuicklinkURL = settings["ResignationsQuicklinkURL"].Value;
             }
             catch
             {
