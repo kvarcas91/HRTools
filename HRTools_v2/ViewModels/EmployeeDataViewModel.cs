@@ -22,7 +22,6 @@ namespace HRTools_v2.ViewModels
 {
     public class EmployeeDataViewModel : BindableBase, INavigationAware
     {
-
         #region Properties
 
         private uint _selectedTabIndex;
@@ -346,24 +345,45 @@ namespace HRTools_v2.ViewModels
 
         #region Resignations
 
-
         private async void SubmitResignation()
         {
             ResignationState |= ResignationWidgetState.ResignationSubmitInProgress;
+            var repo = new ResignationsRepository();
 
-
-            ResignationState = ResignationWidgetState.ResignationExists;
-            ResignationState |= ResignationWidgetState.DataLoading;
-`
+            var response = await repo.InsertAsync(new ResignationEntity(ResignationNewEntry).AddEmployee(SelectedEmployee));
+            if (response.Success)
+            {
+                SendToast("Resignation has been submitted!", NotificationType.Success);
+                ResignationState = ResignationWidgetState.ResignationExists;
+                GetTimeline(SelectedEmployee.EmployeeID);
+                ResignationNewEntry = new ResignationEntry();
+            }
+            else
+            {
+                SendToast("Failed to submit resignation", NotificationType.Warning);
+                ResignationState = ResignationWidgetState.ResignationDoesNotExist;
+            }
         }
 
         private async void CancelResignation()
         {
             ResignationState = ResignationWidgetState.DataLoading;
 
+            var repo = new ResignationsRepository();
 
+            var response = await repo.CancelResignationAsync(SelectedEmployee.EmployeeID);
 
-            ResignationState = ResignationWidgetState.ResignationDoesNotExist;
+            if (response.Success)
+            {
+                SendToast("Resignation has been cancelled!", NotificationType.Success);
+                ResignationState = ResignationWidgetState.ResignationDoesNotExist;
+                GetTimeline(SelectedEmployee.EmployeeID);
+            }
+            else
+            {
+                SendToast("Failed to cancel resignation", NotificationType.Warning);
+                ResignationState = ResignationWidgetState.ResignationExists;
+            }
         }
 
         private async void GetResignationData(string id)

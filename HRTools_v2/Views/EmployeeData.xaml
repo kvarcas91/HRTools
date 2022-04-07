@@ -34,7 +34,23 @@
 
             <Grid Margin="5 0 5 0"
                   HorizontalAlignment="Right">
-                
+
+                <Button Background="Transparent" 
+                    materialDesign:ShadowAssist.ShadowEdges="None"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                        BorderBrush="DarkSlateGray"
+                        Command="{Binding CancelResignationCommand}"
+                         Visibility="{Binding ResignationState, Converter={converters:ResignationStateToVisibilityConverter}, ConverterParameter='ResignationExists'}"
+                    BorderThickness="0.5">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="EmergencyExit" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+                        <TextBlock Margin="10 0 0 0" Text="Cancel resignation" Foreground="DarkSlateGray"
+                                                   FontSize="12"/>
+                    </StackPanel>
+                </Button>
+
                 <materialDesign:PopupBox 
                                      Background="Transparent"
                                      StaysOpen="True"
@@ -67,7 +83,7 @@
                                 Margin="5"
                                 materialDesign:HintAssist.Hint="Last Workig Day"
                                 materialDesign:HintAssist.IsFloating="True"
-                                Text="{Binding ResignationNewEntry.LastWorkingDay, Converter={converters:DateTimeToStringConverter}, ConverterParameter=5}"/>
+                                Text="{Binding ResignationNewEntry.LastWorkingDay, Mode=TwoWay, Converter={converters:DateTimeToStringConverter}, ConverterParameter=5}"/>
 
                         <ComboBox 
                         BorderThickness="0"

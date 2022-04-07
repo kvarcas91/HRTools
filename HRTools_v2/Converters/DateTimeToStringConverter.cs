@@ -1,4 +1,5 @@
-﻿using HRTools_v2.Converters.Base;
+﻿using Domain.DataManager;
+using HRTools_v2.Converters.Base;
 using System;
 using System.Globalization;
 using System.Windows.Data;
@@ -47,7 +48,9 @@ namespace HRTools_v2.Converters
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value;
+            DateTime.TryParse(value.ToString(), out DateTime date);
+
+            return date;
         }
     }
 }

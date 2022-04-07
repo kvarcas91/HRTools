@@ -4,7 +4,7 @@
     {
         public static string DbSanityCheck(this string query)
         {
-            return query.Replace("'", "''");
+            return query?.Replace("'", "''");
         }
     }
 }

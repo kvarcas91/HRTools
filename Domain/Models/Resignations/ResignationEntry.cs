@@ -8,6 +8,11 @@ namespace Domain.Models.Resignations
         public string TTLink { get; set; }
         public DateTime LastWorkingDay { get; set; }
 
+        public ResignationEntry()
+        {
+            LastWorkingDay = DateTime.MinValue;
+        }
+
         public bool CanAdd()
         {
             return !string.IsNullOrEmpty(ReasonForResignation) && !string.IsNullOrEmpty(TTLink) && !LastWorkingDay.Equals(DateTime.MinValue);
