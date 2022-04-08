@@ -4,7 +4,7 @@
     {
         Default,
         Active,
-        Canceled,
+        Cancelled,
         Terminated,
         Resigned,
         Pending

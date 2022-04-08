@@ -117,6 +117,7 @@
     <Compile Include="Logs\ToastLogger.cs" />
     <Compile Include="Models\AWAL\AwalEntity.cs" />
     <Compile Include="Models\AWAL\AwalEntry.cs" />
+    <Compile Include="Models\AWAL\AwalImportMap.cs" />
     <Compile Include="Models\DataSnips\DataPreview.cs" />
     <Compile Include="Models\DataSnips\EmployeeDataPreview.cs" />
     <Compile Include="Models\DataSnips\EmployeeStatusSnip.cs" />

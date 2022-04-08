@@ -24,7 +24,9 @@
 
     <core:Double x:Key="AwalInputFontSize">12</core:Double>
 
+    <!-- Settings -->
     <core:Double x:Key="SettingsHeaderFontSize">16</core:Double>
+    <core:Double x:Key="SettingsSubHeaderFontSize">14</core:Double>
 
     <!-- Widths -->
     <core:Double x:Key="DashboardSeparatorWidth">100</core:Double>

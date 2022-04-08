@@ -9,35 +9,381 @@
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              d:Background="{DynamicResource Background}"
-             d:DesignHeight="750" d:DesignWidth="1400">
+             d:DesignHeight="1750" d:DesignWidth="1400">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
+        <!-- Settings -->
         <Grid Grid.Column="0" Margin="10">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Text="General Settings"
+            <!-- Header -->
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="General Settings"
                        FontSize="{StaticResource SettingsHeaderFontSize}"
                        FontWeight="Bold"
                        Foreground="DarkSlateGray"
                        Margin="5"/>
 
-            <Separator Grid.Row="1" 
+                <Separator Grid.Row="1" 
                        BorderBrush="LightGray" 
                        BorderThickness="1"/>
-            
-            
-            
+            </StackPanel>
+
+
+
         </Grid>
-        
+
+        <!-- Data Imports -->
+        <ScrollViewer Grid.Column="1"
+            HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto">
+
+            
+            <Grid Margin="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="Data Imports"
+                       FontSize="{StaticResource SettingsHeaderFontSize}"
+                       FontWeight="Bold"
+                       Foreground="DarkSlateGray"
+                       Margin="5"/>
+
+                    <Separator Grid.Row="1" 
+                       BorderBrush="LightGray" 
+                       BorderThickness="1"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="1"
+                    Margin="0 10">
+
+                    <!-- AWAL -->
+                    <Expander Header="AWAL" Background="Transparent"
+                              BorderThickness="0 0 0 1"
+                              BorderBrush="DarkSlateGray">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+
+                            <StackPanel Orientation="Horizontal" Grid.Row="0">
+                                <Button Background="Transparent" 
+                                HorizontalAlignment="Left"
+                    materialDesign:ShadowAssist.ShadowEdges="None"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                        BorderThickness="0 0 0 1"
+                    >
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="FolderOpenOutline" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+                                        <TextBlock Margin="10 0 0 0" Text="Open File" 
+                                           Foreground="DarkSlateGray"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <TextBlock Text="File Name: "
+                                       VerticalAlignment="Center"
+                                       Margin="10 0 0 0"
+                                       FontSize="10"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1"
+                                    Orientation="Vertical"
+                                    Margin="10 10 0 0">
+
+                                <TextBlock Text="* Expected column names for each data point. If it fails to identify column name from file - value will be ignored"
+                                       VerticalAlignment="Center"
+                                           FontStyle="Italic"
+                                       Margin="10 5"/>
+
+                                <Grid Margin="0 10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding AwalMap.ID,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Entry ID"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                         materialDesign:HintAssist.HelperText="If left blank - unique ID will be created automatically"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"
+                                         />
+
+                                    <TextBox Grid.Column="1"
+                                         Text="{Binding AwalMap.EmployeeID,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                    materialDesign:HintAssist.Hint="Employee ID"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                         materialDesign:HintAssist.HelperText="* Mandatory"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"/>
+
+                                    <TextBox Grid.Column="2"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding AwalMap.UserID,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Login (userID)"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                          materialDesign:HintAssist.HelperText="If left blank - will attempt to fill from roster"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"/>
+
+                                </Grid>
+
+                                <Grid Margin="0 20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding AwalMap.EmployeeName,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Employee Name"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                          materialDesign:HintAssist.HelperText="If left blank - will attempt to fill from roster"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"
+                                         />
+
+                                    <TextBox Grid.Column="1"
+                                         Text="{Binding AwalMap.DepartmentID,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                    materialDesign:HintAssist.Hint="Department ID"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                         materialDesign:HintAssist.HelperText="If left blank - will attempt to fill from roster"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"/>
+
+                                    <TextBox Grid.Column="2"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding AwalMap.EmploymentStartDate,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Employment Start Date"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                         materialDesign:HintAssist.HelperText="* dd/MM/yyy date format (day/month/year)"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"/>
+
+                                </Grid>
+
+                                <Grid Margin="0 20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding AwalMap.EmploymentType,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Employment Type"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                          materialDesign:HintAssist.HelperText="If left blank - will attempt to fill from roster"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"
+                                         />
+
+                                    <TextBox Grid.Column="1"
+                                         Text="{Binding AwalMap.ManagerName,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                         materialDesign:HintAssist.Hint="Manager Name"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                         materialDesign:HintAssist.HelperText="If left blank - will attempt to fill from roster"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"/>
+
+                                    <TextBox Grid.Column="2"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding AwalMap.ShiftPattern,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Shift Pattern"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                          materialDesign:HintAssist.HelperText="If left blank - will attempt to fill from roster"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"/>
+
+                                </Grid>
+
+                                <Grid Margin="0 20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding AwalMap.AwalStatus,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Awal Status"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                          materialDesign:HintAssist.HelperText="* Active/Cancelled/Terminated/Resigned/Pending"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"
+                                         />
+
+                                    <TextBox Grid.Column="1"
+                                         Text="{Binding AwalMap.FirstNCNSDate,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                         materialDesign:HintAssist.Hint="First NCNS Date"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                          materialDesign:HintAssist.HelperText="* dd/MM/yyy date format (day/month/year)"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"/>
+
+                                    <TextBox Grid.Column="2"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding AwalMap.Awal1SentDate,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="When AWAL 1 was sent"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                          materialDesign:HintAssist.HelperText="* dd/MM/yyy date format (day/month/year)"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"/>
+
+                                </Grid>
+
+                                <Grid Margin="0 20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding AwalMap.Awal2SentDate,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="When AWAL 2 was sent"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                           materialDesign:HintAssist.HelperText="* dd/MM/yyy date format (day/month/year)"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"
+                                         />
+
+                                    <TextBox Grid.Column="1"
+                                         Text="{Binding AwalMap.DisciplinaryDate,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                         materialDesign:HintAssist.Hint="When Disciplinary was scheduled"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                          materialDesign:HintAssist.HelperText="* dd/MM/yyy date format (day/month/year)"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"/>
+
+                                    <TextBox Grid.Column="2"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding AwalMap.Outcome,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Disciplinary Meeting Outcome"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                          materialDesign:HintAssist.HelperText="* NFA/Verbal,Written,Final Warning/Termination"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"/>
+
+                                </Grid>
+
+                                <Grid Margin="0 20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding AwalMap.CreatedBy,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Case Created By"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                    <TextBox Grid.Column="1"
+                                         Text="{Binding AwalMap.CreatedAt,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                         materialDesign:HintAssist.Hint="Case Created At"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                          materialDesign:HintAssist.HelperText="* dd/MM/yyy date format (day/month/year)"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"/>
+
+                                    <TextBox Grid.Column="2"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding AwalMap.UpdatedBy,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Case Updated By"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                </Grid>
+
+                                <Grid Margin="0 20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                         Text="{Binding AwalMap.UpdatedAt,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                         materialDesign:HintAssist.Hint="Case Updated At"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                          materialDesign:HintAssist.HelperText="* dd/MM/yyy date format (day/month/year)"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"/>
+
+                                    <TextBox Grid.Column="1"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding AwalMap.BridgeCreatedBy,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Who issued NFA / closed AWAL case"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                    <TextBox Grid.Column="2"
+                                         Text="{Binding AwalMap.BridgeCreatedAt,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                         materialDesign:HintAssist.Hint="When NFA was issued / AWAL case closed"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                          materialDesign:HintAssist.HelperText="* dd/MM/yyy date format (day/month/year)"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"/>
+
+                                </Grid>
+
+                                <Grid Margin="0 20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="1"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding AwalMap.ReasonForClosure,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    materialDesign:HintAssist.Hint="Reason for case cancellation/NFA"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+
+                                </Grid>
+
+                                <Button Grid.Column="2"
+                                Margin="10"
+                            Background="Transparent" 
+                    materialDesign:ShadowAssist.ShadowEdges="None"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                        BorderBrush="DarkSlateGray"
+                    BorderThickness="1"
+                                Command="{Binding ImportAwalFileCommand}"
+                    >
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="HomeImportOutline" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+                                        <TextBlock Margin="10 0 0 0" Text="Import" Foreground="DarkSlateGray"
+                                                   FontSize="12"/>
+                                    </StackPanel>
+                                </Button>
+
+                            </StackPanel>
+
+                        </Grid>
+                    </Expander>
+
+                </StackPanel>
+            </Grid>
+            
+        </ScrollViewer>
         
         
     </Grid>

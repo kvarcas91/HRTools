@@ -1,6 +1,4 @@
-﻿using Domain.Types;
-
-namespace Domain.Repository
+﻿namespace Domain.Repository
 {
     public sealed class RepositoryHelper : BaseRepository
     {
@@ -12,23 +10,21 @@ namespace Domain.Repository
                             userID TEXT,
                             employeeName TEXT,
                             departmentID TEXT,
+                            employmentType TEXT,
                             employmentStartDate TEXT,
                             managerName TEXT,
                             shiftPattern TEXT,
                             awalStatus INTEGER,
-                            firstNCNSDate TEXT NOT NULL,
+                            firstNCNSDate TEXT,
                             awal1SentDate TEXT,
                             awal2SentDate TEXT,
                             disciplinaryDate TEXT,
                             outcome TEXT,
-                            ukPendingEndDate TEXT,
-                            createdBy TEXT NOT NULL,
-                            createdAt TEXT NOT NULL,
+                            createdBy TEXTL,
+                            createdAt TEXT,
                             updatedBy TEXT,
                             updatedAt TEXT,
-                            acceptedBy TEXT,
-                            acceptedAt TEXT,
-                            closeBridge TEXT,
+                            reasonForClosure TEXT,
                             bridgeCreatedBy TEXT,
                             bridgeCreatedAt TEXT
                             );

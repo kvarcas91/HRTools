@@ -12,6 +12,7 @@ namespace Domain.Models.AWAL
         public string UserID { get; set; }
         public string EmployeeName { get; set; }
         public string DepartmentID { get; set; }
+        public string EmploymentType { get; set; }
         public DateTime EmploymentStartDate { get; set; }
         public string ManagerName { get; set; }
         public string ShiftPattern { get; set; }
@@ -21,7 +22,7 @@ namespace Domain.Models.AWAL
         public DateTime Awal2SentDate { get; set; }
         public DateTime DisciplinaryDate { get; set; }
         public string Outcome { get; set; }
-        public string CloseBridge { get; set; }
+        public string ReasonForClosure { get; set; }
         public string BridgeCreatedBy { get; set; }
         public DateTime BridgeCreatedAt { get; set; }
         public string CreatedBy { get; set; }
@@ -58,14 +59,14 @@ namespace Domain.Models.AWAL
 
         public string GetHeader()
         {
-            return "(id, employeeID, userID, employeeName, departmentID, employmentStartDate,managerName, shiftPattern,awalStatus,firstNCNSDate,awal1SentDate,awal2SentDate,disciplinaryDate,outcome,closeBridge,bridgeCreatedBy,bridgeCreatedAt,createdBy,createdAt,updatedAt,updatedBy)";
+            return "(id, employeeID, userID, employeeName, departmentID, employmentType, employmentStartDate,managerName, shiftPattern,awalStatus,firstNCNSDate,awal1SentDate,awal2SentDate,disciplinaryDate,outcome,reasonForClosure,bridgeCreatedBy,bridgeCreatedAt,createdBy,createdAt,updatedAt,updatedBy)";
         }
         public string GetValues()
         {
-            return $@"('{ID}','{EmployeeID}','{UserID}','{EmployeeName.DbSanityCheck()}','{DepartmentID}',{EmploymentStartDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)},
+            return $@"('{ID}','{EmployeeID}','{UserID}','{EmployeeName.DbSanityCheck()}','{DepartmentID}','{EmploymentType}',{EmploymentStartDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)},
                         '{ManagerName.DbSanityCheck()}','{ShiftPattern}','{(int)AwalStatus}',{FirstNCNSDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)},
                         {Awal1SentDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)},{Awal2SentDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)},
-                        {DisciplinaryDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)},'{Outcome}','{CloseBridge.DbSanityCheck()}', '{BridgeCreatedBy}',
+                        {DisciplinaryDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)},'{Outcome}','{ReasonForClosure.DbSanityCheck()}', '{BridgeCreatedBy}',
                         {BridgeCreatedAt.DbNullableSanityCheck(DataStorage.LongDBDateFormat)},'{CreatedBy}',{CreatedAt.DbNullableSanityCheck(DataStorage.LongDBDateFormat)},
                         {UpdatedAt.DbNullableSanityCheck(DataStorage.LongDBDateFormat)}, '{UpdatedBy}')";
         }
