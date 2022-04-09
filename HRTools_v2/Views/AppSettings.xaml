@@ -86,6 +86,7 @@
                     materialDesign:ShadowAssist.ShadowEdges="None"
                     materialDesign:ShadowAssist.ShadowDepth="Depth0"
                                         BorderThickness="0 0 0 1"
+                                        Command="{Binding OpenAwalFileCommand}"
                     >
                                     <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon Kind="FolderOpenOutline" 
@@ -96,7 +97,7 @@
                                     </StackPanel>
                                 </Button>
 
-                                <TextBlock Text="File Name: "
+                                <TextBlock Text="{Binding AwalFileName}"
                                        VerticalAlignment="Center"
                                        Margin="10 0 0 0"
                                        FontSize="10"/>
@@ -357,23 +358,70 @@
 
                                 </Grid>
 
-                                <Button Grid.Column="2"
+                                <Grid>
+
+                                    <Button Grid.Column="2"
                                 Margin="10"
                             Background="Transparent" 
                     materialDesign:ShadowAssist.ShadowEdges="None"
                     materialDesign:ShadowAssist.ShadowDepth="Depth0"
                                         BorderBrush="DarkSlateGray"
                     BorderThickness="1"
-                                Command="{Binding ImportAwalFileCommand}"
-                    >
-                                    <StackPanel Orientation="Horizontal">
-                                        <materialDesign:PackIcon Kind="HomeImportOutline" 
+                                Command="{Binding ImportAwalFileCommand}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="HomeImportOutline" 
                                                                  VerticalAlignment="Center"
                                                                  Foreground="DarkSlateGray"/>
-                                        <TextBlock Margin="10 0 0 0" Text="Import" Foreground="DarkSlateGray"
+                                            <TextBlock Margin="10 0 0 0" Text="Import" Foreground="DarkSlateGray"
                                                    FontSize="12"/>
-                                    </StackPanel>
-                                </Button>
+                                        </StackPanel>
+                                    </Button>
+
+                                    <Border Background="Transparent"
+                        Margin="10 0 0 0"
+                        HorizontalAlignment="Center"
+                        Visibility="{Binding IsAwalDataImportInProgress, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <Grid Width="140" Height="10">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="5"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="5"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="5"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="5"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <Ellipse x:Name="PART_Ellipse0" Grid.Column="0" Fill="{StaticResource LoaderElipseBackground}"/>
+                                            <Ellipse x:Name="PART_Ellipse1" Grid.Column="2" Fill="{StaticResource LoaderElipseBackground}"/>
+                                            <Ellipse x:Name="PART_Ellipse2" Grid.Column="4" Fill="{StaticResource LoaderElipseBackground}"/>
+                                            <Ellipse x:Name="PART_Ellipse3" Grid.Column="6" Fill="{StaticResource LoaderElipseBackground}"/>
+                                            <Ellipse x:Name="PART_Ellipse4" Grid.Column="8" Fill="{StaticResource LoaderElipseBackground}"/>
+                                        </Grid>
+                                        <Border.Resources>
+                                            <Style TargetType="Ellipse">
+                                                <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                                                <Setter Property="Width" Value="10"/>
+                                                <Setter Property="Height" Value="10"/>
+                                                <Setter Property="RenderTransform">
+                                                    <Setter.Value>
+                                                        <ScaleTransform ScaleX="0" ScaleY="0"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Border.Resources>
+                                        <Border.Triggers>
+                                            <EventTrigger RoutedEvent="Loaded">
+                                                <BeginStoryboard Storyboard="{StaticResource loader}"/>
+                                            </EventTrigger>
+                                        </Border.Triggers>
+                                    </Border>
+
+                                </Grid>
+                                
+                                
 
                             </StackPanel>
 

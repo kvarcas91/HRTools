@@ -12,6 +12,10 @@ namespace Domain.IO
     {
         private const string NAME = nameof(FileHelper);
 
+        public static string FileName(string path)
+        {
+            return Path.GetFileName(path);
+        }
         public static string VerifyCSV(string data)
         {
             if (string.IsNullOrEmpty(data)) return string.Empty;
