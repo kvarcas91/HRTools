@@ -1,5 +1,7 @@
 ﻿using Domain.Data;
+using Domain.Factory;
 using Domain.IO;
+using Domain.Models;
 using Domain.Networking;
 using Domain.Storage;
 using Domain.Types;
@@ -9,6 +11,7 @@ using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using System;
+using System.Linq;
 
 namespace HRTools_v2.ViewModels
 {
@@ -142,8 +145,10 @@ namespace HRTools_v2.ViewModels
             if (DataStorage.RosterList != null && DataStorage.RosterList.Count > 0) DataStorage.RosterList.Clear();
 
             var csvStream = new CSVStream(path);
-            var rosterList = await _rosterDataManager.GetRosterAsync(csvStream);
-            DataStorage.RosterList.AddRange(rosterList);
+            var dataMap = new DataMap(new RosterImportMap(), DataImportType.Roster);
+            var rosterList = await csvStream.GetAsync(dataMap);
+
+            DataStorage.RosterList.AddRange(rosterList.Cast<Roster>().ToList());
 
             if (rosterList == null || rosterList.Count == 0)
             {

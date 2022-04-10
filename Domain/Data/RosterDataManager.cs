@@ -9,14 +9,7 @@ namespace Domain.Data
 {
     public class RosterDataManager
     {
-        public Task<IList<Roster>> GetRosterAsync(IDataStream dataStream)
-        {
-            return Task.Run(() =>
-            {
-                return dataStream.Get(RequiredRosterHeaders(), CreateRosterObject);
-            });
-        }
-
+        
         public Task<IList<Roster>> GetWebRosterAsync(IWebStream dataStream, string rosterUrl)
         {
 

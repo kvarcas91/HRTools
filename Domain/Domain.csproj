@@ -104,6 +104,10 @@
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Factory\DataImportObjectFactory.cs" />
+    <Compile Include="Factory\DataMap.cs" />
+    <Compile Include="Factory\IDataImportObject.cs" />
+    <Compile Include="Factory\IDataMap.cs" />
     <Compile Include="Interfaces\IDataStream.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\ISearchable.cs" />
@@ -124,6 +128,7 @@
     <Compile Include="Models\Resignations\ResignationEntity.cs" />
     <Compile Include="Models\Resignations\ResignationEntry.cs" />
     <Compile Include="Models\Roster.cs" />
+    <Compile Include="Models\RosterImportMap.cs" />
     <Compile Include="Models\Sanctions\SanctionEntity.cs" />
     <Compile Include="Models\Sanctions\SanctionPreview.cs" />
     <Compile Include="Models\Settings.cs" />
@@ -143,6 +148,7 @@
     <Compile Include="Types\AwalStatus.cs" />
     <Compile Include="States\CacheState.cs" />
     <Compile Include="Types\CaseStatus.cs" />
+    <Compile Include="Types\DataImportType.cs" />
     <Compile Include="Types\EmploymentStatus.cs" />
     <Compile Include="States\HomePageWidgetState.cs" />
     <Compile Include="States\LoadingPageState.cs" />

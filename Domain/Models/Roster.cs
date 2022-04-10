@@ -1,11 +1,12 @@
-﻿using Domain.Interfaces;
+﻿using Domain.Factory;
+using Domain.Interfaces;
 using Domain.IO;
 using Domain.Storage;
 using System;
 
 namespace Domain.Models
 {
-    public class Roster : ISearchable, IWritable
+    public class Roster : ISearchable, IWritable, IDataImportObject
     {
 
         public string EmployeeID { get; set; }
@@ -67,8 +68,25 @@ namespace Domain.Models
 
         public string GetRow()
         {
-
             return $"{FileHelper.VerifyCSV(EmployeeID)},{FileHelper.VerifyCSV(UserID)},{FileHelper.VerifyCSV(EmployeeName)},{FileHelper.VerifyCSV(DepartmentID)},{FileHelper.VerifyCSV(EmploymentStartDate.ToString(DataStorage.ShortPreviewDateFormat))},{FileHelper.VerifyCSV(EmploymentType)},{FileHelper.VerifyCSV(ManagerName)},{FileHelper.VerifyCSV(AgencyCode)},{FileHelper.VerifyCSV(JobTitle)},{FileHelper.VerifyCSV(FCLM)}, {FileHelper.VerifyCSV(ShiftPattern)}";
+        }
+
+        public object ReadFromCSV(string[] fields, DataMap dataMap)
+        {
+            EmployeeID = dataMap.GetStrValue(nameof(EmployeeID), fields);
+            UserID = dataMap.GetStrValue(nameof(UserID), fields);
+            EmployeeName = dataMap.GetStrValue(nameof(EmployeeName), fields);
+            DepartmentID = dataMap.GetStrValue(nameof(DepartmentID), fields);
+            LastHireDate = dataMap.GetStrValue(nameof(LastHireDate), fields);
+            EmploymentType = dataMap.GetStrValue(nameof(EmploymentType), fields);
+            ManagerName = dataMap.GetStrValue(nameof(ManagerName), fields);
+            AgencyCode = dataMap.GetStrValue(nameof(AgencyCode), fields);
+            JobTitle = dataMap.GetStrValue(nameof(JobTitle), fields);
+            FCLM = dataMap.GetStrValue(nameof(FCLM), fields);
+            ShiftPattern = dataMap.GetStrValue(nameof(ShiftPattern), fields);
+            EmploymentStartDate = dataMap.GetDateValue(nameof(EmploymentStartDate), fields);
+
+            return this;
         }
     }
 }

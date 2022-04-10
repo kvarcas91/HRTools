@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Domain.Factory;
 using System.Collections.Generic;
 
 namespace Domain.Interfaces
 {
     public interface IDataStream
     {
-        IList<T> Get<T>(string[] requiredHeaders, Func<string[], Dictionary<string, int>, T> createNewObj) where T : class, new();
+        IList<IDataImportObject> Get(DataMap dataMap);
         void Write<T>(IEnumerable<T> dataList) where T : IWritable;
     }
 }

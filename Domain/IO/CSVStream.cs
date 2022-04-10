@@ -1,8 +1,10 @@
-﻿using Domain.Interfaces;
+﻿using Domain.Factory;
+using Domain.Interfaces;
 using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Domain.IO
 {
@@ -16,9 +18,9 @@ namespace Domain.IO
             _path = path;
         }
 
-        public IList<T> Get<T>(string[] requiredHeaders, Func<string[], Dictionary<string,int>, T> createNewObj) where T : class, new()
+        public IList<IDataImportObject> Get(DataMap dataMap) 
         {
-            List<T> outputList = new List<T>();
+            var outputList = new List<IDataImportObject>();
             string[] headers;
 
             using (TextFieldParser csvParser = new TextFieldParser(_path))
@@ -28,17 +30,20 @@ namespace Domain.IO
                 csvParser.HasFieldsEnclosedInQuotes = true;
 
                 headers = csvParser.ReadLine().Replace("\"", "").Replace(" ", "").Split(',');
-                var map = GetMap(headers, requiredHeaders);
-                if (map.Count == 0) return outputList;
-
+                dataMap.SetDataMap(headers);
                 while (!csvParser.EndOfData)
                 {
                     string[] fields = csvParser.ReadFields();
-                    var results = createNewObj(fields, map);
-                    if (results != null) outputList.Add(results);
+                    var dataFactory = new DataImportObjectFactory().Create(fields, dataMap);
+                    outputList.Add(dataFactory);
                 }
             }
             return outputList;
+        }
+
+        public Task<IList<IDataImportObject>> GetAsync(DataMap dataMap)
+        {
+            return Task.Run(() => Get(dataMap));
         }
 
         public void Write<T>(IEnumerable<T> dataList) where T : IWritable
@@ -59,18 +64,6 @@ namespace Domain.IO
                 }
             }
 
-        }
-
-        public Dictionary<string, int> GetMap(string[] headers, string[] requiredHeaders)
-        {
-            var map = new Dictionary<string, int>();
-
-            foreach (string item in requiredHeaders)
-            {
-                map.Add(item, Array.IndexOf(headers, item));
-            }
-
-            return map;
         }
     }
 }

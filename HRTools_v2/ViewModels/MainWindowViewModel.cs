@@ -1,5 +1,6 @@
 ﻿using Domain.Data;
 using Domain.DataManager;
+using Domain.Factory;
 using Domain.IO;
 using Domain.Logs;
 using Domain.Models;
@@ -15,6 +16,7 @@ using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using ToastNotifications;
 using ToastNotifications.Lifetime;
@@ -198,14 +200,17 @@ namespace HRTools_v2.ViewModels
             if (DataStorage.RosterList != null && DataStorage.RosterList.Count > 0) DataStorage.RosterList.Clear();
 
             var csvStream = new CSVStream(path);
-            var rosterList = await _rosterDataManager.GetRosterAsync(csvStream);
+            var dataMap = new DataMap(new RosterImportMap(), DataImportType.Roster);
+            var rosterList = await csvStream.GetAsync(dataMap);
+
+            
             if (rosterList is null || rosterList.Count == 0)
             {
                 _eventAggregator.GetEvent<ShowToastArgs>().Publish(("Failed to read roster data from csv", NotificationType.Warning));
             }
             else
             {
-                DataStorage.RosterList.AddRange(rosterList);
+                DataStorage.RosterList.AddRange(rosterList.Cast<Roster>().ToList());
             }
             
             RosterComponentState = UIComponentState.Visible;
