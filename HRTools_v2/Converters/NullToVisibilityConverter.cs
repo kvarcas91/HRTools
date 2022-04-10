@@ -9,7 +9,7 @@ namespace HRTools_v2.Converters
     {
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (parameter == null)
+            if (parameter == null || value == null)
             {
                 return value == null ? Visibility.Collapsed : Visibility.Visible;
             }

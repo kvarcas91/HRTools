@@ -22,7 +22,7 @@ namespace Domain.Repository
 
             var validationResponse = _validator.Validate(resignation);
             if (!validationResponse.Success) return Task.Run(() => validationResponse);
-           
+
             var ttLink = resignation.TTLink.Split('/');
             var ttID = ttLink[ttLink.Length-1];
 

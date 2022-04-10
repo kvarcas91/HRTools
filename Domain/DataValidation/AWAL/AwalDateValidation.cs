@@ -123,7 +123,7 @@ namespace Domain.DataValidation.AWAL
                 return;
             }
 
-            if (!string.IsNullOrEmpty(validation.Data.Outcome) && validation.Data.DisciplinaryDate == DateTime.MinValue)
+            if (!string.IsNullOrEmpty(validation.Data.Outcome) && !validation.Data.Outcome.Equals("Cancelled") && validation.Data.DisciplinaryDate == DateTime.MinValue)
             {
                 validation.ValidationResponse = new Response
                 {

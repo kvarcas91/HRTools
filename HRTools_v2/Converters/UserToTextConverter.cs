@@ -8,6 +8,7 @@ namespace HRTools_v2.Converters
     {
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value == null) return "";
             if (string.IsNullOrEmpty(value.ToString())) return "";
 
             switch(parameter)

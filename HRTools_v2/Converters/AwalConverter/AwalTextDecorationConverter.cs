@@ -12,8 +12,13 @@ namespace HRTools_v2.Converters
             try
             {
                 var awalStatus = (AwalStatus)value;
-
-                return awalStatus.Equals(AwalStatus.Cancelled) ? "Strikethrough" : "None";
+                switch (awalStatus)
+                {
+                    case AwalStatus.Cancelled:
+                        return "Strikethrough";
+                    default:
+                        return "None";
+                }
             }
             catch
             {

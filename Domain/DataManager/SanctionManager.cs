@@ -48,7 +48,12 @@ namespace Domain.DataManager
 
         public static List<string> GetSanctions()
         {
-            return new List<string> { "1st LoC", "2nd LoC", "3rd LoC", "Verbal Warning", "Written Warning", "Final Warning" };
+            return new List<string> { "1st LoC", "2nd LoC", "3rd LoC", "Verbal Warning", "Written Warning", "Final Warning", "Termination" };
+        }
+
+        public static List<string> GetAwalSanctions()
+        {
+            return new List<string> {"Cancelled", "Verbal Warning", "Written Warning", "Final Warning", "Termination" };
         }
     }
 }

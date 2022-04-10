@@ -7,6 +7,7 @@
         Cancelled,
         Terminated,
         Resigned,
-        Pending
+        Pending,
+        Inactive
     }
 }

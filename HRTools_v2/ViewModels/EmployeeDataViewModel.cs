@@ -61,8 +61,6 @@ namespace HRTools_v2.ViewModels
             set { SetProperty(ref _employeeLiveSanctions, value); }
         }
 
-       
-
         private string _avatar;
         public string Avatar
         {
@@ -105,6 +103,13 @@ namespace HRTools_v2.ViewModels
         {
             get => _isOnAwal;
             set { SetProperty(ref _isOnAwal, value); }
+        }
+
+        private List<string> _awalSanctionList;
+        public List<string> AwalSanctionList
+        {
+            get { return _awalSanctionList; }
+            set { SetProperty(ref _awalSanctionList, value); }
         }
 
         #endregion
@@ -276,6 +281,12 @@ namespace HRTools_v2.ViewModels
         private DelegateCommand _addAwalCommand = null;
         public DelegateCommand AddAwalCommand => _addAwalCommand ?? (_addAwalCommand = new DelegateCommand(AddAwal));
 
+        private DelegateCommand<AwalEntity> _onAwalCancelCommand = null;
+        public DelegateCommand<AwalEntity> OnAwalCancelCommand => _onAwalCancelCommand ?? (_onAwalCancelCommand = new DelegateCommand<AwalEntity>(CancelAwal));
+
+        private DelegateCommand<AwalEntity> _onAwalEditCommand = null;
+        public DelegateCommand<AwalEntity> OnAwalEditCommand => _onAwalEditCommand ?? (_onAwalEditCommand = new DelegateCommand<AwalEntity>(UpdateAwal));
+
         #endregion
 
 
@@ -301,9 +312,11 @@ namespace HRTools_v2.ViewModels
 
             SanctionsList = new ObservableCollection<SanctionEntity>();
             AwalList = new ObservableCollection<AwalEntity>();
+            AwalSanctionList = new List<string>();
             Timeline = new ObservableCollection<Timeline>();
 
             SanctionList = SanctionManager.GetSanctions();
+            AwalSanctionList = SanctionManager.GetAwalSanctions();
 
             AwalNewEntry = new AwalEntry();
             ResignationNewEntry = new ResignationEntry();
@@ -369,6 +382,8 @@ namespace HRTools_v2.ViewModels
                 AwalList.Insert(0, awalEntry);
                 HasAwalData = true;
 
+                AwalNewEntry = new AwalEntry();
+
                 IsOnAwal = true;
                 if (TimeLineToggleSelection == TimelineOrigin.AWAL || TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimeLineToggleSelection);
                 GetHeaders(SelectedEmployee.EmployeeID);
@@ -400,6 +415,49 @@ namespace HRTools_v2.ViewModels
         {
             var activeAwal = AwalList.Where(x => x.AwalStatus.Equals(AwalStatus.Active)).FirstOrDefault();
             IsOnAwal = activeAwal != null;
+        }
+
+        private async void CancelAwal(AwalEntity awal)
+        {
+            if (awal == null|| string.IsNullOrEmpty(awal.ReasonForClosure))
+            {
+                SendToast("Reason for cancellation is mandatory!", NotificationType.Information);
+                return;
+            }
+            awal.CreateBridge();
+
+            var repo = new AWALRepository();
+            var updateResponse = await repo.CloseAsync(awal);
+            if (updateResponse.Success)
+            {
+                AwalList.Swap(awal, awal);
+                SendToast("AWAL case has been closed!", NotificationType.Success);
+                SetIsOnAwal();
+                if (TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimelineOrigin.AWAL);
+            }
+            else
+            {
+                SendToast(updateResponse.Message, NotificationType.Warning);
+            }
+           
+        }
+
+        private async void UpdateAwal(AwalEntity awal)
+        {
+
+            var repo = new AWALRepository();
+            var response = await repo.UpdateAsync(awal);
+            if (!response.Success)
+            {
+                SendToast(response.Message, NotificationType.Information);
+            }
+            else
+            {
+                AwalList.Swap(awal, awal);
+                SendToast("AWAL case has been updated!", NotificationType.Success);
+                SetIsOnAwal();
+                if (TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimelineOrigin.AWAL);
+            }
         }
 
         #endregion

@@ -401,6 +401,7 @@
                             Orientation="Horizontal"
                                     HorizontalAlignment="Right">
 
+                                <!-- Info -->
                                 <Grid Background="Transparent" Margin="0 0 5 0">
                                     <materialDesign:PackIcon Kind="InfoCircleOutline" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="DarkSlateGray"/>
                                     <Grid.ToolTip>
@@ -438,21 +439,158 @@
                                     </Grid.ToolTip>
                                 </Grid>
 
-                                <Button 
-                                ToolTip="Edit case"
-                                Command="{Binding ElementName=awalListView, Path=DataContext.OnAwalEditCommand}"
-                                          CommandParameter="{Binding}"
-                                        Style="{StaticResource MaterialDesignFlatButton}">
-                                    <materialDesign:PackIcon Kind="EditOutline"/>
-                                </Button>
+                                <!-- Edit case -->
+                                <materialDesign:PopupBox 
+                                     Background="Transparent"
+                                    StaysOpen="True">
 
-                                <Button 
-                                ToolTip="Close AWAL without outcome"
+                                    <materialDesign:PopupBox.ToggleContent>
+
+                                        <Border Background="Transparent" 
+                                            Padding="10"
+                                                ToolTip="Edit case"
+                                            materialDesign:ShadowAssist.ShadowEdges="None"
+                                            materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                            BorderThickness="0">
+
+                                            <materialDesign:PackIcon Kind="EditOutline" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+
+                                        </Border>
+
+                                    </materialDesign:PopupBox.ToggleContent>
+
+                                    <StackPanel Background="Transparent" Margin="10 0 10 0"
+                            Width="300"
+                            Orientation="Vertical">
+
+                                        <DatePicker 
+                                Margin="5"
+                                materialDesign:HintAssist.Hint="First NCNS date"
+                                materialDesign:HintAssist.IsFloating="True"
+                                Text="{Binding FirstNCNSDate, Mode=TwoWay, Converter={converters:DateTimeToStringConverter}, ConverterParameter=5}"/>
+
+                                        <DatePicker 
+                                Margin="5"
+                                materialDesign:HintAssist.Hint="AWAL 1 sent date"
+                                materialDesign:HintAssist.IsFloating="True"
+                                Text="{Binding Awal1SentDate, Mode=TwoWay, Converter={converters:DateTimeToStringConverter}, ConverterParameter=5}"/>
+
+                                        <DatePicker 
+                                Margin="5"
+                                materialDesign:HintAssist.Hint="AWAL 2 sent date"
+                                materialDesign:HintAssist.IsFloating="True"
+                                Text="{Binding Awal2SentDate, Mode=TwoWay, Converter={converters:DateTimeToStringConverter}, ConverterParameter=5}"/>
+
+                                        <DatePicker 
+                                Margin="5"
+                                materialDesign:HintAssist.Hint="Disciplinary date"
+                                materialDesign:HintAssist.IsFloating="True"
+                                Text="{Binding DisciplinaryDate, Mode=TwoWay, Converter={converters:DateTimeToStringConverter}, ConverterParameter=5}"/>
+
+                                        <ComboBox 
+                        BorderThickness="0"
+                        Margin="5"
+                        SelectedValue=""
+                                VerticalContentAlignment="Center"
+                        materialDesign:HintAssist.Hint="Outcomes"
+                        materialDesign:HintAssist.IsFloating="True"
+                        ItemsSource="{Binding ElementName=awalListView, Path=DataContext.AwalSanctionList}"
+                        SelectedItem="{Binding Outcome, Mode=TwoWay}"
+                        IsSynchronizedWithCurrentItem="True">
+                                        </ComboBox>
+
+                                        <Separator Grid.Row="1" BorderBrush="LightGray" BorderThickness="1"
+                               Margin="1"/>
+
+                                        <Grid>
+
+                                            <Button HorizontalAlignment="Right"
+                                Margin="5"
+                            Background="Transparent" 
+                    materialDesign:ShadowAssist.ShadowEdges="None"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                        BorderBrush="DarkSlateGray"
+                    BorderThickness="1"
+                                Command="{Binding ElementName=awalListView, Path=DataContext.OnAwalEditCommand}"
+                                          CommandParameter="{Binding}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <materialDesign:PackIcon Kind="CreateOutline" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+                                                    <TextBlock Margin="10 0 0 0" Text="Submit" Foreground="DarkSlateGray"
+                                                   FontSize="12"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </Grid>
+
+                                    </StackPanel>
+
+                                </materialDesign:PopupBox>
+
+                                <!-- Close case -->
+                                <materialDesign:PopupBox 
+                                     Background="Transparent"
+                                    StaysOpen="True">
+
+                                    <materialDesign:PopupBox.ToggleContent>
+
+                                        <Border Background="Transparent" 
+                                            Padding="10"
+                                                ToolTip="Close AWAL without outcome"
+                                            materialDesign:ShadowAssist.ShadowEdges="None"
+                                            materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                            BorderThickness="0">
+
+                                            <materialDesign:PackIcon Kind="CloseOutline" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+                                         
+                                        </Border>
+
+                                    </materialDesign:PopupBox.ToggleContent>
+
+                                    <StackPanel Background="Transparent" Margin="10 0 10 0"
+                            Width="300"
+                            Orientation="Vertical">
+
+                                        <TextBox 
+                    Text="{Binding ReasonForClosure, Mode=TwoWay}"
+                    Background="Transparent"
+                    materialDesign:HintAssist.Hint="Reason for Closure"
+                    materialDesign:HintAssist.IsFloating="True"
+                                            materialDesign:HintAssist.HelperText="* Mandatory"
+                                            materialDesign:HintAssist.HelperTextFontSize="8"
+                    BorderThickness="0"
+                    Margin="5"
+                    TextWrapping="Wrap" />
+
+
+                                        <Grid>
+
+                                            <Button HorizontalAlignment="Right"
+                                Margin="5"
+                            Background="Transparent" 
+                    materialDesign:ShadowAssist.ShadowEdges="None"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                        BorderBrush="DarkSlateGray"
+                    BorderThickness="1"
                                 Command="{Binding ElementName=awalListView, Path=DataContext.OnAwalCancelCommand}"
-                                          CommandParameter="{Binding}"
-                                        Style="{StaticResource MaterialDesignFlatButton}">
-                                    <materialDesign:PackIcon Kind="CloseOutline"/>
-                                </Button>
+                                          CommandParameter="{Binding}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <materialDesign:PackIcon Kind="CreateOutline" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+                                                    <TextBlock Margin="10 0 0 0" Text="Submit" Foreground="DarkSlateGray"
+                                                   FontSize="12"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </Grid>
+
+                                    </StackPanel>
+
+                                </materialDesign:PopupBox>
 
                             </StackPanel>
 

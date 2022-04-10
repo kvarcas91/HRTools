@@ -1,5 +1,4 @@
-﻿using Domain.Models.AWAL;
-using Domain.Storage;
+﻿using Domain.Storage;
 using Domain.Types;
 using System;
 
@@ -19,6 +18,16 @@ namespace Domain.Models
             CreatedBy = Environment.UserName;
             CreatedAt = DateTime.Now;
             Origin = origin.ToString();
+            return this;
+        }
+
+        public Timeline Create(string emplId, TimelineOrigin origin, string message)
+        {
+            EmployeeID = emplId;
+            CreatedBy = Environment.UserName;
+            CreatedAt = DateTime.Now;
+            Origin = origin.ToString();
+            EventMessage = message;
             return this;
         }
 

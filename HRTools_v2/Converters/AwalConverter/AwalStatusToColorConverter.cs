@@ -10,8 +10,15 @@ namespace HRTools_v2.Converters
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var awalStatus = (AwalStatus)value;
-
-            return awalStatus.Equals(AwalStatus.Active) ? "Red" : "Gray";
+            switch (awalStatus)
+            {
+                case AwalStatus.Active:
+                    return "Red";
+                case AwalStatus.Pending:
+                    return "Orange";
+                    default:
+                    return "Gray";
+            }
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

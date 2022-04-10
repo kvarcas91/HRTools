@@ -43,6 +43,7 @@ namespace Domain.Models.AWAL
             EmployeeID = empl.EmployeeID;
             UserID = empl.UserID;
             EmployeeName = empl.EmployeeName;
+            EmploymentType = empl.EmploymentType;
             DepartmentID = empl.DepartmentID;
             EmploymentStartDate = empl.EmploymentStartDate;
             ManagerName = empl.ManagerName;
@@ -70,6 +71,16 @@ namespace Domain.Models.AWAL
                         {DisciplinaryDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)},'{Outcome}','{ReasonForClosure.DbSanityCheck()}', '{BridgeCreatedBy}',
                         {BridgeCreatedAt.DbNullableSanityCheck(DataStorage.LongDBDateFormat)},'{CreatedBy}',{CreatedAt.DbNullableSanityCheck(DataStorage.LongDBDateFormat)},
                         {UpdatedAt.DbNullableSanityCheck(DataStorage.LongDBDateFormat)}, '{UpdatedBy}')";
+        }
+
+        public void CreateBridge()
+        {
+            BridgeCreatedBy = Environment.UserName;
+            BridgeCreatedAt = DateTime.Now;
+            Outcome = "Cancelled";
+            UpdatedAt = DateTime.Now;
+            UpdatedBy = Environment.UserName;
+            AwalStatus = AwalStatus.Cancelled;
         }
 
         public object ReadFromCSV(string[] fields, DataMap dataMap)
