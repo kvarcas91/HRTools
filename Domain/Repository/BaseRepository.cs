@@ -1,11 +1,13 @@
 ﻿using Dapper;
 using Domain.DataManager;
+using Domain.Factory;
 using Domain.IO;
 using Domain.Storage;
 using Domain.Types;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Domain.Repository
@@ -15,6 +17,7 @@ namespace Domain.Repository
 
         private const string NAME = nameof(BaseRepository);
 
+       
         internal Response Execute(string query)
         {
             var connection = OpenConnection();
@@ -66,6 +69,30 @@ namespace Domain.Repository
                     transaction.Dispose();
                     CloseConnection(connection);
                 }
+            });
+
+        }
+
+        internal Task<Response> InsertAllAsync<T>(IList<T> list, string table) where T : IDataImportObject
+        {
+            return Task.Run(() =>
+            {
+                if (list == null || list.Count == 0) return new Response { Success = false, Message = $"Failed to insert {table}" };
+                StringBuilder queryBuilder = new StringBuilder();
+
+                queryBuilder.Append($"INSERT INTO {table} {list[0].GetHeader()} VALUES ");
+
+                for (int i = 0; i < list.Count; i++)
+                {
+
+                    queryBuilder.Append(list[i].GetValues());
+                    if (i + 1 < list.Count)
+                    {
+                        queryBuilder.Append(", ");
+                    }
+                }
+
+                return Execute(queryBuilder.ToString());
             });
 
         }

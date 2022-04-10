@@ -367,6 +367,7 @@
                     materialDesign:ShadowAssist.ShadowDepth="Depth0"
                                         BorderBrush="DarkSlateGray"
                     BorderThickness="1"
+                                            Visibility="{Binding IsAwalDataImportInProgress, Converter={StaticResource InverseBoolToVisConverter}}"
                                 Command="{Binding ImportAwalFileCommand}">
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon Kind="HomeImportOutline" 

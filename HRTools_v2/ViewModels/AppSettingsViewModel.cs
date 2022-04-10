@@ -1,6 +1,8 @@
-﻿using Domain.IO;
+﻿using Domain.Factory;
+using Domain.IO;
 using Domain.Models;
 using Domain.Models.AWAL;
+using Domain.Repository;
 using Domain.Storage;
 using Domain.Types;
 using HRTools_v2.Args;
@@ -67,7 +69,7 @@ namespace HRTools_v2.ViewModels
             IsAwalDataImportInProgress = false;
         }
 
-        private void ImportAwal()
+        private async void ImportAwal()
         {
             if (string.IsNullOrEmpty(AwalFileName))
             {
@@ -75,6 +77,18 @@ namespace HRTools_v2.ViewModels
                 return;
             }
             IsAwalDataImportInProgress = true;
+            var dataMap = new DataMap(AwalMap, DataImportType.Awal);
+            var csvReader = new CSVStream(AwalFileName);
+            var csvOutput = csvReader.Get(dataMap);
+            var awalRepo = new AWALRepository();
+            var response = await awalRepo.InsertAllAsync(csvOutput);
+            IsAwalDataImportInProgress = false;
+
+            if (response.Success)
+            {
+                SendMessage("AWAL data has been imported!", NotificationType.Success);
+            }
+            else SendMessage(response.Message, NotificationType.Warning);
 
 
         }
@@ -85,7 +99,7 @@ namespace HRTools_v2.ViewModels
             var path = dialog.ShowOpenDialog();
             if (string.IsNullOrEmpty(path)) return;
 
-            AwalFileName = FileHelper.FileName(path);
+            AwalFileName = FileHelper.FileFullName(path);
         }
 
         private void SendMessage(string message, NotificationType notificationType)

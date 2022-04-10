@@ -14,7 +14,7 @@ namespace HRTools_v2.Converters
             {
                 var awalStatus = (AwalStatus)value;
 
-                return !awalStatus.Equals(AwalStatus.Active) ? Application.Current.FindResource("SecondaryListFontSize") : Application.Current.FindResource("PrimaryListFontSize");
+                return awalStatus.Equals(AwalStatus.Cancelled) ? Application.Current.FindResource("SecondaryListFontSize") : Application.Current.FindResource("PrimaryListFontSize");
             }
             catch
             {

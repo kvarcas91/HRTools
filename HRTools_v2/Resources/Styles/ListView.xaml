@@ -306,8 +306,8 @@
                                         <TextBlock Text="{Binding AwalStatus}"
                                            VerticalAlignment="Center" 
                                    TextDecorations="{Binding AwalStatus, Converter={converters:AwalTextDecorationConverter}}"
-                                       FontSize="{Binding SanctionEndDate, Converter={converters:AwalTextSizeConverter}}"
-                                   Foreground="{Binding SanctionEndDate, Converter={converters:AwalTextForegroundConverter}}"
+                                       FontSize="{Binding AwalStatus, Converter={converters:AwalTextSizeConverter}}"
+                                   Foreground="{Binding AwalStatus, Converter={converters:AwalTextForegroundConverter}}"
                                          Padding="0 0 5 2"/>
                                        
                                             
@@ -324,8 +324,8 @@
                                 <TextBlock 
                                   Text="{Binding FirstNCNSDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"
                                  TextDecorations="{Binding AwalStatus, Converter={converters:AwalTextDecorationConverter}}"
-                                       FontSize="{Binding SanctionEndDate, Converter={converters:AwalTextSizeConverter}}"
-                                   Foreground="{Binding SanctionEndDate, Converter={converters:AwalTextForegroundConverter}}"/>
+                                       FontSize="{Binding AwalStatus, Converter={converters:AwalTextSizeConverter}}"
+                                   Foreground="{Binding AwalStatus, Converter={converters:AwalTextForegroundConverter}}"/>
                             </StackPanel>
 
                             <!-- Separator -->
@@ -344,8 +344,8 @@
                                 <TextBlock 
                                   Text="{Binding Awal1SentDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"
                                  TextDecorations="{Binding AwalStatus, Converter={converters:AwalTextDecorationConverter}}"
-                                       FontSize="{Binding SanctionEndDate, Converter={converters:AwalTextSizeConverter}}"
-                                   Foreground="{Binding SanctionEndDate, Converter={converters:AwalTextForegroundConverter}}"/>
+                                       FontSize="{Binding AwalStatus, Converter={converters:AwalTextSizeConverter}}"
+                                   Foreground="{Binding AwalStatus, Converter={converters:AwalTextForegroundConverter}}"/>
                             </StackPanel>
 
                             <!-- AWAL 2 -->
@@ -358,8 +358,8 @@
                                 <TextBlock 
                                   Text="{Binding Awal2SentDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"
                                  TextDecorations="{Binding AwalStatus, Converter={converters:AwalTextDecorationConverter}}"
-                                       FontSize="{Binding SanctionEndDate, Converter={converters:AwalTextSizeConverter}}"
-                                   Foreground="{Binding SanctionEndDate, Converter={converters:AwalTextForegroundConverter}}"/>
+                                       FontSize="{Binding AwalStatus, Converter={converters:AwalTextSizeConverter}}"
+                                   Foreground="{Binding AwalStatus, Converter={converters:AwalTextForegroundConverter}}"/>
                             </StackPanel>
 
                             <!-- Separator -->
@@ -378,8 +378,8 @@
                                 <TextBlock 
                                   Text="{Binding DisciplinaryDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"
                                  TextDecorations="{Binding AwalStatus, Converter={converters:AwalTextDecorationConverter}}"
-                                       FontSize="{Binding SanctionEndDate, Converter={converters:AwalTextSizeConverter}}"
-                                   Foreground="{Binding SanctionEndDate, Converter={converters:AwalTextForegroundConverter}}"/>
+                                       FontSize="{Binding AwalStatus, Converter={converters:AwalTextSizeConverter}}"
+                                   Foreground="{Binding AwalStatus, Converter={converters:AwalTextForegroundConverter}}"/>
                             </StackPanel>
 
                             <!-- Outcome -->
@@ -392,8 +392,8 @@
                                 <TextBlock 
                                   Text="{Binding Outcome}"
                                  TextDecorations="{Binding AwalStatus, Converter={converters:AwalTextDecorationConverter}}"
-                                       FontSize="{Binding SanctionEndDate, Converter={converters:AwalTextSizeConverter}}"
-                                   Foreground="{Binding SanctionEndDate, Converter={converters:AwalTextForegroundConverter}}"/>
+                                       FontSize="{Binding AwalStatus, Converter={converters:AwalTextSizeConverter}}"
+                                   Foreground="{Binding AwalStatus, Converter={converters:AwalTextForegroundConverter}}"/>
                             </StackPanel>
 
                             <!-- Controls -->
@@ -431,7 +431,7 @@
                                             <TextBlock Grid.Row="3" Visibility="{Binding CloseBridge, Converter={converters:NullToVisibilityConverter}, ConverterParameter='tooltip'}"
                                                        Margin="0 5 0 0">
                                                 <Run Text='"'/>
-                                                <Run Text="{Binding CloseBridge}" FontStyle="Italic"/>
+                                                <Run Text="{Binding ReasonForClosure}" FontStyle="Italic"/>
                                                  <Run Text='"'/>
                                             </TextBlock>
                                         </Grid>

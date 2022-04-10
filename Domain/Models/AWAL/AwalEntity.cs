@@ -1,11 +1,12 @@
 ﻿using Domain.Extensions;
+using Domain.Factory;
 using Domain.Storage;
 using Domain.Types;
 using System;
 
 namespace Domain.Models.AWAL
 {
-    public class AwalEntity
+    public class AwalEntity : IDataImportObject
     {
         public string ID { get; set; }
         public string EmployeeID { get; set; }
@@ -69,6 +70,40 @@ namespace Domain.Models.AWAL
                         {DisciplinaryDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)},'{Outcome}','{ReasonForClosure.DbSanityCheck()}', '{BridgeCreatedBy}',
                         {BridgeCreatedAt.DbNullableSanityCheck(DataStorage.LongDBDateFormat)},'{CreatedBy}',{CreatedAt.DbNullableSanityCheck(DataStorage.LongDBDateFormat)},
                         {UpdatedAt.DbNullableSanityCheck(DataStorage.LongDBDateFormat)}, '{UpdatedBy}')";
+        }
+
+        public object ReadFromCSV(string[] fields, DataMap dataMap)
+        {
+            ID = dataMap.GetStrValue(nameof(ID), fields);
+            if (string.IsNullOrEmpty(ID)) ID = Guid.NewGuid().ToString();
+            EmployeeID = dataMap.GetStrValue(nameof(EmployeeID), fields);
+            UserID = dataMap.GetStrValue(nameof(UserID), fields);
+            EmployeeName = dataMap.GetStrValue(nameof(EmployeeName), fields);
+            DepartmentID = dataMap.GetStrValue(nameof(DepartmentID), fields);
+            EmploymentType = dataMap.GetStrValue(nameof(EmploymentType), fields);
+            EmploymentStartDate = dataMap.GetDateValue(nameof(EmploymentStartDate), fields);
+            ShiftPattern = dataMap.GetStrValue(nameof(ShiftPattern), fields);
+            ManagerName = dataMap.GetStrValue(nameof(ManagerName), fields);
+            Enum.TryParse(dataMap.GetStrValue(nameof(AwalStatus), fields), out AwalStatus status);
+            AwalStatus = status;
+            FirstNCNSDate = dataMap.GetDateValue(nameof(FirstNCNSDate), fields);
+            Awal1SentDate = dataMap.GetDateValue(nameof(Awal1SentDate), fields);
+            Awal2SentDate = dataMap.GetDateValue(nameof(Awal2SentDate), fields);
+            DisciplinaryDate = dataMap.GetDateValue(nameof(DisciplinaryDate), fields);
+            Outcome = dataMap.GetStrValue(nameof(Outcome), fields);
+            ReasonForClosure = dataMap.GetStrValue(nameof(ReasonForClosure), fields);
+            if (!string.IsNullOrEmpty(ReasonForClosure))
+            {
+
+            }
+            BridgeCreatedAt = dataMap.GetDateValue(nameof(BridgeCreatedAt), fields);
+            BridgeCreatedBy = dataMap.GetStrValue(nameof(BridgeCreatedBy), fields);
+            CreatedAt = dataMap.GetDateValue(nameof(CreatedAt), fields);
+            CreatedBy = dataMap.GetStrValue(nameof(CreatedBy), fields);
+            UpdatedAt = dataMap.GetDateValue(nameof(UpdatedAt), fields);
+            UpdatedBy = dataMap.GetStrValue(nameof(UpdatedBy), fields);
+
+            return this;
         }
 
     }

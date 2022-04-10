@@ -88,5 +88,10 @@ namespace Domain.Models
 
             return this;
         }
+
+        public string GetValues()
+        {
+            return string.Empty;
+        }
     }
 }

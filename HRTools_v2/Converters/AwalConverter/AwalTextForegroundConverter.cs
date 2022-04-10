@@ -13,7 +13,7 @@ namespace HRTools_v2.Converters
             {
                 var awalStatus = (AwalStatus)value;
 
-                return awalStatus.Equals(AwalStatus.Active) ? "Black" : "Gray";
+                return awalStatus.Equals(AwalStatus.Cancelled) ? "Gray" : "Black";
             }
             catch
             {

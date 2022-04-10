@@ -1,6 +1,9 @@
-﻿namespace Domain.Models.AWAL
+﻿using Domain.Factory;
+using System.Collections.Generic;
+
+namespace Domain.Models.AWAL
 {
-    public class AwalImportMap
+    public class AwalImportMap : IDataMap
     {
         public string EmployeeID { get; set; }
         public string ID { get; set; }
@@ -25,6 +28,17 @@
         public string BridgeCreatedAt { get; set; }
         public string ReasonForClosure { get; set; }
 
+        public Dictionary<string, string> GetRequiredHeaders()
+        {
+            return new Dictionary<string, string>
+            {
+                {"EmployeeID", EmployeeID }, {"ID", ID },{"UserID", UserID },{ "EmployeeName", EmployeeName}, {"DepartmentID", DepartmentID }, { "EmploymentStartDate", EmploymentStartDate}, {"EmploymentType", EmploymentType }, 
+                { "ManagerName", ManagerName}, { "ShiftPattern", ShiftPattern}, {"AwalStatus", AwalStatus }, { "FirstNCNSDate", FirstNCNSDate}, { "Awal1SentDate", Awal1SentDate}, {"Awal2SentDate", Awal2SentDate }, 
+                { "DisciplinaryDate", DisciplinaryDate}, {"Outcome", Outcome },{ "CreatedBy", CreatedBy},{ "CreatedAt", CreatedAt}, {"UpdatedBy", UpdatedBy },{ "UpdatedAt", UpdatedAt},{ "BridgeCreatedBy", BridgeCreatedBy},
+                { "BridgeCreatedAt", BridgeCreatedAt},{ "ReasonForClosure", ReasonForClosure}
+            };
+        }
+
         public AwalImportMap SetDefaultValues()
         {
             ID = "id";
@@ -48,7 +62,7 @@
             UpdatedAt = "updatedAt";
             BridgeCreatedAt = "bridgeCreatedAt";
             BridgeCreatedBy = "bridgeCreatedBy";
-            ReasonForClosure = "reasonForClosure";
+            ReasonForClosure = "closeBridge";
 
             return this;
         }

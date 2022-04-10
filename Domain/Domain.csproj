@@ -110,6 +110,7 @@
     <Compile Include="Factory\IDataMap.cs" />
     <Compile Include="Interfaces\IDataStream.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
+    <Compile Include="Interfaces\IQueryable.cs" />
     <Compile Include="Interfaces\ISearchable.cs" />
     <Compile Include="Interfaces\IWebStream.cs" />
     <Compile Include="Interfaces\IWritable.cs" />
