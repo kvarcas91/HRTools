@@ -1,4 +1,5 @@
-﻿using Domain.Interfaces;
+﻿using Domain.DataManager;
+using Domain.Interfaces;
 using Domain.Models;
 using Domain.Storage;
 using System;
@@ -58,9 +59,9 @@ namespace Domain.Data
                 if (map["ManagementAreaID"] >= 0) employee.FCLM = fields[map["ManagementAreaID"]];
                 if (map["ShiftPattern"] >= 0) employee.ShiftPattern = fields[map["ShiftPattern"]];
             }
-            catch
+            catch (Exception EX)
             {
-                return null;
+                LoggerManager.Log("CreateRosterObject", EX.Message);
             }
 
             return employee;

@@ -287,6 +287,9 @@ namespace HRTools_v2.ViewModels
         private DelegateCommand<AwalEntity> _onAwalEditCommand = null;
         public DelegateCommand<AwalEntity> OnAwalEditCommand => _onAwalEditCommand ?? (_onAwalEditCommand = new DelegateCommand<AwalEntity>(UpdateAwal));
 
+        private DelegateCommand<string> _onAwalLetterRequestedCommand = null;
+        public DelegateCommand<string> OnAwalLetterRequestedCommand => _onAwalLetterRequestedCommand ?? (_onAwalLetterRequestedCommand = new DelegateCommand<string>(RequestAwalLetter));
+
         #endregion
 
 
@@ -458,6 +461,11 @@ namespace HRTools_v2.ViewModels
                 SetIsOnAwal();
                 if (TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimelineOrigin.AWAL);
             }
+        }
+
+        private void RequestAwalLetter(string awalLetterType)
+        {
+            var repo = new AWALRepository();
         }
 
         #endregion

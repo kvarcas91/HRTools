@@ -20,8 +20,8 @@ namespace Domain.Networking
             req.UseDefaultCredentials = true;
             req.PreAuthenticate = true;
             req.MaximumAutomaticRedirections = 100;
-            req.ContinueTimeout = 5 * 3 * 1000;
-            req.Timeout = 5 * 3 * 1000;
+            req.ContinueTimeout = 5 * 6 * 1000;
+            req.Timeout = 5 * 6 * 1000;
             req.Headers.Add(HttpRequestHeader.Cookie, "security=true");
             req.Credentials = CredentialCache.DefaultCredentials;
 
@@ -36,8 +36,7 @@ namespace Domain.Networking
                 LoggerManager.Log("WebStream.Get", e.Message);
                 return outputList;
             }
-            
-            if (!resp.ContentType.Equals("text/csv")) return outputList;
+            if (!resp.ContentType.Contains("text/csv") && !resp.ContentType.Contains("excel")) return outputList;
 
             using (var reader = new StreamReader(resp.GetResponseStream()))
             using (TextFieldParser csvParser = new TextFieldParser(reader))
@@ -48,11 +47,11 @@ namespace Domain.Networking
 
                 headers = csvParser.ReadLine().Replace("\"", "").Replace(" ", "").Split(',');
                 var map = GetMap(headers, requiredHeaders);
+
                 if (map.Count == 0) return outputList;
 
                 while (!csvParser.EndOfData)
                 {
-
                     string[] fields = csvParser.ReadFields();
                     if (fields.Length < 2) continue;
                     var results = createNewObj(fields, map);

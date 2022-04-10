@@ -26,6 +26,8 @@ namespace Domain.Data
                 output.PunchURL = settings["PunchURL"].Value;
                 output.RosterWebDateFormat = settings["RosterWebDateFormat"].Value;
                 output.ResignationsQuicklinkURL = settings["ResignationsQuicklinkURL"].Value;
+                output.SecurityChanelWebHook = settings["SecurityChanelWebHook"].Value;
+                output.AwalChanelWebHook = settings["AwalChanelWebHook"].Value;
             }
             catch
             {

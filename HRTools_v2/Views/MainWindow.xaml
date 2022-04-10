@@ -283,6 +283,12 @@
                     Grid.Row="1"
                     Margin="5">
 
+                        <TextBlock Text="sslts@" 
+                                   Foreground="Gray"
+                                   FontSize="10"
+                                   VerticalAlignment="Center"
+                                   Margin="0 0 10 0"/>
+
                         <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
                          IsIndeterminate="True"
                          Visibility="{Binding RosterComponentState, Converter={converters:UIComponentStateToVisibilityConverter}, ConverterParameter='Loader'}"

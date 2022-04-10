@@ -136,6 +136,7 @@
     <Compile Include="Models\Suspension.cs" />
     <Compile Include="Models\Timeline.cs" />
     <Compile Include="Networking\WebHelper.cs" />
+    <Compile Include="Networking\WebHook.cs" />
     <Compile Include="Networking\WebStream.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\AWALRepository.cs" />

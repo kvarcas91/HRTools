@@ -4,6 +4,7 @@ using Domain.Extensions;
 using Domain.Factory;
 using Domain.Models;
 using Domain.Models.AWAL;
+using Domain.Networking;
 using Domain.Storage;
 using Domain.Types;
 using System;
@@ -94,6 +95,13 @@ namespace Domain.Repository
                         disciplinaryDate = '{awal.DisciplinaryDate.ToString(DataStorage.LongDBDateFormat)}', outcome = '{awal.Outcome}', awalStatus = '{(int)awal.AwalStatus}' WHERE id = '{awal.ID}'; {timelineQuery}";
 
             return ExecuteAsync(query);
+        }
+
+        public async Task<Response> RequestAwalLetterAsync(string emplId, string awalType)
+        {
+            var query = $"SELECT * from awal WHERE employeeID = '' AND awalStatus = '{(int)AwalStatus.Active}';";
+            _ = await WebHook.PostAsync("", "");
+            return new Response();
         }
 
         private string GetUpdateTimelineString(AwalEntity awal)

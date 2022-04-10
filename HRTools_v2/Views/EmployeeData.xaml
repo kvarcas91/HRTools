@@ -924,7 +924,11 @@
                             </Grid.RowDefinitions>
 
                             <!-- Controls -->
-                            <Grid Grid.Column="0">
+                            <Grid Grid.Column="0" HorizontalAlignment="Right">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
                                 <Button x:Name="awalShowDrawerButton" Grid.Row="0" 
                                         HorizontalAlignment="Right"
                                         Style="{StaticResource MaterialDesignFlatButton}" ToolTip="Create new AWAL case">
@@ -998,51 +1002,59 @@
                                     </Button.Triggers>
                                 </Button>
 
-                                <ComboBox x:Name="awalOutcomeCombo"
-                                          Width="150"
-                                          Visibility="Hidden"
-                                          HorizontalAlignment="Right" 
-                                          materialDesign:HintAssist.Hint="Outcome"
-                                          ItemsSource="{Binding SanctionList}"
-                                          SelectedItem="{Binding SelectedSanction}"
-                                          FontSize="{DynamicResource AwalInputFontSize}"
-                                           materialDesign:HintAssist.IsFloating="True"/>
+                                <!-- Notify Awal Team -->
+                                <materialDesign:PopupBox 
+                                    Grid.Column="1"
+                                     Background="Transparent"
+                                    StaysOpen="True">
 
-                                <DatePicker  x:Name="awalDisciplinaryDate"
-                                             HorizontalAlignment="Right"
-                                             Visibility="Hidden"
-                                            SelectedDate="{Binding SanctionStartDate}"
-                                    FontSize="{DynamicResource AwalInputFontSize}"
-                                            Width="120" 
-                                            materialDesign:HintAssist.Hint="Disciplinary date"
-                                     materialDesign:HintAssist.IsFloating="True"/>
+                                    <materialDesign:PopupBox.ToggleContent>
 
-                                <DatePicker  x:Name="awalPendingDate"
-                                     Visibility="Hidden"
-                                             HorizontalAlignment="Right"
-                                            SelectedDate="{Binding SanctionStartDate}"
-                                             FontSize="{DynamicResource AwalInputFontSize}"
-                                            MinWidth="120"  
-                                              materialDesign:HintAssist.Hint="UK Pending end date"
-                                              materialDesign:HintAssist.IsFloating="True"/>
+                                        <Border Background="Transparent" 
+                                            Padding="10"
+                                                ToolTip="Request AWAL team to send AWAL letter"
+                                            materialDesign:ShadowAssist.ShadowEdges="None"
+                                            materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                            BorderThickness="0">
 
-                               
+                                            <materialDesign:PackIcon Kind="BellOutline" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+
+                                        </Border>
+
+                                    </materialDesign:PopupBox.ToggleContent>
+
+                                    <Grid Background="Transparent" Margin="0 -5"
+                            Width="300">
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+
+                                        <Button Grid.Column="0"
+                                Content="Request AWAL 1"
+                                          Margin="5 0 5 0"
+                                        Style="{StaticResource MaterialDesignOutlinedDarkButton}"
+                                        Command="{Binding OnAwalLetterRequestedCommand}"
+                                        CommandParameter="1"/>
+
+                                        <Button Grid.Column="1"
+                                Content="Request AWAL 2"
+                                          Margin="5 0 5 0"
+                                       Style="{StaticResource MaterialDesignOutlinedDarkButton}"
+                                      Command="{Binding OnAwalLetterRequestedCommand}"
+                                        CommandParameter="2"/>
+
+                                    </Grid>
+
+                                </materialDesign:PopupBox>
 
                             </Grid>
 
-                            <!-- test data -->
-                            <Grid HorizontalAlignment="Right">
-                                
-                                
-
-                                
-
-
-
-                            </Grid>
-                            
-                            
-                            
+                           
                             
                             
                             <Separator Grid.Row="1" BorderBrush="LightGray" BorderThickness="1"/>
@@ -1087,7 +1099,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <materialDesign:Card Grid.Row="0" Margin="5 0 5 5" 
+                <materialDesign:Card Grid.Row="0" Margin="5 0 5 10" 
                              materialDesign:ShadowAssist.ShadowDepth="Depth0">
 
                     <Grid Margin="10">
