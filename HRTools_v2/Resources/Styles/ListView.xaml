@@ -497,8 +497,7 @@
                         materialDesign:HintAssist.Hint="Outcomes"
                         materialDesign:HintAssist.IsFloating="True"
                         ItemsSource="{Binding ElementName=awalListView, Path=DataContext.AwalSanctionList}"
-                        SelectedItem="{Binding Outcome, Mode=TwoWay}"
-                        IsSynchronizedWithCurrentItem="True">
+                        SelectedItem="{Binding Outcome, Mode=TwoWay}">
                                         </ComboBox>
 
                                         <Separator Grid.Row="1" BorderBrush="LightGray" BorderThickness="1"

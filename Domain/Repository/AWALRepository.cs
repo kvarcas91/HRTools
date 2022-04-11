@@ -58,7 +58,7 @@ namespace Domain.Repository
             var tlQuery = $"INSERT INTO timeline {timeLine.GetHeader()} VALUES {timeLine.GetValues()};";
             var query = $@"UPDATE awal SET awalStatus = '{(int)awal.AwalStatus}', outcome = '{awal.Outcome}', updatedAt = '{awal.UpdatedAt.ToString(DataStorage.LongDBDateFormat)}', 
                         updatedBy = '{awal.UpdatedBy}', reasonForClosure = '{awal.ReasonForClosure.DbSanityCheck()}', bridgeCreatedBy = '{awal.BridgeCreatedBy}', 
-                        bridgeCreatedAt = '{awal.BridgeCreatedAt.ToString(DataStorage.LongDBDateFormat)}'; {tlQuery}";
+                        bridgeCreatedAt = '{awal.BridgeCreatedAt.ToString(DataStorage.LongDBDateFormat)}' WHERE id= '{awal.ID}'; {tlQuery}";
             return ExecuteAsync(query);
         }
 
@@ -147,8 +147,8 @@ namespace Domain.Repository
             
             if (awal.DisciplinaryDate != dbObj.DisciplinaryDate)
             {
-                var message = dbObj.DisciplinaryDate == DateTime.MinValue ? $"Disciplinary date ({awal.DisciplinaryDate.ToString(DataStorage.ShortPreviewDateFormat)}) has been recorded by {Environment.UserName}" :
-                    $"Disciplinary date has been updated by {Environment.UserName}. Changed ''{dbObj.DisciplinaryDate.ToString(DataStorage.ShortPreviewDateFormat)}'' into ''{awal.DisciplinaryDate.ToString(DataStorage.ShortPreviewDateFormat)}''";
+                var message = dbObj.DisciplinaryDate == DateTime.MinValue ? $"AWAL disciplinary date ({awal.DisciplinaryDate.ToString(DataStorage.ShortPreviewDateFormat)}) has been recorded by {Environment.UserName}" :
+                    $"AWAL disciplinary date has been updated by {Environment.UserName}. Changed ''{dbObj.DisciplinaryDate.ToString(DataStorage.ShortPreviewDateFormat)}'' into ''{awal.DisciplinaryDate.ToString(DataStorage.ShortPreviewDateFormat)}''";
                 var tl = new Timeline().Create(awal.EmployeeID, TimelineOrigin.AWAL, message);
                 if (!haveUpdate)
                 {

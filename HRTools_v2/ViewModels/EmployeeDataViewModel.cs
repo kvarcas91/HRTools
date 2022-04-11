@@ -382,7 +382,8 @@ namespace HRTools_v2.ViewModels
             if (response.Success)
             {
                 SendToast("AWAL case has been created!", NotificationType.Success);
-                AwalList.Insert(0, awalEntry);
+                //AwalList.Insert(0, awalEntry);
+                GetAwal(SelectedEmployee.EmployeeID);
                 HasAwalData = true;
 
                 AwalNewEntry = new AwalEntry();
@@ -456,7 +457,7 @@ namespace HRTools_v2.ViewModels
             }
             else
             {
-                AwalList.Swap(awal, awal);
+                //AwalList.Swap(awal, awal);
                 SendToast("AWAL case has been updated!", NotificationType.Success);
                 SetIsOnAwal();
                 if (TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimelineOrigin.AWAL);
@@ -769,7 +770,7 @@ namespace HRTools_v2.ViewModels
             if (!_isPageActive) return;
 
             SelectedEmployee = selectedEmployee;
-            Avatar = DataStorage.AppSettings.UserImgURL.Replace("{UserID}", SelectedEmployee.UserID);
+            Avatar = DataStorage.AppSettings.UserImgURL.Replace("{userID}", SelectedEmployee.UserID);
             GetEmployeeData(selectedEmployee.EmployeeID);
         }
 
