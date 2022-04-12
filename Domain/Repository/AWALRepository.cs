@@ -39,8 +39,6 @@ namespace Domain.Repository
             return ExecuteAsync($"{awalQuery}");
         }
 
-       
-
         public Task<Response> InsertAsync(AwalEntity awal)
         {
             var validationResponse = _validator.Validate(awal);
@@ -66,9 +64,8 @@ namespace Domain.Repository
 
             if (awal.Awal1SentDate != DateTime.MinValue || awal.Awal2SentDate != DateTime.MinValue)
             {
-                var _hrToolException = "https://hooks.chime.aws/incomingwebhooks/8bd3a3d4-b7e7-42db-9f02-6118f8a44cbc?token=a3IzZFptT2Z8MXxXUVR5WEN3RzdxbkRocXlkaXBYN2NOMjVYNmhEU0NaUW1fS1JiVzJqbkZz";
-
-                WebHook.PostAsync(Environment.UserName == "eslut" ? _hrToolException : DataStorage.AppSettings.AwalChanelWebHook, $"Hello, please close AWAL case for {awal.EmployeeID} if exists");
+               
+                WebHook.PostAsync( DataStorage.AppSettings.AwalChanelWebHook, $"Hello, please close AWAL case for {awal.EmployeeID} if exists");
             }
 
             return ExecuteAsync(query);
@@ -138,9 +135,8 @@ namespace Domain.Repository
 
                 var tl = new Timeline().Create(awal.EmployeeID, TimelineOrigin.AWAL, $"AWAL {awalType} has been requested by {Environment.UserName}");
                 Execute($"INSERT INTO timeline {tl.GetHeader()} VALUES {tl.GetValues()};");
-                var _hrToolException = "https://hooks.chime.aws/incomingwebhooks/8bd3a3d4-b7e7-42db-9f02-6118f8a44cbc?token=a3IzZFptT2Z8MXxXUVR5WEN3RzdxbkRocXlkaXBYN2NOMjVYNmhEU0NaUW1fS1JiVzJqbkZz";
 
-                WebHook.PostAsync(Environment.UserName == "eslut" ? _hrToolException : DataStorage.AppSettings.AwalChanelWebHook, $"Hello, please initiate AWAL {awalType} for {awal.EmployeeID}");
+                WebHook.PostAsync(DataStorage.AppSettings.AwalChanelWebHook, $"Hello, please initiate AWAL {awalType} for {awal.EmployeeID}");
                 return new Response { Success = true };
             });
 

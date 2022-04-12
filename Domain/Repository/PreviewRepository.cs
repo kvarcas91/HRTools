@@ -114,6 +114,11 @@ namespace Domain.Repository
             return GetCachedAsync<Timeline>(query);
         }
 
-
+        public Task<IEnumerable<EmplComment>> GetCommentsAsync(string emplId, TimelineOrigin origin)
+        {
+            var originQuery = origin == TimelineOrigin.ALL ? "" : $"AND commentOrigin = '{origin}'";
+            var query = $"SELECT * FROM comments WHERE employeeID = '{emplId}' {originQuery} ORDER BY createdAt DESC;";
+            return GetCachedAsync<EmplComment>(query);
+        }
     }
 }

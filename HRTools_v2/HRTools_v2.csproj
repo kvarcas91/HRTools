@@ -170,6 +170,9 @@
     <Compile Include="Converters\IsDateActiveToColorConverter.cs" />
     <Compile Include="Converters\ListCountToVisibilityConverter.cs" />
     <Compile Include="Converters\LoadingUIComponentStateToVisibilityConverter.cs" />
+    <Compile Include="Converters\LoginToFullNameConverter.cs" />
+    <Compile Include="Converters\LoginToInitialsConverter.cs" />
+    <Compile Include="Converters\LoginToIsActionActiveConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Converters\ProgressConverter.cs" />
     <Compile Include="Converters\StateConverters\ResignationStateToVisibilityConverter.cs" />

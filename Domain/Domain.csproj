@@ -126,6 +126,7 @@
     <Compile Include="Models\DataSnips\DataPreview.cs" />
     <Compile Include="Models\DataSnips\EmployeeDataPreview.cs" />
     <Compile Include="Models\DataSnips\EmployeeStatusSnip.cs" />
+    <Compile Include="Models\EmplComment.cs" />
     <Compile Include="Models\Resignations\ResignationEntity.cs" />
     <Compile Include="Models\Resignations\ResignationEntry.cs" />
     <Compile Include="Models\Roster.cs" />

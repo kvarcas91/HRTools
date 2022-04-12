@@ -19,7 +19,9 @@ namespace Domain.Types
         EmployeeCustomMeetingsLoading = 0x0400,
         EmployeeCustomMeetingsLoaded = 0x0800,
         EmployeeTimelineLoading = 0x1000,
-        EmployeeTimelineLoaded = 0x2000
+        EmployeeTimelineLoaded = 0x2000,
+        EmployeeCommentsLoading = 0x4000,
+        EmployeeCommentsLoaded = 0x8000
 
     }
 }

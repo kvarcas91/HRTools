@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Domain.Types;
+using System;
 
 namespace Domain.Models
 {
@@ -10,7 +7,23 @@ namespace Domain.Models
     {
         public string ID { get; set; }
         public string EmployeeID { get; set; }
-        public string CommentID { get; set; }
-        public string MyProperty { get; set; }
+        public string CommentOrigin { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public string Content { get; set; }
+
+        public EmplComment Create(string content, string emplId, TimelineOrigin origin) => Create(content, emplId, origin, Environment.UserName, DateTime.Now);
+
+        public EmplComment Create(string content, string emplId, TimelineOrigin origin, string createdBy, DateTime createdAt)
+        {
+            ID = Guid.NewGuid().ToString();
+            CommentOrigin = origin.ToString();
+            EmployeeID = emplId;
+            Content = content;
+            CreatedAt = createdAt;
+            CreatedBy = createdBy;
+
+            return this;
+        }
     }
 }

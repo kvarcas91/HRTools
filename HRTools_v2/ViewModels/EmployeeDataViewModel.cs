@@ -136,6 +136,17 @@ namespace HRTools_v2.ViewModels
 
         #endregion
 
+        #region Comments
+
+        private ObservableCollection<EmplComment> _comments;
+        public ObservableCollection<EmplComment> Comments
+        {
+            get { return _comments; }
+            set { SetProperty(ref _comments, value); }
+        }
+
+        #endregion
+
         #region Sanction Props
 
         private ObservableCollection<SanctionEntity> _sanctionsList;
@@ -209,6 +220,13 @@ namespace HRTools_v2.ViewModels
         {
             get => _hasSanctionData;
             set { SetProperty(ref _hasSanctionData, value); }
+        }
+
+        private bool _hasCommentsData;
+        public bool HasCommentsData
+        {
+            get => _hasCommentsData;
+            set { SetProperty(ref _hasCommentsData, value); }
         }
 
         private bool _hasAwalData;
@@ -310,6 +328,7 @@ namespace HRTools_v2.ViewModels
             HasAwalData = true;
             HasTimelineData = true;
             HasSanctionData = true;
+            HasCommentsData = true;
             IsOnAwal = false;
             TimeLineToggleSelection = TimelineOrigin.ALL;
 
@@ -317,6 +336,7 @@ namespace HRTools_v2.ViewModels
             AwalList = new ObservableCollection<AwalEntity>();
             AwalSanctionList = new List<string>();
             Timeline = new ObservableCollection<Timeline>();
+            Comments = new ObservableCollection<EmplComment>();
 
             SanctionList = SanctionManager.GetSanctions();
             AwalSanctionList = SanctionManager.GetAwalSanctions();
@@ -343,6 +363,7 @@ namespace HRTools_v2.ViewModels
             GetCustomMeetings(selectedEmployeeId);
             GetAdapt(selectedEmployeeId);
             GetPersonalLeaveData(selectedEmployeeId);
+            GetComments(selectedEmployeeId, TimeLineToggleSelection);
         }
 
         #region Data Getters
@@ -361,6 +382,22 @@ namespace HRTools_v2.ViewModels
 
             WidgedState &= ~HomePageWidgetState.EmployeeTimelineLoading;
             WidgedState |= HomePageWidgetState.EmployeeTimelineLoaded;
+        }
+
+        private async void GetComments(string id, TimelineOrigin origin)
+        {
+            WidgedState |= HomePageWidgetState.EmployeeCommentsLoading;
+            WidgedState &= ~HomePageWidgetState.EmployeeCommentsLoaded;
+
+            Comments.Clear();
+
+
+            Comments.AddRange(await _previewRepository.GetCommentsAsync(id, origin));
+            HasCommentsData = Comments.Count > 0;
+
+
+            WidgedState &= ~HomePageWidgetState.EmployeeCommentsLoading;
+            WidgedState |= HomePageWidgetState.EmployeeCommentsLoaded;
         }
 
         private async void GetEmployeeStatus(string id)
@@ -802,11 +839,22 @@ namespace HRTools_v2.ViewModels
         {
             switch (tabIndex)
             {
+                case 0:
+                    if (SelectedEmployee != null) GetComments(SelectedEmployee.EmployeeID, TimelineOrigin.ALL);
+                    break;
+                    case 1:
+                    if (SelectedEmployee != null) GetComments(SelectedEmployee.EmployeeID, TimelineOrigin.Sanctions);
+                    break;
+                case 2:
+                    if (SelectedEmployee != null) GetComments(SelectedEmployee.EmployeeID, TimelineOrigin.Meetings);
+                    break;
                 case 3:
                     IsFileSectionVisible = true;
+                    if (SelectedEmployee != null) GetComments(SelectedEmployee.EmployeeID, TimelineOrigin.ALL);
                     break;
                 default:
                     IsFileSectionVisible = false;
+                    if (SelectedEmployee != null) GetComments(SelectedEmployee.EmployeeID, TimelineOrigin.AWAL);
                     break;
             }
         }

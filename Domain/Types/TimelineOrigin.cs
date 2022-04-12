@@ -10,6 +10,7 @@ namespace Domain.Types
         Meetings = 0x004,
         Resignations = 0x008,
         Sanctions = 0x010,
-        Suspensions = 0x020
+        Suspensions = 0x020,
+        CustomMeetings = 0x040
     }
 }

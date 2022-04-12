@@ -1115,8 +1115,29 @@
                                         Foreground="DarkSlateGray"
                                         VerticalAlignment="Center"/>
 
-                        
-                        
+                        <ProgressBar Grid.Row="1"
+                                Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                             IsIndeterminate="True"
+                                             Width="90"
+                                             Height="90" 
+                                             Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='EmployeeCommentsLoading'}"/>
+
+                        <ListView Grid.Row="1"
+                                  Margin="0 10"
+                               ItemsSource="{Binding Comments}"
+                                Style="{StaticResource CommentsListView}"
+                                    Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='EmployeeCommentsLoaded'}"/>
+
+
+                        <TextBlock Grid.Row="1"
+                                Text="No Data"
+                                           Visibility="{Binding HasCommentsData, Converter={StaticResource InverseBoolToVisConverter}}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           Foreground="Gray"
+                                           FontSize="{StaticResource NoDataFontSize}"/>
+
+
 
                     </Grid>
                     
