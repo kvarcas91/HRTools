@@ -113,5 +113,7 @@ namespace Domain.Repository
             var query = $"SELECT * FROM timeline WHERE employeeID = '{emplId}' {selector} ORDER BY createdAt DESC";
             return GetCachedAsync<Timeline>(query);
         }
+
+
     }
 }

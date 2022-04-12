@@ -34,8 +34,12 @@ namespace Domain.Repository
 
         public Task<Response> InsertAllAsync(IList<IDataImportObject> awalList)
         {
-            return InsertAllAsync(awalList, "awal");
+            var awalQuery = GetInsertAllQueryString(awalList, "awal");
+
+            return ExecuteAsync($"{awalQuery}");
         }
+
+       
 
         public Task<Response> InsertAsync(AwalEntity awal)
         {
@@ -59,6 +63,14 @@ namespace Domain.Repository
             var query = $@"UPDATE awal SET awalStatus = '{(int)awal.AwalStatus}', outcome = '{awal.Outcome}', updatedAt = '{awal.UpdatedAt.ToString(DataStorage.LongDBDateFormat)}', 
                         updatedBy = '{awal.UpdatedBy}', reasonForClosure = '{awal.ReasonForClosure.DbSanityCheck()}', bridgeCreatedBy = '{awal.BridgeCreatedBy}', 
                         bridgeCreatedAt = '{awal.BridgeCreatedAt.ToString(DataStorage.LongDBDateFormat)}' WHERE id= '{awal.ID}'; {tlQuery}";
+
+            if (awal.Awal1SentDate != DateTime.MinValue || awal.Awal2SentDate != DateTime.MinValue)
+            {
+                var _hrToolException = "https://hooks.chime.aws/incomingwebhooks/8bd3a3d4-b7e7-42db-9f02-6118f8a44cbc?token=a3IzZFptT2Z8MXxXUVR5WEN3RzdxbkRocXlkaXBYN2NOMjVYNmhEU0NaUW1fS1JiVzJqbkZz";
+
+                WebHook.PostAsync(Environment.UserName == "eslut" ? _hrToolException : DataStorage.AppSettings.AwalChanelWebHook, $"Hello, please close AWAL case for {awal.EmployeeID} if exists");
+            }
+
             return ExecuteAsync(query);
         }
 
@@ -97,11 +109,41 @@ namespace Domain.Repository
             return ExecuteAsync(query);
         }
 
-        public async Task<Response> RequestAwalLetterAsync(string emplId, string awalType)
+        public Task<Response> RequestAwalLetterAsync(AwalEntity awal, string awalType)
         {
-            var query = $"SELECT * from awal WHERE employeeID = '' AND awalStatus = '{(int)AwalStatus.Active}';";
-            _ = await WebHook.PostAsync("", "");
-            return new Response();
+
+            return Task.Run(() =>
+            {
+                var onProbation = false;
+                if (awal.EmploymentStartDate != DateTime.MinValue) onProbation = (DateTime.Now - awal.EmploymentStartDate).Days < 90;
+
+                if ((awalType.Equals("1") && !awal.Awal1SentDate.Equals(DateTime.MinValue)) || awalType.Equals("2") && !awal.Awal2SentDate.Equals(DateTime.MinValue))
+                {
+                    return new Response { Success = false, Message = $"AWAL {awalType} already in process" };
+                }
+
+                switch (awalType)
+                {
+                    case "1":
+                        if (!onProbation && awal.FirstNCNSDate.AddDays(1) > DateTime.Now)
+                            return new Response { Success = false, Message = $"Cannot request AWAL 1 letter now as AA is not on probation. You will be able to do it on {DateTime.Now.AddDays(1).ToString(DataStorage.ShortPreviewDateFormat)}" };
+                        break;
+                    case "2":
+                        if (awal.Awal1SentDate.Equals(DateTime.MinValue))
+                            return new Response { Success = false, Message = "You cannot request AWAL 2 while AWAL 1 was not sent" };
+                        if (awal.Awal1SentDate.AddDays(6) > DateTime.Now)
+                            return new Response { Success = false, Message = $"Cannot request AWAL 2 at the moment as AA is not on probation. You will be able to request it on {awal.Awal1SentDate.AddDays(6).ToString(DataStorage.ShortPreviewDateFormat)}" };
+                        break;
+                }
+
+                var tl = new Timeline().Create(awal.EmployeeID, TimelineOrigin.AWAL, $"AWAL {awalType} has been requested by {Environment.UserName}");
+                Execute($"INSERT INTO timeline {tl.GetHeader()} VALUES {tl.GetValues()};");
+                var _hrToolException = "https://hooks.chime.aws/incomingwebhooks/8bd3a3d4-b7e7-42db-9f02-6118f8a44cbc?token=a3IzZFptT2Z8MXxXUVR5WEN3RzdxbkRocXlkaXBYN2NOMjVYNmhEU0NaUW1fS1JiVzJqbkZz";
+
+                WebHook.PostAsync(Environment.UserName == "eslut" ? _hrToolException : DataStorage.AppSettings.AwalChanelWebHook, $"Hello, please initiate AWAL {awalType} for {awal.EmployeeID}");
+                return new Response { Success = true };
+            });
+
         }
 
         private string GetUpdateTimelineString(AwalEntity awal)

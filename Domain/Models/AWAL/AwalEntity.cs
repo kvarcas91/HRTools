@@ -82,7 +82,6 @@ namespace Domain.Models.AWAL
             UpdatedBy = Environment.UserName;
             AwalStatus = AwalStatus.Cancelled;
         }
-
         public object ReadFromCSV(string[] fields, DataMap dataMap)
         {
             ID = dataMap.GetStrValue(nameof(ID), fields);

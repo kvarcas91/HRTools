@@ -47,14 +47,14 @@ namespace Domain.Models
         public bool HasValue(string key)
         {
             if (string.IsNullOrEmpty(key)) return false;
-            bool hasValue = false;
+            bool hasValue = true;
 
             
             var arr = key.Trim().Split(new char[] {' '});
 
             foreach (var item in arr)
             {
-                hasValue |= EmployeeID.Contains(item) || UserID.ToUpper().Contains(item.ToUpper()) || EmployeeName.ToUpper().Contains(item.ToUpper()) || DepartmentID.Contains(item) ||
+                hasValue &= EmployeeID.Contains(item) || UserID.ToUpper().Contains(item.ToUpper()) || EmployeeName.ToUpper().Contains(item.ToUpper()) || DepartmentID.Contains(item) ||
                     ManagerName.ToUpper().Contains(item.ToUpper()) || JobTitle.ToUpper().Contains(item.ToUpper()) || ShiftPattern.ToUpper().Contains(item.ToUpper());
             }
 

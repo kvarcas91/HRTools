@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using Domain.DataManager;
-using Domain.Factory;
+using Domain.Interfaces;
 using Domain.IO;
 using Domain.Storage;
 using Domain.Types;
@@ -73,7 +73,7 @@ namespace Domain.Repository
 
         }
 
-        internal Task<Response> InsertAllAsync<T>(IList<T> list, string table) where T : IDataImportObject
+        internal Task<Response> InsertAllAsync<T>(IList<T> list, string table) where T : IQueryable
         {
             return Task.Run(() =>
             {
@@ -94,6 +94,29 @@ namespace Domain.Repository
 
                 return Execute(queryBuilder.ToString());
             });
+
+        }
+
+        internal string GetInsertAllQueryString<T>(IList<T> list, string table) where T : IQueryable
+        {
+           
+                if (list == null || list.Count == 0) return String.Empty;
+                StringBuilder queryBuilder = new StringBuilder();
+
+                queryBuilder.Append($"INSERT INTO {table} {list[0].GetHeader()} VALUES ");
+
+                for (int i = 0; i < list.Count; i++)
+                {
+
+                    queryBuilder.Append(list[i].GetValues());
+                    if (i + 1 < list.Count)
+                    {
+                        queryBuilder.Append(", ");
+                    }
+                }
+
+                return queryBuilder.Append(";").ToString();
+           
 
         }
 

@@ -382,8 +382,8 @@ namespace HRTools_v2.ViewModels
             if (response.Success)
             {
                 SendToast("AWAL case has been created!", NotificationType.Success);
-                //AwalList.Insert(0, awalEntry);
-                GetAwal(SelectedEmployee.EmployeeID);
+                AwalList.Insert(0, awalEntry);
+                //GetAwal(SelectedEmployee.EmployeeID);
                 HasAwalData = true;
 
                 AwalNewEntry = new AwalEntry();
@@ -457,16 +457,33 @@ namespace HRTools_v2.ViewModels
             }
             else
             {
-                //AwalList.Swap(awal, awal);
+                AwalList.Swap(awal, awal);
                 SendToast("AWAL case has been updated!", NotificationType.Success);
                 SetIsOnAwal();
                 if (TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimelineOrigin.AWAL);
             }
         }
 
-        private void RequestAwalLetter(string awalLetterType)
+        private async void RequestAwalLetter(string awalLetterType)
         {
             var repo = new AWALRepository();
+            var awalCase = AwalList.Where(x => x.AwalStatus == AwalStatus.Active).FirstOrDefault();
+            if (awalCase == null)
+            {
+                SendToast("No Active AWAL cases", NotificationType.Information);
+                return;
+            }
+
+            var response = await repo.RequestAwalLetterAsync(awalCase, awalLetterType);
+            if (response.Success)
+            {
+                SendToast($"AWAL {awalLetterType} has been requested!", NotificationType.Success);
+                GetTimeline(SelectedEmployee.EmployeeID, TimeLineToggleSelection);
+            }
+            else
+            {
+                SendToast(response.Message, NotificationType.Information);
+            }
         }
 
         #endregion

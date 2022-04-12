@@ -53,7 +53,7 @@ namespace Domain.DataManager
 
         public static List<string> GetAwalSanctions()
         {
-            return new List<string> {"", "Cancelled", "Verbal Warning", "Written Warning", "Final Warning", "Termination" };
+            return new List<string> {"Cancelled", "Verbal Warning", "Written Warning", "Final Warning", "Termination" };
         }
     }
 }

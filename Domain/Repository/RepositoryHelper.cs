@@ -144,7 +144,7 @@
                             CREATE table comments (
                             id TEXT NOT NULL PRIMARY KEY,
                             employeeID TEXT NOT NULL,
-                            commentID TEXT,
+                            commentOrigin TEXT,
                             createdAt TEXT,
                             createdBy TEXT,
                             content TEXT
@@ -153,14 +153,14 @@
                             CREATE table tasks (
                             id TEXT NOT NULL PRIMARY KEY,
                             employeeID TEXT NOT NULL,
-                            taskID TEXT,
+                            taskOrigin TEXT,
                             createdAt TEXT,
                             createdBy TEXT,
                             content TEXT,
                             isCompleted BOOLEAN NOT NULL Check (isCompleted IN (0, 1)),
                             taskDueDate TEXT,
                             completedBy TEXT,
-                            completedAt
+                            completedAt TEXT
                             );";
             return query;
         }
