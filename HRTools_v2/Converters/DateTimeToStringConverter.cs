@@ -48,6 +48,7 @@ namespace HRTools_v2.Converters
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value == null) return DateTime.MinValue;
             DateTime.TryParse(value.ToString(), out DateTime date);
 
             return date;

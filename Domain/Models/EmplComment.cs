@@ -1,9 +1,12 @@
-﻿using Domain.Types;
+﻿using Domain.Extensions;
+using Domain.Interfaces;
+using Domain.Storage;
+using Domain.Types;
 using System;
 
 namespace Domain.Models
 {
-    public struct EmplComment
+    public struct EmplComment : IQueryable
     {
         public string ID { get; set; }
         public string EmployeeID { get; set; }
@@ -25,5 +28,9 @@ namespace Domain.Models
 
             return this;
         }
+
+        public string GetHeader() => "(id, employeeID, commentOrigin, createdBy, createdAt, content)";
+
+        public string GetValues() => $"('{ID}','{EmployeeID}','{CommentOrigin}','{CreatedBy}','{CreatedAt.ToString(DataStorage.LongDBDateFormat)}','{Content.DbSanityCheck()}')";
     }
 }

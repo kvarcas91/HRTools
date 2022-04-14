@@ -94,7 +94,7 @@ namespace Domain.Repository
                         break;
                 }
             }
-            if (awal.AwalStatus != AwalStatus.Cancelled && awal.Outcome.Equals("Cancelled"))
+            if (awal.AwalStatus != AwalStatus.Cancelled && !string.IsNullOrEmpty(awal.Outcome) && awal.Outcome.Equals("Cancelled"))
             {
                 awal.AwalStatus = AwalStatus.Cancelled;
             }
@@ -215,7 +215,7 @@ namespace Domain.Repository
 
         private bool IsOpenAwalExists(string emplId)
         {
-            return GetScalar<int>($"SELECT COUNT(*) FROM awal WHERE employeeID = '{emplId}' AND awalStatus = '{(int)AwalStatus.Active}';") > 0;
+            return GetScalar<int>($"SELECT COUNT(*) FROM awal WHERE employeeID = '{emplId}' AND awalStatus in ({(int)AwalStatus.Active},{(int)AwalStatus.Pending});") > 0;
         }
 
     }

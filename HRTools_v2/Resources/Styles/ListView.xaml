@@ -103,7 +103,8 @@
                                         BorderBrush="DarkSlateGray"
                     BorderThickness="1"
                                             IsEnabled="{Binding CreatedBy, Converter={converters:LoginToIsActionActiveConverter}}"
-                                Command="{Binding SubmitResignationCommand}"
+                                 Command="{Binding ElementName=commentsListView, Path=DataContext.DeleteCommentCommand}"
+                                            CommandParameter="{Binding}"
                     >
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon Kind="TrashOutline" 

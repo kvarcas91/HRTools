@@ -52,7 +52,7 @@ namespace Domain.Repository
             });
         }
 
-        public  Task<Response> UpdateEmployeeStatusAsync (EmploymentStatus status, string emplId)
+        public Task<Response> UpdateEmployeeStatusAsync (EmploymentStatus status, string emplId)
         {
             return Task.Run(async () =>
             {
@@ -120,5 +120,9 @@ namespace Domain.Repository
             var query = $"SELECT * FROM comments WHERE employeeID = '{emplId}' {originQuery} ORDER BY createdAt DESC;";
             return GetCachedAsync<EmplComment>(query);
         }
+
+        public Task<Response> InsertCommentAsync(EmplComment comment) => ExecuteAsync($"INSERT INTO comments {comment.GetHeader()} VALUES {comment.GetValues()};");
+
+        public Task<Response> DeleteCommentAsync(EmplComment comment) => ExecuteAsync($"DELETE FROM comments WHERE id = '{comment.ID}';");
     }
 }

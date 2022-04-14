@@ -145,6 +145,13 @@ namespace HRTools_v2.ViewModels
             set { SetProperty(ref _comments, value); }
         }
 
+        private string _commentText;
+        public string CommentText
+        {
+            get { return _commentText; }
+            set { SetProperty(ref _commentText, value); }
+        }
+
         #endregion
 
         #region Sanction Props
@@ -310,6 +317,15 @@ namespace HRTools_v2.ViewModels
 
         #endregion
 
+        #region Comments
+
+        private DelegateCommand _addCommentCommand = null;
+        public DelegateCommand AddCommentCommand => _addCommentCommand ?? (_addCommentCommand = new DelegateCommand(AddComment));
+
+        private DelegateCommand<EmplComment?> _deleteCommentCommand = null;
+        public DelegateCommand<EmplComment?> DeleteCommentCommand => _deleteCommentCommand ?? (_deleteCommentCommand = new DelegateCommand<EmplComment?>(DeleteComment));
+
+        #endregion
 
         #endregion
 
@@ -363,7 +379,7 @@ namespace HRTools_v2.ViewModels
             GetCustomMeetings(selectedEmployeeId);
             GetAdapt(selectedEmployeeId);
             GetPersonalLeaveData(selectedEmployeeId);
-            GetComments(selectedEmployeeId, TimeLineToggleSelection);
+            GetComments(selectedEmployeeId, GetOriginFromTab(SelectedTabIndex));
         }
 
         #region Data Getters
@@ -771,6 +787,45 @@ namespace HRTools_v2.ViewModels
 
         #endregion
 
+        private async void AddComment()
+        {
+            if (string.IsNullOrEmpty(CommentText))
+            {
+                SendToast("CAnnot add empty comment", NotificationType.Information);
+                return;
+            }
+            var comment = new EmplComment().Create(CommentText.Trim(), SelectedEmployee.EmployeeID, GetOriginFromTab(SelectedTabIndex));
+            var response = await _previewRepository.InsertCommentAsync(comment);
+
+            if (response.Success)
+            {
+                SendToast("Comment has been added!", NotificationType.Success);
+                Comments.Insert(0, comment);
+                CommentText = String.Empty;
+                HasCommentsData = Comments.Count > 0;
+            }
+            else
+            {
+                SendToast(response.Message, NotificationType.Information);
+            }
+        }
+
+        private async void DeleteComment(EmplComment? comment)
+        {
+            if (comment == null) return;
+            var response = await _previewRepository.DeleteCommentAsync(comment.Value);
+            if (response.Success)
+            {
+                Comments.Remove(comment.Value);
+                HasCommentsData = Comments.Count > 0;
+                SendToast("Comment has been removed", NotificationType.Success);
+            }
+            else
+            {
+                SendToast(response.Message, NotificationType.Warning);
+            }
+        }
+        
         private async void GetHeaders(string emplId)
         {
             PreviewEmplDataSnip = await _previewRepository.GetEmployeePreviewAsync(emplId);
@@ -837,25 +892,44 @@ namespace HRTools_v2.ViewModels
 
         private void OnTabChange(uint tabIndex)
         {
+            IsFileSectionVisible = false;
             switch (tabIndex)
             {
                 case 0:
-                    if (SelectedEmployee != null) GetComments(SelectedEmployee.EmployeeID, TimelineOrigin.ALL);
+                    if (SelectedEmployee != null) GetComments(SelectedEmployee.EmployeeID, GetOriginFromTab(tabIndex));
                     break;
                     case 1:
-                    if (SelectedEmployee != null) GetComments(SelectedEmployee.EmployeeID, TimelineOrigin.Sanctions);
+                    if (SelectedEmployee != null) GetComments(SelectedEmployee.EmployeeID, GetOriginFromTab(tabIndex));
                     break;
                 case 2:
-                    if (SelectedEmployee != null) GetComments(SelectedEmployee.EmployeeID, TimelineOrigin.Meetings);
+                    if (SelectedEmployee != null) GetComments(SelectedEmployee.EmployeeID, GetOriginFromTab(tabIndex));
                     break;
                 case 3:
                     IsFileSectionVisible = true;
-                    if (SelectedEmployee != null) GetComments(SelectedEmployee.EmployeeID, TimelineOrigin.ALL);
+                    if (SelectedEmployee != null) GetComments(SelectedEmployee.EmployeeID, GetOriginFromTab(tabIndex));
                     break;
                 default:
-                    IsFileSectionVisible = false;
-                    if (SelectedEmployee != null) GetComments(SelectedEmployee.EmployeeID, TimelineOrigin.AWAL);
+                    if (SelectedEmployee != null) GetComments(SelectedEmployee.EmployeeID, GetOriginFromTab(tabIndex));
                     break;
+            }
+        }
+
+        private TimelineOrigin GetOriginFromTab(uint tabIndex)
+        {
+            switch (tabIndex)
+            {
+                case 0:
+                    return TimelineOrigin.ALL;
+                    case 1:
+                    return TimelineOrigin.Sanctions;
+                    case 2:
+                    return TimelineOrigin.Meetings;
+                    case 3:
+                    return TimelineOrigin.Meetings;
+                case 4:
+                    return TimelineOrigin.AWAL;
+                default:
+                    return TimelineOrigin.ALL;
             }
         }
 
