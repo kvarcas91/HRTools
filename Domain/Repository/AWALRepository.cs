@@ -32,12 +32,7 @@ namespace Domain.Repository
             return GetCachedAsync<AwalEntity>(query);
         }
 
-        public Task<Response> InsertAllAsync(IList<IDataImportObject> awalList)
-        {
-            var awalQuery = GetInsertAllQueryString(awalList, "awal");
-
-            return ExecuteAsync($"{awalQuery}");
-        }
+        public Task<Response> InsertAllAsync(IList<IDataImportObject> awalList) => base.InsertAllAsync(awalList, "awal");
 
         public Task<Response> InsertAsync(AwalEntity awal)
         {

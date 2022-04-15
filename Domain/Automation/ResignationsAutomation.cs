@@ -8,7 +8,6 @@ namespace Domain.Automation
 {
     internal class ResignationsAutomation : ITaskAutomation<ResignationEntity>
     {
-        private ResignationEntity _oldObj;
         private ResignationEntity _newObj;
 
         private readonly BaseRepository _repository;
@@ -48,7 +47,6 @@ namespace Domain.Automation
 
         public ITaskAutomation<ResignationEntity> SetData(ResignationEntity oldObj, ResignationEntity newObj)
         {
-            _oldObj = oldObj;
             _newObj = newObj;
             return this;
         }

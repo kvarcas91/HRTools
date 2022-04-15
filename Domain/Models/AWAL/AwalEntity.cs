@@ -103,10 +103,6 @@ namespace Domain.Models.AWAL
             DisciplinaryDate = dataMap.GetDateValue(nameof(DisciplinaryDate), fields);
             Outcome = dataMap.GetStrValue(nameof(Outcome), fields);
             ReasonForClosure = dataMap.GetStrValue(nameof(ReasonForClosure), fields);
-            if (!string.IsNullOrEmpty(ReasonForClosure))
-            {
-
-            }
             BridgeCreatedAt = dataMap.GetDateValue(nameof(BridgeCreatedAt), fields);
             BridgeCreatedBy = dataMap.GetStrValue(nameof(BridgeCreatedBy), fields);
             CreatedAt = dataMap.GetDateValue(nameof(CreatedAt), fields);

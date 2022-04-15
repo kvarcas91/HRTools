@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Domain.DataManager;
+using Domain.Factory;
 using Domain.Interfaces;
 using Domain.IO;
 using Domain.Storage;
@@ -17,7 +18,12 @@ namespace Domain.Repository
 
         private const string NAME = nameof(BaseRepository);
 
-       
+        internal Task<Response> InsertAllAsync(IList<IDataImportObject> list, string table)
+        {
+            var query = GetInsertAllQueryString(list, table);
+
+            return ExecuteAsync($"{query}");
+        }
         internal Response Execute(string query)
         {
             var connection = OpenConnection();

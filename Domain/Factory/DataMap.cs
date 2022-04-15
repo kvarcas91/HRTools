@@ -35,6 +35,14 @@ namespace Domain.Factory
             return list[index];
         }
 
+        public bool GetBoolValue(string prop, string[] list)
+        {
+            var index = GetIndex(prop);
+            if (index == -1) return false;
+            var output = list[index];
+            return output == "1";
+        }
+
         public DateTime GetDateValue(string prop, string[] list)
         {
             var index = GetIndex(prop);
