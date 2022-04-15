@@ -1,10 +1,10 @@
 ﻿using Domain.DataManager;
 using Domain.Extensions;
-using Domain.Models.DataSnips;
+using Domain.Interfaces;
+using Domain.Models.AWAL;
 using Domain.Storage;
 using Domain.Types;
 using System;
-using System.Collections.Generic;
 
 namespace Domain.Models.Sanctions
 {
@@ -34,7 +34,7 @@ namespace Domain.Models.Sanctions
             return this;
         }
 
-        public SanctionEntity SetEmployee(Roster empl)
+        public SanctionEntity SetEmployee(IEmployee empl)
         {
             EmployeeID = empl.EmployeeID;
             UserID = empl.UserID;

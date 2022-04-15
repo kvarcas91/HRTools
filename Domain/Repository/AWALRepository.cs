@@ -1,4 +1,5 @@
-﻿using Domain.DataValidation;
+﻿using Domain.Automation;
+using Domain.DataValidation;
 using Domain.DataValidation.AWAL;
 using Domain.Extensions;
 using Domain.Factory;
@@ -17,7 +18,6 @@ namespace Domain.Repository
 
     public sealed class AWALRepository : BaseRepository
     {
-        private enum UpdatePart { FirstNCNS, AWAL1, AWAL2, Disciplinary }
 
         private IDataValidation _validator;
 
@@ -50,6 +50,7 @@ namespace Domain.Repository
             var tlQuery = $"INSERT INTO timeline {timeLine.GetHeader()} VALUES {timeLine.GetValues()};";
 
             var query = $"INSERT INTO awal {awal.GetHeader()} VALUES {awal.GetValues()}; {tlQuery}";
+            Automate(awal, AutomationAction.OnIntake);
             return ExecuteAsync(query);
         }
 
@@ -102,6 +103,8 @@ namespace Domain.Repository
             var query = $@"UPDATE awal SET updatedBy = '{awal.UpdatedBy}', updatedAt = '{awal.UpdatedAt.ToString(DataStorage.LongDBDateFormat)}', firstNCNSDate = '{awal.FirstNCNSDate.ToString(DataStorage.LongDBDateFormat)}', 
                         awal1SentDate = '{awal.Awal1SentDate.ToString(DataStorage.LongDBDateFormat)}', awal2SentDate = '{awal.Awal2SentDate.ToString(DataStorage.LongDBDateFormat)}', 
                         disciplinaryDate = '{awal.DisciplinaryDate.ToString(DataStorage.LongDBDateFormat)}', outcome = '{awal.Outcome}', awalStatus = '{(int)awal.AwalStatus}' WHERE id = '{awal.ID}'; {timelineQuery}";
+
+            Automate(awal, AutomationAction.OnUpdate);
 
             return ExecuteAsync(query);
         }
@@ -216,6 +219,17 @@ namespace Domain.Repository
         private bool IsOpenAwalExists(string emplId)
         {
             return GetScalar<int>($"SELECT COUNT(*) FROM awal WHERE employeeID = '{emplId}' AND awalStatus in ({(int)AwalStatus.Active},{(int)AwalStatus.Pending});") > 0;
+        }
+
+        private void Automate(AwalEntity awal, AutomationAction action)
+        {
+            Task.Run(() =>
+            {
+                var dbAwal = GetScalar<AwalEntity>($"SELECT * FROM awal WHERE id = '{awal.ID}';");
+                var automation = new AwalAutomation(this).SetData(dbAwal, awal);
+                automation.Invoke(action);
+            });
+            
         }
 
     }

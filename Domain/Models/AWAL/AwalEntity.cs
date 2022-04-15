@@ -1,12 +1,13 @@
 ﻿using Domain.Extensions;
 using Domain.Factory;
+using Domain.Interfaces;
 using Domain.Storage;
 using Domain.Types;
 using System;
 
 namespace Domain.Models.AWAL
 {
-    public class AwalEntity : IDataImportObject
+    public class AwalEntity : IDataImportObject, IEmployee
     {
         public string ID { get; set; }
         public string EmployeeID { get; set; }

@@ -87,6 +87,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Automation\AwalAutomation.cs" />
+    <Compile Include="Automation\ITaskAutomation.cs" />
+    <Compile Include="Automation\ResignationsAutomation.cs" />
     <Compile Include="DataManager\LoggerManager.cs" />
     <Compile Include="DataManager\SanctionManager.cs" />
     <Compile Include="DataValidation\AwalValidation.cs" />
@@ -109,6 +112,7 @@
     <Compile Include="Factory\IDataImportObject.cs" />
     <Compile Include="Factory\IDataMap.cs" />
     <Compile Include="Interfaces\IDataStream.cs" />
+    <Compile Include="Interfaces\IEmployee.cs" />
     <Compile Include="Interfaces\ILogger.cs" />
     <Compile Include="Interfaces\IQueryable.cs" />
     <Compile Include="Interfaces\ISearchable.cs" />
@@ -148,6 +152,7 @@
     <Compile Include="Repository\SanctionsRepository.cs" />
     <Compile Include="States\ResignationWidgetState.cs" />
     <Compile Include="Storage\DataStorage.cs" />
+    <Compile Include="Types\AutomationAction.cs" />
     <Compile Include="Types\AwalStatus.cs" />
     <Compile Include="States\CacheState.cs" />
     <Compile Include="Types\CaseStatus.cs" />

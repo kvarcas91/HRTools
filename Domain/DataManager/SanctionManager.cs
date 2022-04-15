@@ -20,8 +20,6 @@ namespace Domain.DataManager
                 case "3rd LoC":
                 case "Final Warning":
                     return sanctionStartDate.AddMonths(12);
-                case "NFA":
-                    return sanctionStartDate;
                 default:
                     return sanctionStartDate;
             }
@@ -54,6 +52,15 @@ namespace Domain.DataManager
         public static List<string> GetAwalSanctions()
         {
             return new List<string> {"Cancelled", "Verbal Warning", "Written Warning", "Final Warning", "Termination" };
+        }
+
+        public static bool IsLesser(string oldSanction, string newSanction)
+        {
+            if (string.IsNullOrEmpty(oldSanction) || string.IsNullOrEmpty(newSanction)) return false;
+            if (newSanction.Equals("Cancelled") || newSanction.Equals("Termination")) return false;
+
+            var dt = DateTime.Now;
+            return (GetSanctionEndDate(newSanction, dt) < GetSanctionEndDate(oldSanction, dt));
         }
     }
 }

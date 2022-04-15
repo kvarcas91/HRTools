@@ -501,7 +501,11 @@ namespace HRTools_v2.ViewModels
 
         private async void UpdateAwal(AwalEntity awal)
         {
-
+            if (SanctionManager.IsLesser(EmployeeLiveSanctions.DisciplinarySanction, awal.Outcome))
+            {
+                SendToast("You cannot issue lesser sanction!", NotificationType.Information);
+                return;
+            }
             var repo = new AWALRepository();
             var response = await repo.UpdateAsync(awal);
             if (!response.Success)
@@ -513,6 +517,9 @@ namespace HRTools_v2.ViewModels
                 AwalList.Swap(awal, awal);
                 SendToast("AWAL case has been updated!", NotificationType.Success);
                 SetIsOnAwal();
+                GetAllSanctions(SelectedEmployee.EmployeeID);
+                GetSanctionPreview(SelectedEmployee.EmployeeID);
+                GetHeaders(SelectedEmployee.EmployeeID);
                 if (TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimelineOrigin.AWAL);
             }
         }
@@ -668,7 +675,6 @@ namespace HRTools_v2.ViewModels
             SanctionState &= ~SanctionWidgetState.DataLoading;
             SanctionState |= SanctionWidgetState.DataLoaded;
         }
-
         private async void AddSanction()
         {
             if (string.IsNullOrEmpty(SelectedSanction) || SanctionStartDate.Equals(DateTime.MinValue)) return;

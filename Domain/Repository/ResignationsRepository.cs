@@ -1,4 +1,5 @@
-﻿using Domain.DataValidation;
+﻿using Domain.Automation;
+using Domain.DataValidation;
 using Domain.DataValidation.Resignation;
 using Domain.Models;
 using Domain.Models.Resignations;
@@ -29,10 +30,9 @@ namespace Domain.Repository
             var timeLine = new Timeline().Create(resignation.EmployeeID, TimelineOrigin.Resignations);
             timeLine.EventMessage = $"Resignation request has been submitted by {resignation.CreatedBy} due to ''{resignation.ReasonForResignation}'' (TT id: {ttID}). Last working day - {resignation.LastWorkingDay.ToString(DataStorage.ShortPreviewDateFormat)}";
             
-
             string tlQuery = $"INSERT INTO timeline {timeLine.GetHeader()} VALUES {timeLine.GetValues()};";
-
             string query = $"INSERT INTO resignations {resignation.GetHeader()} VALUES {resignation.GetValues()};{tlQuery}";
+            Automate(resignation, AutomationAction.OnIntake);
             return ExecuteAsync(query);
         }
 
@@ -50,7 +50,18 @@ namespace Domain.Repository
             string tlQuery = $"INSERT INTO timeline {timeLine.GetHeader()} VALUES {timeLine.GetValues()};";
 
             string query = $"DELETE FROM resignations WHERE employeeID = '{emplId}';{tlQuery}";
+            Automate(new ResignationEntity { EmployeeID = emplId}, AutomationAction.OnUpdate);
             return ExecuteAsync(query);
+        }
+
+        private void Automate(ResignationEntity obj, AutomationAction action)
+        {
+            Task.Run(() =>
+            {
+                var automation = new ResignationsAutomation(this).SetData(null, obj);
+                automation.Invoke(action);
+            });
+
         }
 
     }

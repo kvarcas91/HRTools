@@ -6,7 +6,7 @@ using System;
 
 namespace Domain.Models
 {
-    public class Roster : ISearchable, IWritable, IDataImportObject
+    public class Roster : ISearchable, IWritable, IDataImportObject, IEmployee
     {
 
         public string EmployeeID { get; set; }
