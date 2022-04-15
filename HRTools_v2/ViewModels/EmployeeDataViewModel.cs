@@ -3,6 +3,7 @@ using Domain.Extensions;
 using Domain.Models;
 using Domain.Models.AWAL;
 using Domain.Models.DataSnips;
+using Domain.Models.Meetings;
 using Domain.Models.Resignations;
 using Domain.Models.Sanctions;
 using Domain.Networking;
@@ -24,6 +25,7 @@ namespace HRTools_v2.ViewModels
 {
     public class EmployeeDataViewModel : BindableBase, INavigationAware
     {
+
         #region Properties
 
         private uint _selectedTabIndex;
@@ -81,6 +83,17 @@ namespace HRTools_v2.ViewModels
             get => _widgedState;
             set { SetProperty(ref _widgedState, value); }
         }
+
+        #region Meetings
+
+        private ObservableCollection<MeetingsEntity> _meetingsList;
+        public ObservableCollection<MeetingsEntity> MeetingsList
+        {
+            get { return _meetingsList; }
+            set { SetProperty(ref _meetingsList, value); }
+        }
+
+        #endregion
 
         #region Awal
 
@@ -229,6 +242,13 @@ namespace HRTools_v2.ViewModels
             set { SetProperty(ref _hasSanctionData, value); }
         }
 
+        private bool _hasMeetingsData;
+        public bool HasMeetingsData
+        {
+            get => _hasMeetingsData;
+            set { SetProperty(ref _hasMeetingsData, value); }
+        }
+
         private bool _hasCommentsData;
         public bool HasCommentsData
         {
@@ -353,6 +373,7 @@ namespace HRTools_v2.ViewModels
             AwalSanctionList = new List<string>();
             Timeline = new ObservableCollection<Timeline>();
             Comments = new ObservableCollection<EmplComment>();
+            MeetingsList = new ObservableCollection<MeetingsEntity>();
 
             SanctionList = SanctionManager.GetSanctions();
             AwalSanctionList = SanctionManager.GetAwalSanctions();
@@ -640,12 +661,31 @@ namespace HRTools_v2.ViewModels
 
         #endregion
 
-        private void GetCustomMeetings(string id)
-        {
+        #region Meetings
 
+        private async void GetMeetings(string id)
+        {
+            MeetingsList.Clear();
+            WidgedState &= ~HomePageWidgetState.EmployeeERMeetingsLoaded;
+            WidgedState |= HomePageWidgetState.EmployeeERMeetingsLoading;
+
+            var repo = new MeetingsRepository();
+            var list = await repo.GetEmployeeMeetingsAsync(id);
+            foreach (var item in list)
+            {
+                item.SetProgress();
+            }
+
+            MeetingsList.AddRange(list);
+            HasMeetingsData = MeetingsList.Count > 0;
+
+            WidgedState &= ~HomePageWidgetState.EmployeeERMeetingsLoading;
+            WidgedState |= HomePageWidgetState.EmployeeERMeetingsLoaded;
         }
 
-        private void GetMeetings(string id)
+        #endregion
+
+        private void GetCustomMeetings(string id)
         {
 
         }

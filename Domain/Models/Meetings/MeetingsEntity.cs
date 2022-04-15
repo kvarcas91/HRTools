@@ -4,6 +4,7 @@ using Domain.Interfaces;
 using Domain.Storage;
 using Domain.Types;
 using System;
+using System.Collections.Generic;
 
 namespace Domain.Models.Meetings
 {
@@ -27,6 +28,9 @@ namespace Domain.Models.Meetings
         public string MeetingStatus { get; set; }
         public bool IsERCaseStatusOpen { get; set; }
         public bool Paperless { get; set; }
+        public string MeetingProgress { get; set; }
+        public List<string> FirstMeetingOutcomeList { get; private set; }
+        public List<string> SecondMeetingOutcomeList { get; private set; }
 
         public MeetingsEntity()
         {
@@ -68,5 +72,23 @@ namespace Domain.Models.Meetings
             $@"('{ID}','{EmployeeID}','{UserID}','{EmployeeName.DbSanityCheck()}','{ShiftPattern}','{ManagerName.DbSanityCheck()}','{(int)MeetingType}',{FirstMeetingDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)},'{FirstMeetingOutcome}',
                 {SecondMeetingDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)},'{SecondMeetingOutcome}','{MeetingStatus}',{CreatedAt.DbNullableSanityCheck(DataStorage.LongDBDateFormat)},'{CreatedBy}',
                 {UpdatedAt.DbNullableSanityCheck(DataStorage.LongDBDateFormat)},'{UpdatedBy}','{Convert.ToUInt16(IsERCaseStatusOpen)}','{Convert.ToUInt16(Paperless)}')";
+
+        public void SetProgress()
+        {
+            switch(MeetingType)
+            {
+                case MeetingType.Health:
+                    MeetingProgress = string.IsNullOrEmpty(FirstMeetingOutcome) || FirstMeetingOutcome.Equals("NFA") || FirstMeetingOutcome.Equals("Cancelled") ? "Informal Health Review" : "Formal Health Review";
+                    FirstMeetingOutcomeList = new List<string> { "NFA", "Proceed to FHRM" };
+                    SecondMeetingOutcomeList = new List<string> { "NFA", "1st LoC", "2nd LoC", "3rd LoC", "Termination" };
+                    break;
+                case MeetingType.Disciplinary:
+                    MeetingProgress = string.IsNullOrEmpty(FirstMeetingOutcome) || FirstMeetingOutcome.Equals("NFA") || FirstMeetingOutcome.Equals("Cancelled") ? "Investigation" : "Disciplinary";
+                    FirstMeetingOutcomeList = new List<string> { "NFA", "Proceed to Disciplinary" };
+                    SecondMeetingOutcomeList = new List<string> { "NFA", "Verbal Warning", "Written Warning", "Final Warning", "Termination" };
+                    break;
+            }
+        }
+
     }
 }

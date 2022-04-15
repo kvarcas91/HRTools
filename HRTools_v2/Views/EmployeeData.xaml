@@ -866,6 +866,7 @@
 
                     </TabItem>
 
+                    <!-- Meetings -->
                     <TabItem>
                         <TabItem.Header>
                             <materialDesign:Badged Badge="{Binding PreviewEmplDataSnip.TotalERMeetingsCount}" 
@@ -876,16 +877,27 @@
                             </materialDesign:Badged>
                         </TabItem.Header>
                         <Grid>
-                            <TextBlock>
-                                    <Grid>
-                                        <TextBlock Text="second tab text" Padding="0 0 5 0"/>
-                                        <Ellipse Fill="Green"
-                                                 Width="8"
-                                                 Height="8"
-                                                 VerticalAlignment="Bottom"
-                                                 HorizontalAlignment="Right"/>
-                                    </Grid>
-                                </TextBlock>
+                            <ProgressBar Grid.Row="1"
+                                Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                             IsIndeterminate="True"
+                                             Width="90"
+                                             Height="90" 
+                                             Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='EmployeeERMeetingsLoading'}"/>
+
+                            <ListView x:Name="meetingsListView"
+                                Grid.Row="1"
+                               ItemsSource="{Binding MeetingsList}"
+                                Style="{StaticResource ErMeetingsListView}"
+                                    Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='EmployeeERMeetingsLoaded'}"/>
+
+
+                            <TextBlock Grid.Row="1"
+                                Text="No Data"
+                                           Visibility="{Binding HasMeetingsData, Converter={StaticResource InverseBoolToVisConverter}}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           Foreground="Gray"
+                                           FontSize="{StaticResource NoDataFontSize}"/>
 
                         </Grid>
 

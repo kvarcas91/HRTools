@@ -95,8 +95,8 @@
                             updatedAt TEXT,
                             updatedBy TEXT,
                             meetingStatus TEXT,
-                            isERCaseStatusOpen TEXT,
-                            paperless TEXT
+                            isERCaseStatusOpen BOOLEAN NOT NULL Check (isERCaseStatusOpen IN (0, 1)),
+                            paperless BOOLEAN NOT NULL Check (paperless IN (0, 1))
                             );
 
                             CREATE table custom_meetings (

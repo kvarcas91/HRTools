@@ -173,6 +173,11 @@
     <Compile Include="Converters\LoginToFullNameConverter.cs" />
     <Compile Include="Converters\LoginToInitialsConverter.cs" />
     <Compile Include="Converters\LoginToIsActionActiveConverter.cs" />
+    <Compile Include="Converters\MeetingsConverter\MeetingOutcomeToNextStageConverter.cs" />
+    <Compile Include="Converters\MeetingsConverter\MeetingStatusToColorConverter.cs" />
+    <Compile Include="Converters\MeetingsConverter\MeetingTextDecorationConverter.cs" />
+    <Compile Include="Converters\MeetingsConverter\MeetingTextForegroundConverter.cs" />
+    <Compile Include="Converters\MeetingsConverter\MeetingTextSizeConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Converters\ProgressConverter.cs" />
     <Compile Include="Converters\StateConverters\ResignationStateToVisibilityConverter.cs" />
