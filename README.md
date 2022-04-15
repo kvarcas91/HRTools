@@ -20,4 +20,3 @@ meeting case if it exits)
 - Resignations
 - LoA (Leave of Absence) - pending
 - Feedbacks - pending
-- Time Fraud - pending
