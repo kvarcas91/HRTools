@@ -1,5 +1,6 @@
 ﻿using HRTools_v2.Helpers;
 using HRTools_v2.ViewModels;
+using HRTools_v2.Views.Awal;
 using Prism.Ioc;
 using Prism.Regions;
 using System;
@@ -22,6 +23,7 @@ namespace HRTools_v2.Views
         private HomePage _homePage;
         private EmployeeData _employeeData;
         private AppSettings _appSettings;
+        private AwalPage _awal;
 
         public MainWindow(IContainerExtension container, IRegionManager regionManager)
         {
@@ -74,12 +76,14 @@ namespace HRTools_v2.Views
             _homePage = _container.Resolve<HomePage>();
             _employeeData = _container.Resolve<EmployeeData>();
             _appSettings = _container.Resolve<AppSettings>();
+            _awal = _container.Resolve<AwalPage>();
 
             _region = _regionManager.Regions["ContentRegion"];
             _ = _region.Add(_loaderPage);
             _ = _region.Add(_homePage);
             _ = _region.Add(_employeeData);
             _ = _region.Add(_appSettings);
+            _ = _region.Add(_awal);
         }
 
         private void OnSearchBoxKeyDown(object sender, System.Windows.Input.KeyEventArgs e)

@@ -877,7 +877,43 @@
                             </materialDesign:Badged>
                         </TabItem.Header>
                         <Grid>
-                            <ProgressBar Grid.Row="1"
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="42"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <materialDesign:PopupBox 
+                                     Background="Transparent"
+                                     StaysOpen="True"
+                                HorizontalAlignment="Right">
+
+                                <materialDesign:PopupBox.ToggleContent>
+
+                                    <Border Background="Transparent" 
+                                        Padding="10"
+                                        materialDesign:ShadowAssist.ShadowEdges="None"
+                                        materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                        >
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="Add" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+                                            <TextBlock Margin="10 0 0 0" Text="Add new" Foreground="DarkSlateGray"
+                                                   FontSize="12"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                </materialDesign:PopupBox.ToggleContent>
+
+
+                            </materialDesign:PopupBox>
+                            
+
+
+                            <Separator Grid.Row="1" BorderBrush="LightGray" BorderThickness="1"/>
+
+                            <ProgressBar Grid.Row="2"
                                 Style="{StaticResource MaterialDesignCircularProgressBar}"
                                              IsIndeterminate="True"
                                              Width="90"
@@ -885,13 +921,13 @@
                                              Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='EmployeeERMeetingsLoading'}"/>
 
                             <ListView x:Name="meetingsListView"
-                                Grid.Row="1"
+                                Grid.Row="2"
                                ItemsSource="{Binding MeetingsList}"
                                 Style="{StaticResource ErMeetingsListView}"
                                     Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='EmployeeERMeetingsLoaded'}"/>
 
 
-                            <TextBlock Grid.Row="1"
+                            <TextBlock Grid.Row="2"
                                 Text="No Data"
                                            Visibility="{Binding HasMeetingsData, Converter={StaticResource InverseBoolToVisConverter}}"
                                            VerticalAlignment="Center"
@@ -1097,6 +1133,7 @@
                         </Grid>
 
                     </TabItem>
+                    
                 </TabControl>
 
 
