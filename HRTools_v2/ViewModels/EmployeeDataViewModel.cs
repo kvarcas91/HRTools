@@ -93,6 +93,28 @@ namespace HRTools_v2.ViewModels
             set { SetProperty(ref _meetingsList, value); }
         }
 
+        private string _reasonForErClosure;
+        public string ReasonForErClosure
+        {
+            get => _reasonForErClosure;
+            set { SetProperty(ref _reasonForErClosure, value); }
+        }
+
+        private MeetingsEntry _newMeetingCase;
+        public MeetingsEntry NewMeetingCase
+        {
+            get => _newMeetingCase;
+            set { SetProperty(ref _newMeetingCase, value); }
+        }
+
+        private ObservableCollection<string> _meetingTypes;
+        public ObservableCollection<string> MeetingTypes
+        {
+            get => _meetingTypes;
+            set { SetProperty(ref _meetingTypes, value); }
+        }
+
+
         #endregion
 
         #region Awal
@@ -347,6 +369,19 @@ namespace HRTools_v2.ViewModels
 
         #endregion
 
+        #region Meetings
+
+        private DelegateCommand _onErMeetingCreateCommand = null;
+        public DelegateCommand OnErMeetingCreateCommand => _onErMeetingCreateCommand ?? (_onErMeetingCreateCommand = new DelegateCommand(CreateERMeeting));
+
+        private DelegateCommand<MeetingsEntity> _onErMeetingEditCommand = null;
+        public DelegateCommand<MeetingsEntity> OnErMeetingEditCommand => _onErMeetingEditCommand ?? (_onErMeetingEditCommand = new DelegateCommand<MeetingsEntity>(EditErMeeting));
+
+        private DelegateCommand<MeetingsEntity> _onMeetingCancelCommand = null;
+        public DelegateCommand<MeetingsEntity> OnMeetingCancelCommand => _onMeetingCancelCommand ?? (_onMeetingCancelCommand = new DelegateCommand<MeetingsEntity>(CancelErMeeting));
+
+        #endregion
+
         #endregion
 
         private bool _isPageActive;
@@ -374,12 +409,14 @@ namespace HRTools_v2.ViewModels
             Timeline = new ObservableCollection<Timeline>();
             Comments = new ObservableCollection<EmplComment>();
             MeetingsList = new ObservableCollection<MeetingsEntity>();
+            MeetingTypes = new ObservableCollection<string> { MeetingType.Disciplinary.ToString(), MeetingType.Health.ToString()};
 
             SanctionList = SanctionManager.GetSanctions();
             AwalSanctionList = SanctionManager.GetAwalSanctions();
 
             AwalNewEntry = new AwalEntry();
             ResignationNewEntry = new ResignationEntry();
+            NewMeetingCase = new MeetingsEntry();
 
             SetResignationCategories();
             
@@ -681,6 +718,68 @@ namespace HRTools_v2.ViewModels
 
             WidgedState &= ~HomePageWidgetState.EmployeeERMeetingsLoading;
             WidgedState |= HomePageWidgetState.EmployeeERMeetingsLoaded;
+        }
+
+        private async void EditErMeeting(MeetingsEntity meeting)
+        {
+
+        }
+
+        private async void CancelErMeeting(MeetingsEntity meeting)
+        {
+            if (string.IsNullOrEmpty(ReasonForErClosure))
+            {
+                SendToast("Reason is mandatory!", NotificationType.Information);
+                return;
+            }
+
+            if (meeting.MeetingStatus != "Open" && meeting.MeetingStatus != "Pending")
+            {
+                SendToast("Meeting is already closed!", NotificationType.Information);
+                return;
+            }
+
+            var meetingRepo = new MeetingsRepository();
+            var response = await meetingRepo.CloseERMeeting(ref meeting, ReasonForErClosure);
+            if (response.Success)
+            {
+                SendToast("Meeting has been closed!", NotificationType.Success);
+                if (TimeLineToggleSelection == TimelineOrigin.Meetings || TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimeLineToggleSelection);
+                ReasonForErClosure = string.Empty;
+                MeetingsList.Swap(meeting, meeting);
+            }
+            else
+            {
+                SendToast(response.Message, NotificationType.Warning);
+            }
+
+        }
+
+        private async void CreateERMeeting()
+        {
+            if (!NewMeetingCase.CanAdd())
+            {
+                SendToast("All fields are mandatory!", NotificationType.Information);
+                return;
+            }
+
+            var newMeeting = new MeetingsEntity(NewMeetingCase, SelectedEmployee);
+            var meetingRepo = new MeetingsRepository();
+            var response = await meetingRepo.InsertAsync(newMeeting);
+
+            if (response.Success)
+            {
+                SendToast("Meeting has been created!", NotificationType.Success);
+                MeetingsList.Insert(0, newMeeting);
+                HasMeetingsData = MeetingsList.Count > 0;
+                if (TimeLineToggleSelection == TimelineOrigin.Meetings || TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimeLineToggleSelection);
+                GetHeaders(SelectedEmployee.EmployeeID);
+                NewMeetingCase = new MeetingsEntry();
+            }
+            else
+            {
+                SendToast(response.Message, NotificationType.Warning);
+            }
         }
 
         #endregion

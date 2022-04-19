@@ -625,6 +625,7 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
 
 
@@ -638,6 +639,12 @@
                                          Margin="0 0 20 0"
                                          Text="{Binding MeetingsMap.MeetingStatus,Mode=TwoWay}"
                                     materialDesign:HintAssist.Hint="Meeting status"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                    <TextBox Grid.Column="2"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding MeetingsMap.DepartmentID,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Department ID"
                                          materialDesign:HintAssist.IsFloating="True"/>
 
                                 </Grid>

@@ -8,7 +8,17 @@ namespace HRTools_v2.Converters
     {
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value == null ?  "Black" : value.Equals("Cancelled") ? "Gray" : "Black";
+            if (value == null) return "Black";
+
+            switch (value)
+            {
+                case "Cancelled":
+                case "Resigned":
+                case "Terminated":
+                    return "Gray";
+                default:
+                    return "Black";
+            }
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

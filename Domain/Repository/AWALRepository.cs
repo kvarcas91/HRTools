@@ -52,7 +52,7 @@ namespace Domain.Repository
         public Task<Response> CloseAsync(AwalEntity awal)
         {
             if (!IsOpenAwalExists(awal.EmployeeID)) return Task.Run(() => new Response { Success = false, Message = "Case already closed" });
-            var timeLine = new Timeline().Create(awal.EmployeeID, TimelineOrigin.AWAL, $"AWAL case has been bridged by {awal.BridgeCreatedBy} - ''{awal.ReasonForClosure.DbSanityCheck()}''");
+            var timeLine = new Timeline().Create(awal.EmployeeID, TimelineOrigin.AWAL, $"AWAL case has been bridged by {awal.BridgeCreatedBy} - '{awal.ReasonForClosure.DbSanityCheck()}'");
             var tlQuery = $"INSERT INTO timeline {timeLine.GetHeader()} VALUES {timeLine.GetValues()};";
             var query = $@"UPDATE awal SET awalStatus = '{(int)awal.AwalStatus}', outcome = '{awal.Outcome}', updatedAt = '{awal.UpdatedAt.ToString(DataStorage.LongDBDateFormat)}', 
                         updatedBy = '{awal.UpdatedBy}', reasonForClosure = '{awal.ReasonForClosure.DbSanityCheck()}', bridgeCreatedBy = '{awal.BridgeCreatedBy}', 
@@ -148,7 +148,7 @@ namespace Domain.Repository
             var timelineString = new StringBuilder("INSERT INTO timeline ");
             if (awal.FirstNCNSDate != dbObj.FirstNCNSDate)
             {
-                var tl = new Timeline().Create(awal.EmployeeID, TimelineOrigin.AWAL, $"First NCNS date has been updated by {Environment.UserName}. Changed ''{dbObj.FirstNCNSDate.ToString(DataStorage.ShortPreviewDateFormat)}'' into ''{awal.FirstNCNSDate.ToString(DataStorage.ShortPreviewDateFormat)}''");
+                var tl = new Timeline().Create(awal.EmployeeID, TimelineOrigin.AWAL, $"First NCNS date has been updated by {Environment.UserName}. Changed '{dbObj.FirstNCNSDate.ToString(DataStorage.ShortPreviewDateFormat)}' into '{awal.FirstNCNSDate.ToString(DataStorage.ShortPreviewDateFormat)}'");
                 timelineString.Append($"{tl.GetHeader()} VALUES {tl.GetValues()}");
                 haveUpdate = true;
             }
@@ -184,7 +184,7 @@ namespace Domain.Repository
             if (awal.DisciplinaryDate != dbObj.DisciplinaryDate)
             {
                 var message = dbObj.DisciplinaryDate == DateTime.MinValue ? $"AWAL disciplinary date ({awal.DisciplinaryDate.ToString(DataStorage.ShortPreviewDateFormat)}) has been recorded by {Environment.UserName}" :
-                    $"AWAL disciplinary date has been updated by {Environment.UserName}. Changed ''{dbObj.DisciplinaryDate.ToString(DataStorage.ShortPreviewDateFormat)}'' into ''{awal.DisciplinaryDate.ToString(DataStorage.ShortPreviewDateFormat)}''";
+                    $"AWAL disciplinary date has been updated by {Environment.UserName}. Changed '{dbObj.DisciplinaryDate.ToString(DataStorage.ShortPreviewDateFormat)}' into '{awal.DisciplinaryDate.ToString(DataStorage.ShortPreviewDateFormat)}'";
                 var tl = new Timeline().Create(awal.EmployeeID, TimelineOrigin.AWAL, message);
                 if (!haveUpdate)
                 {
@@ -197,7 +197,7 @@ namespace Domain.Repository
             if (awal.Outcome != null && !awal.Outcome.Equals(dbObj.Outcome))
             {
                 var message = string.IsNullOrEmpty(dbObj.Outcome)? $"Outcome ({awal.Outcome}) has been recorded by {Environment.UserName}" :
-                    $"Outcome has been updated by {Environment.UserName}. Changed ''{dbObj.Outcome}'' into ''{awal.Outcome}''";
+                    $"Outcome has been updated by {Environment.UserName}. Changed '{dbObj.Outcome}' into '{awal.Outcome}'";
                 var tl = new Timeline().Create(awal.EmployeeID, TimelineOrigin.AWAL, message);
                 if (!haveUpdate)
                 {

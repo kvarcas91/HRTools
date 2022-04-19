@@ -16,6 +16,7 @@ namespace Domain.Models.Meetings
         public string EmployeeName { get; set; }
         public string ShiftPattern { get; set; }
         public string ManagerName { get; set; }
+        public string DepartmentID { get; set; }
         public MeetingType MeetingType { get; set; }
         public DateTime FirstMeetingDate { get; set; }
         public string FirstMeetingOutcome { get; set; }
@@ -35,6 +36,25 @@ namespace Domain.Models.Meetings
         public MeetingsEntity()
         {
             IsERCaseStatusOpen = false;
+            ID = Guid.NewGuid().ToString();
+            CreatedAt = DateTime.Now;
+            CreatedBy = Environment.UserName;
+            MeetingStatus = "Open";
+        }
+
+        public MeetingsEntity(MeetingsEntry entry, Roster empl) : this()
+        {
+            EmployeeID = empl.EmployeeID;
+            UserID = empl.UserID;
+            EmployeeName = empl.EmployeeName;
+            ShiftPattern = empl.ShiftPattern;
+            ManagerName = empl.ManagerName;
+            DepartmentID = empl.DepartmentID;
+            Enum.TryParse(entry.MeetingType, out MeetingType mType);
+            MeetingType = mType;
+            ID = entry.ID;
+            FirstMeetingDate = entry.FirstMeetingDate;
+            SetProgress();
         }
 
         public object ReadFromCSV(string[] fields, DataMap dataMap)

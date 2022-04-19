@@ -961,7 +961,7 @@
                                                     materialDesign:ShadowAssist.ShadowDepth="Depth0"
                                                     BorderBrush="DarkSlateGray"
                                                     BorderThickness="1"
-                                                    Command="{Binding ElementName=meetingsListView, Path=DataContext.OnMeetingEditCommand}"
+                                                    Command="{Binding ElementName=meetingsListView, Path=DataContext.OnErMeetingEditCommand}"
                                                     CommandParameter="{Binding}">
                                                 <StackPanel Orientation="Horizontal">
                                                     <materialDesign:PackIcon Kind="CreateOutline" 
@@ -1004,7 +1004,7 @@
                                                 Orientation="Vertical">
 
                                         <TextBox 
-                                            Text="{Binding ReasonForClosure, Mode=TwoWay}"
+                                            Text="{Binding ElementName=meetingsListView, Path=DataContext.ReasonForErClosure}"
                                             Background="Transparent"
                                             materialDesign:HintAssist.Hint="Reason for Closure"
                                             materialDesign:HintAssist.IsFloating="True"

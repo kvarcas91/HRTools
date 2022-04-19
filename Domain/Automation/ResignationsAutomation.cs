@@ -57,7 +57,8 @@ namespace Domain.Automation
         private string GetAwalQuery() => 
             $"UPDATE awal SET awalStatus = '{(int)AwalStatus.Resigned}', outcome = 'Cancelled', updatedBy = '(tool_automation)', updatedAt = '{DateTime.Now.ToString(DataStorage.LongDBDateFormat)}' WHERE employeeID = '{_newObj.EmployeeID}' AND awalStatus in ({(int)AwalStatus.Pending}, {(int)AwalStatus.Active});";
 
-        private string GetMeetingsQuery() => "";
+        private string GetMeetingsQuery() => 
+            $"UPDATE meetings SET meetingStatus = 'Resigned', updatedBy = '(tool_automation)', updatedAt = '{DateTime.Now.ToString(DataStorage.LongDBDateFormat)}' WHERE employeeID = '{_newObj.EmployeeID}' AND meetingStatus in ('Open', 'Pending');";
 
         private string GetCustomMeetingsQuery() => "";
 

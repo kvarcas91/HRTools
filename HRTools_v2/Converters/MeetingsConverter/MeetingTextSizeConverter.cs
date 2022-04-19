@@ -9,8 +9,17 @@ namespace HRTools_v2.Converters
     {
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value == null ? Application.Current.FindResource("PrimaryListFontSize") : value.Equals("Cancelled") ? 
-                Application.Current.FindResource("SecondaryListFontSize") : Application.Current.FindResource("PrimaryListFontSize");
+            if (value == null) return Application.Current.FindResource("PrimaryListFontSize");
+
+            switch (value)
+            {
+                case "Cancelled":
+                case "Resigned":
+                case "Terminated":
+                    return Application.Current.FindResource("SecondaryListFontSize");
+                default:
+                    return Application.Current.FindResource("PrimaryListFontSize");
+            }
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

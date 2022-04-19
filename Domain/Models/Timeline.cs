@@ -1,4 +1,5 @@
-﻿using Domain.Factory;
+﻿using Domain.Extensions;
+using Domain.Factory;
 using Domain.Interfaces;
 using Domain.Storage;
 using Domain.Types;
@@ -50,7 +51,7 @@ namespace Domain.Models
 
         public string GetValues()
         {
-            return $"('{EmployeeID}','{CreatedBy}','{CreatedAt.ToString(DataStorage.LongDBDateFormat)}','{EventMessage}', '{Origin}')";
+            return $"('{EmployeeID}','{CreatedBy}','{CreatedAt.ToString(DataStorage.LongDBDateFormat)}','{EventMessage.DbSanityCheck()}', '{Origin}')";
         }
     }
 }

@@ -7,5 +7,6 @@
         string EmployeeName { get; set; }
         string ShiftPattern { get; set; }
         string ManagerName { get; set; }
+        string DepartmentID { get; set; }
     }
 }

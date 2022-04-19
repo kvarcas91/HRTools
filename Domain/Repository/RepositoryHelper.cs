@@ -85,6 +85,7 @@
                             employeeName TEXT,
                             managerName TEXT,
                             shiftPattern TEXT,
+                            departmentID TEXT,
                             meetingType TEXT TEXT,
                             firstMeetingDate TEXT,
                             firstMeetingOutcome TEXT,

@@ -907,6 +907,75 @@
                                 </materialDesign:PopupBox.ToggleContent>
 
 
+                                <Grid Background="Transparent" Margin="10 0 10 0"
+                                                Width="200">
+
+                                   
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBox 
+                                    Text="{Binding NewMeetingCase.ID, Mode=TwoWay}"
+                                    Background="Transparent"
+                                    materialDesign:HintAssist.Hint="Meeting ID"
+                                    materialDesign:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    
+                                    TextWrapping="Wrap" 
+                                        Margin="5 5 15 5"/>
+
+                                    <ComboBox 
+                                        Grid.Row="1"
+                                        BorderThickness="0"
+                                        Margin="5"
+                                        SelectedValue=""
+                                        VerticalContentAlignment="Center"
+                                        materialDesign:HintAssist.Hint="Meeting Origin"
+                                        materialDesign:HintAssist.IsFloating="True"
+                                        ItemsSource="{Binding MeetingTypes}"
+                                        SelectedItem="{Binding NewMeetingCase.MeetingType, Mode=TwoWay}"
+                                        IsSynchronizedWithCurrentItem="True">
+                                    </ComboBox>
+
+                                    <DatePicker Grid.Row="2"
+                                            Margin="5"
+                                            materialDesign:HintAssist.Hint="First Meeting Date"
+                                            materialDesign:HintAssist.IsFloating="True"
+                                            Text="{Binding NewMeetingCase.FirstMeetingDate, Mode=TwoWay, Converter={converters:DateTimeToStringConverter}, ConverterParameter=5}"/>
+
+
+                                        <Separator Grid.Row="3" BorderBrush="LightGray" BorderThickness="1"
+                                            Margin="1"/>
+
+                                    <Grid Grid.Row="4">
+
+                                        <Button HorizontalAlignment="Right"
+                                                    Margin="5"
+                                                    Background="Transparent" 
+                                                    materialDesign:ShadowAssist.ShadowEdges="None"
+                                                    materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                                    BorderBrush="DarkSlateGray"
+                                                    BorderThickness="1"
+                                                    Command="{Binding OnErMeetingCreateCommand}"
+                                                    >
+                                            <StackPanel Orientation="Horizontal">
+                                                <materialDesign:PackIcon Kind="CreateOutline" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+                                                <TextBlock Margin="10 0 0 0" Text="Submit" Foreground="DarkSlateGray"
+                                                   FontSize="12"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </Grid>
+
+                                </Grid>
+
+
                             </materialDesign:PopupBox>
                             
 

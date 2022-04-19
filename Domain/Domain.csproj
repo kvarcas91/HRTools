@@ -132,6 +132,7 @@
     <Compile Include="Models\DataSnips\EmployeeStatusSnip.cs" />
     <Compile Include="Models\EmplComment.cs" />
     <Compile Include="Models\Meetings\MeetingsEntity.cs" />
+    <Compile Include="Models\Meetings\MeetingsEntry.cs" />
     <Compile Include="Models\Meetings\MeetingsImportMap.cs" />
     <Compile Include="Models\Resignations\ResignationEntity.cs" />
     <Compile Include="Models\Resignations\ResignationEntry.cs" />

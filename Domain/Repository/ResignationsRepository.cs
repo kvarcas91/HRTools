@@ -28,7 +28,7 @@ namespace Domain.Repository
             var ttID = ttLink[ttLink.Length-1];
 
             var timeLine = new Timeline().Create(resignation.EmployeeID, TimelineOrigin.Resignations);
-            timeLine.EventMessage = $"Resignation request has been submitted by {resignation.CreatedBy} due to ''{resignation.ReasonForResignation}'' (TT id: {ttID}). Last working day - {resignation.LastWorkingDay.ToString(DataStorage.ShortPreviewDateFormat)}";
+            timeLine.EventMessage = $"Resignation request has been submitted by {resignation.CreatedBy} due to '{resignation.ReasonForResignation}' (TT id: {ttID}). Last working day - {resignation.LastWorkingDay.ToString(DataStorage.ShortPreviewDateFormat)}";
             
             string tlQuery = $"INSERT INTO timeline {timeLine.GetHeader()} VALUES {timeLine.GetValues()};";
             string query = $"INSERT INTO resignations {resignation.GetHeader()} VALUES {resignation.GetValues()};{tlQuery}";

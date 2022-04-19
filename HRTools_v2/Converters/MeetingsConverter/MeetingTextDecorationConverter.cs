@@ -14,6 +14,8 @@ namespace HRTools_v2.Converters
             switch (value)
             {
                 case "Cancelled":
+                case "Resigned":
+                case "Terminated":
                     return "Strikethrough";
                 default:
                     return "None";

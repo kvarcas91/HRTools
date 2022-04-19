@@ -13,6 +13,7 @@ namespace Domain.Models.Meetings
         public string ShiftPattern { get; set; }
         public string ManagerName { get; set; }
         public string MeetingType { get; set; }
+        public string DepartmentID { get; set; }
         public string FirstMeetingDate { get; set; }
         public string FirstMeetingOutcome { get; set; }
         public string SecondMeetingDate { get; set; }
@@ -47,6 +48,7 @@ namespace Domain.Models.Meetings
             Paperless = "paperless";
             MeetingType = "meetingType";
             MeetingStatus = "meetingStatus";
+            DepartmentID = "departmentID";
 
             return this;
         }
@@ -58,7 +60,7 @@ namespace Domain.Models.Meetings
                 {"EmployeeID", EmployeeID }, {"ID", ID },{"UserID", UserID },{ "EmployeeName", EmployeeName},  { "ManagerName", ManagerName}, { "ShiftPattern", ShiftPattern}, 
                 {"FirstMeetingDate", FirstMeetingDate }, { "FirstMeetingOutcome", FirstMeetingOutcome}, { "SecondMeetingDate", SecondMeetingDate}, {"SecondMeetingOutcome", SecondMeetingOutcome },
                 { "CreatedBy", CreatedBy},{ "CreatedAt", CreatedAt}, {"UpdatedBy", UpdatedBy },{ "UpdatedAt", UpdatedAt},{ "IsERCaseStatusOpen", IsERCaseStatusOpen},
-                { "Paperless", Paperless}, { "MeetingType", MeetingType},{ "MeetingStatus", MeetingStatus}
+                { "Paperless", Paperless}, { "MeetingType", MeetingType},{ "MeetingStatus", MeetingStatus}, { "DepartmentID", DepartmentID}
             };
         }
     }

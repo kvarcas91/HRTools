@@ -8,7 +8,7 @@ namespace HRTools_v2.Converters
     {
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-             return !(value != null & (value.Equals("NFA") || value.Equals("Cancelled")));
+             return !(value != null && (value.Equals("NFA") || value.Equals("Cancelled")));
         }
 
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
