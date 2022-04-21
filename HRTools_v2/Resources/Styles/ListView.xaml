@@ -952,26 +952,32 @@
                                         <Separator Grid.Row="2" Grid.ColumnSpan="2" BorderBrush="LightGray" BorderThickness="1"
                                             Margin="1"/>
 
-                                        <Grid Grid.Row="3" Grid.ColumnSpan="2">
 
-                                            <Button HorizontalAlignment="Right"
-                                                    Margin="5"
-                                                    Background="Transparent" 
-                                                    materialDesign:ShadowAssist.ShadowEdges="None"
-                                                    materialDesign:ShadowAssist.ShadowDepth="Depth0"
-                                                    BorderBrush="DarkSlateGray"
-                                                    BorderThickness="1"
-                                                    Command="{Binding ElementName=meetingsListView, Path=DataContext.OnErMeetingEditCommand}"
-                                                    CommandParameter="{Binding}">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <materialDesign:PackIcon Kind="CreateOutline" 
-                                                                 VerticalAlignment="Center"
-                                                                 Foreground="DarkSlateGray"/>
-                                                    <TextBlock Margin="10 0 0 0" Text="Submit" Foreground="DarkSlateGray"
-                                                   FontSize="12"/>
-                                                </StackPanel>
-                                            </Button>
-                                        </Grid>
+                                        <ComboBox Grid.Row="3" Grid.Column="0"
+                                                  SelectedItem="{Binding MeetingStatus, Converter={converters:MeetingStatusSelectionToStringConverter}}">
+                                            <ComboBoxItem Content="Open"/>
+                                            <ComboBoxItem Content="Pending"/>
+                                        </ComboBox>
+
+                                        <Button Grid.Row="3" Grid.Column="1"
+                                            HorizontalAlignment="Right"
+                                                Margin="5"
+                                                Background="Transparent" 
+                                                materialDesign:ShadowAssist.ShadowEdges="None"
+                                                materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                                BorderBrush="DarkSlateGray"
+                                                BorderThickness="1"
+                                                Command="{Binding ElementName=meetingsListView, Path=DataContext.OnErMeetingEditCommand}"
+                                                CommandParameter="{Binding}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <materialDesign:PackIcon Kind="CreateOutline" 
+                                                                VerticalAlignment="Center"
+                                                                Foreground="DarkSlateGray"/>
+                                                <TextBlock Margin="10 0 0 0" Text="Submit" Foreground="DarkSlateGray"
+                                                FontSize="12"/>
+                                            </StackPanel>
+                                        </Button>
+
 
                                     </Grid>
 

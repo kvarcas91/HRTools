@@ -86,10 +86,10 @@ namespace Domain.Models.Meetings
         }
 
         public string GetHeader() => 
-            "(id,employeeID,userID,employeeName,shiftPattern,managerName,meetingType,firstMeetingDate,firstMeetingOutcome,secondMeetingDate,secondMeetingOutcome,meetingStatus,createdAt,createdBy,updatedAt,updatedBy,isERCaseStatusOpen,paperless)";
+            "(id,employeeID,userID,employeeName,shiftPattern,managerName, departmentID,meetingType,firstMeetingDate,firstMeetingOutcome,secondMeetingDate,secondMeetingOutcome,meetingStatus,createdAt,createdBy,updatedAt,updatedBy,isERCaseStatusOpen,paperless)";
 
         public string GetValues() =>
-            $@"('{ID}','{EmployeeID}','{UserID}','{EmployeeName.DbSanityCheck()}','{ShiftPattern}','{ManagerName.DbSanityCheck()}','{(int)MeetingType}',{FirstMeetingDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)},'{FirstMeetingOutcome}',
+            $@"('{ID}','{EmployeeID}','{UserID}','{EmployeeName.DbSanityCheck()}','{ShiftPattern}','{ManagerName.DbSanityCheck()}', '{DepartmentID}', '{(int)MeetingType}',{FirstMeetingDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)},'{FirstMeetingOutcome}',
                 {SecondMeetingDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)},'{SecondMeetingOutcome}','{MeetingStatus}',{CreatedAt.DbNullableSanityCheck(DataStorage.LongDBDateFormat)},'{CreatedBy}',
                 {UpdatedAt.DbNullableSanityCheck(DataStorage.LongDBDateFormat)},'{UpdatedBy}','{Convert.ToUInt16(IsERCaseStatusOpen)}','{Convert.ToUInt16(Paperless)}')";
 

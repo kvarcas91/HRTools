@@ -16,7 +16,7 @@ namespace Domain.Repository
 
         public Task<Response> InsertAsync(MeetingsEntity meeting)
         {
-            if (IsErMeetingExists(meeting.ID)) return Task.Run(() => new Response { Success = false, Message = "Open AWAL case already exists for this employee" });
+            if (IsErMeetingExists(meeting.ID)) return Task.Run(() => new Response { Success = false, Message = "ER case with this ID already exists" });
 
             var timeLine = new Timeline().Create(meeting.EmployeeID, TimelineOrigin.Meetings, $" ER meeting (type - {meeting.MeetingType}) has been created by {meeting.CreatedBy}. Case ID: {meeting.ID}");
             var tlQuery = $"INSERT INTO timeline {timeLine.GetHeader()} VALUES {timeLine.GetValues()};";

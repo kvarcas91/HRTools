@@ -61,7 +61,7 @@ namespace Domain.Repository
             if (awal.Awal1SentDate != DateTime.MinValue || awal.Awal2SentDate != DateTime.MinValue)
             {
                
-                WebHook.PostAsync( DataStorage.AppSettings.AwalChanelWebHook, $"Hello, please close AWAL case for {awal.EmployeeID} if exists");
+                WebHook.PostAsync(Environment.UserName == "eslut" ? DataStorage.AppSettings.TestWebHook : DataStorage.AppSettings.AwalChanelWebHook, $"Hello, please close AWAL case for {awal.EmployeeID} if exists");
             }
 
             return ExecuteAsync(query);
@@ -134,7 +134,7 @@ namespace Domain.Repository
                 var tl = new Timeline().Create(awal.EmployeeID, TimelineOrigin.AWAL, $"AWAL {awalType} has been requested by {Environment.UserName}");
                 Execute($"INSERT INTO timeline {tl.GetHeader()} VALUES {tl.GetValues()};");
 
-                WebHook.PostAsync(DataStorage.AppSettings.AwalChanelWebHook, $"Hello, please initiate AWAL {awalType} for {awal.EmployeeID}");
+                WebHook.PostAsync(Environment.UserName == "eslut" ? DataStorage.AppSettings.TestWebHook : DataStorage.AppSettings.AwalChanelWebHook, $"Hello, please initiate AWAL {awalType} for {awal.EmployeeID}");
                 return new Response { Success = true };
             });
 

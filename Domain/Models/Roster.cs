@@ -54,8 +54,9 @@ namespace Domain.Models
 
             foreach (var item in arr)
             {
-                hasValue &= EmployeeID.Contains(item) || UserID.ToUpper().Contains(item.ToUpper()) || EmployeeName.ToUpper().Contains(item.ToUpper()) || DepartmentID.Contains(item) ||
-                    ManagerName.ToUpper().Contains(item.ToUpper()) || JobTitle.ToUpper().Contains(item.ToUpper()) || ShiftPattern.ToUpper().Contains(item.ToUpper());
+                hasValue &= (EmployeeID != null && EmployeeID.Contains(item)) || (UserID != null && UserID.ToUpper().Contains(item.ToUpper())) || (EmployeeName != null && EmployeeName.ToUpper().Contains(item.ToUpper())) ||
+                    (DepartmentID != null && DepartmentID.Contains(item)) || (ManagerName != null && ManagerName.ToUpper().Contains(item.ToUpper())) || (JobTitle != null && JobTitle.ToUpper().Contains(item.ToUpper())) ||
+                    (ShiftPattern != null && ShiftPattern.ToUpper().Contains(item.ToUpper()));
             }
 
             return hasValue;

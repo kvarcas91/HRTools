@@ -28,6 +28,7 @@ namespace Domain.Data
                 output.ResignationsQuicklinkURL = settings["ResignationsQuicklinkURL"].Value;
                 output.SecurityChanelWebHook = settings["SecurityChanelWebHook"].Value;
                 output.AwalChanelWebHook = settings["AwalChanelWebHook"].Value;
+                output.TestWebHook = settings["TestWebHook"].Value;
             }
             catch
             {

@@ -14,6 +14,7 @@
         public string ResignationsQuicklinkURL { get; set; }
         public string SecurityChanelWebHook { get; set; }
         public string AwalChanelWebHook { get; set; }
+        public string TestWebHook { get; set; }
 
         public Settings()
         {
@@ -29,6 +30,7 @@
             CacheRefreshRateInSeconds = 30;
             SecurityChanelWebHook = string.Empty;
             AwalChanelWebHook = string.Empty;
+            TestWebHook = string.Empty;
         }
     }
 }
