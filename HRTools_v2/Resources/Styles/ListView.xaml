@@ -953,11 +953,44 @@
                                             Margin="1"/>
 
 
-                                        <ComboBox Grid.Row="3" Grid.Column="0"
-                                                  SelectedItem="{Binding MeetingStatus, Converter={converters:MeetingStatusSelectionToStringConverter}}">
-                                            <ComboBoxItem Content="Open"/>
-                                            <ComboBoxItem Content="Pending"/>
-                                        </ComboBox>
+                                        <StackPanel Grid.Row="3" Grid.Column="0"
+                                                   Orientation="Horizontal"
+                                                    HorizontalAlignment="Left">
+
+                                            <Grid>
+                                                <Button
+                                            Command="{Binding ElementName=meetingsListView, Path=DataContext.SetMeetingPendingCommand}"
+                                            CommandParameter="{Binding}"
+                                            Style="{StaticResource MaterialDesignFlatButton}"
+                                            Margin="5"
+                                            ToolTip="Mark as Pending"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            Visibility="{Binding MeetingStatus, Converter={converters:MeetingStatusToStatusActionVisibilityConverter}, ConverterParameter='pending'}">
+                                                    <materialDesign:PackIcon Kind="AccountPendingOutline"
+                                                                     Foreground="DarkSlateGray"/>
+                                                </Button>
+
+                                                <Button
+                                            Command="{Binding ElementName=meetingsListView, Path=DataContext.ReopenMeetingCommand}"
+                                            CommandParameter="{Binding}"
+                                            Style="{StaticResource MaterialDesignFlatButton}"
+                                            Margin="5"
+                                            ToolTip="Re-open case"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                             Visibility="{Binding MeetingStatus, Converter={converters:MeetingStatusToStatusActionVisibilityConverter}, ConverterParameter='open'}">
+                                                    <materialDesign:PackIcon Kind="HeadRefreshOutline"
+                                                                     Foreground="DarkSlateGray"/>
+                                                </Button>
+                                            </Grid>
+
+                                            <CheckBox Content="Paperless"
+                                                    HorizontalAlignment="Center"
+                                                    Style="{StaticResource MaterialDesignFilterChipPrimaryOutlineCheckBox}"
+                                                    IsChecked="{Binding Paperless}"/>
+
+                                        </StackPanel>
 
                                         <Button Grid.Row="3" Grid.Column="1"
                                             HorizontalAlignment="Right"
@@ -973,8 +1006,7 @@
                                                 <materialDesign:PackIcon Kind="CreateOutline" 
                                                                 VerticalAlignment="Center"
                                                                 Foreground="DarkSlateGray"/>
-                                                <TextBlock Margin="10 0 0 0" Text="Submit" Foreground="DarkSlateGray"
-                                                FontSize="12"/>
+                                                <TextBlock Margin="10 0 0 0" Text="Submit" Foreground="DarkSlateGray"/>
                                             </StackPanel>
                                         </Button>
 

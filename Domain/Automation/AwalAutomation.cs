@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Domain.Automation
 {
-    internal class AwalAutomation : ITaskAutomation<AwalEntity>
+    internal sealed class AwalAutomation : ITaskAutomation<AwalEntity>
     {
 
         private AwalEntity _oldObj;
@@ -53,7 +53,7 @@ namespace Domain.Automation
         private void OnUpdate()
         {
             if (_newObj == null || _oldObj == null) return;
-            if (!_newObj.Outcome.Equals(_oldObj.Outcome) && _newObj.AwalStatus == AwalStatus.Inactive)
+            if (!string.IsNullOrEmpty(_newObj.Outcome) && !_newObj.Outcome.Equals(_oldObj.Outcome) && _newObj.AwalStatus == AwalStatus.Inactive)
             {
                 _repository.Execute($"{GetSanctionQuery()}{GetTerminationQuery()}");
             }

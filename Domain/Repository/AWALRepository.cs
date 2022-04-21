@@ -45,7 +45,9 @@ namespace Domain.Repository
             var tlQuery = $"INSERT INTO timeline {timeLine.GetHeader()} VALUES {timeLine.GetValues()};";
 
             var query = $"INSERT INTO awal {awal.GetHeader()} VALUES {awal.GetValues()}; {tlQuery}";
-            Automate(awal, AutomationAction.OnIntake);
+
+            var dbAwal = GetScalar<AwalEntity>($"SELECT * FROM awal WHERE id = '{awal.ID}';");
+            Automate(awal, dbAwal, AutomationAction.OnIntake);
             return ExecuteAsync(query);
         }
 
@@ -95,11 +97,12 @@ namespace Domain.Repository
                 awal.AwalStatus = AwalStatus.Cancelled;
             }
 
-            var query = $@"UPDATE awal SET updatedBy = '{awal.UpdatedBy}', updatedAt = '{awal.UpdatedAt.ToString(DataStorage.LongDBDateFormat)}', firstNCNSDate = '{awal.FirstNCNSDate.ToString(DataStorage.LongDBDateFormat)}', 
-                        awal1SentDate = '{awal.Awal1SentDate.ToString(DataStorage.LongDBDateFormat)}', awal2SentDate = '{awal.Awal2SentDate.ToString(DataStorage.LongDBDateFormat)}', 
-                        disciplinaryDate = '{awal.DisciplinaryDate.ToString(DataStorage.LongDBDateFormat)}', outcome = '{awal.Outcome}', awalStatus = '{(int)awal.AwalStatus}' WHERE id = '{awal.ID}'; {timelineQuery}";
+            var query = $@"UPDATE awal SET updatedBy = '{awal.UpdatedBy}', updatedAt = '{awal.UpdatedAt.ToString(DataStorage.LongDBDateFormat)}', firstNCNSDate = {awal.FirstNCNSDate.DbNullableSanityCheck(DataStorage.LongDBDateFormat)}, 
+                        awal1SentDate = {awal.Awal1SentDate.DbNullableSanityCheck(DataStorage.LongDBDateFormat)}, awal2SentDate = {awal.Awal2SentDate.DbNullableSanityCheck(DataStorage.LongDBDateFormat)}, 
+                        disciplinaryDate = {awal.DisciplinaryDate.DbNullableSanityCheck(DataStorage.LongDBDateFormat)}, outcome = '{awal.Outcome}', awalStatus = '{(int)awal.AwalStatus}' WHERE id = '{awal.ID}'; {timelineQuery}";
 
-            Automate(awal, AutomationAction.OnUpdate);
+            var dbAwal = GetScalar<AwalEntity>($"SELECT * FROM awal WHERE id = '{awal.ID}';");
+            Automate(awal, dbAwal, AutomationAction.OnUpdate);
 
             return ExecuteAsync(query);
         }
@@ -156,6 +159,7 @@ namespace Domain.Repository
             if (awal.Awal1SentDate != dbObj.Awal1SentDate)
             {
                 var message = dbObj.Awal1SentDate == DateTime.MinValue ?  $"AWAL 1 sent date ({awal.Awal1SentDate.ToString(DataStorage.ShortPreviewDateFormat)}) has been recorded by {Environment.UserName}" : 
+                    awal.Awal1SentDate == DateTime.MinValue ? $"AWAL 1 sent date has been removed by {Environment.UserName}" :
                     $"AWAL 1 sent date has been updated by {Environment.UserName}. Changed ''{dbObj.Awal1SentDate.ToString(DataStorage.ShortPreviewDateFormat)}'' into ''{awal.Awal1SentDate.ToString(DataStorage.ShortPreviewDateFormat)}''";
                 var tl = new Timeline().Create(awal.EmployeeID, TimelineOrigin.AWAL, message);
                 if (!haveUpdate)
@@ -171,6 +175,7 @@ namespace Domain.Repository
             if (awal.Awal2SentDate != dbObj.Awal2SentDate)
             {
                 var message = dbObj.Awal2SentDate == DateTime.MinValue ? $"AWAL 2 sent date ({awal.Awal2SentDate.ToString(DataStorage.ShortPreviewDateFormat)}) has been recorded by {Environment.UserName}" :
+                    awal.Awal2SentDate == DateTime.MinValue ? $"AWAL 2 sent date has been removed by {Environment.UserName}" :
                     $"AWAL 2 sent date has been updated by {Environment.UserName}. Changed ''{dbObj.Awal2SentDate.ToString(DataStorage.ShortPreviewDateFormat)}'' into ''{awal.Awal2SentDate.ToString(DataStorage.ShortPreviewDateFormat)}''";
                 var tl = new Timeline().Create(awal.EmployeeID, TimelineOrigin.AWAL, message);
                 if (!haveUpdate)
@@ -184,6 +189,7 @@ namespace Domain.Repository
             if (awal.DisciplinaryDate != dbObj.DisciplinaryDate)
             {
                 var message = dbObj.DisciplinaryDate == DateTime.MinValue ? $"AWAL disciplinary date ({awal.DisciplinaryDate.ToString(DataStorage.ShortPreviewDateFormat)}) has been recorded by {Environment.UserName}" :
+                    awal.DisciplinaryDate == DateTime.MinValue ? $"AWAL disciplinary date has been removed by {Environment.UserName}" :
                     $"AWAL disciplinary date has been updated by {Environment.UserName}. Changed '{dbObj.DisciplinaryDate.ToString(DataStorage.ShortPreviewDateFormat)}' into '{awal.DisciplinaryDate.ToString(DataStorage.ShortPreviewDateFormat)}'";
                 var tl = new Timeline().Create(awal.EmployeeID, TimelineOrigin.AWAL, message);
                 if (!haveUpdate)
@@ -216,11 +222,10 @@ namespace Domain.Repository
             return GetScalar<int>($"SELECT COUNT(*) FROM awal WHERE employeeID = '{emplId}' AND awalStatus in ({(int)AwalStatus.Active},{(int)AwalStatus.Pending});") > 0;
         }
 
-        private void Automate(AwalEntity awal, AutomationAction action)
+        private void Automate(AwalEntity awal, AwalEntity dbAwal, AutomationAction action)
         {
             Task.Run(() =>
             {
-                var dbAwal = GetScalar<AwalEntity>($"SELECT * FROM awal WHERE id = '{awal.ID}';");
                 var automation = new AwalAutomation(this).SetData(dbAwal, awal);
                 automation.Invoke(action);
             });

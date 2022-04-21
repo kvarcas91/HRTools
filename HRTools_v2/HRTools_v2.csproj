@@ -178,7 +178,7 @@
     <Compile Include="Converters\LoginToInitialsConverter.cs" />
     <Compile Include="Converters\LoginToIsActionActiveConverter.cs" />
     <Compile Include="Converters\MeetingsConverter\MeetingOutcomeToNextStageConverter.cs" />
-    <Compile Include="Converters\MeetingsConverter\MeetingStatusSelectionToStringConverter.cs" />
+    <Compile Include="Converters\MeetingsConverter\MeetingStatusToStatusActionVisibilityConverter.cs" />
     <Compile Include="Converters\MeetingsConverter\MeetingStatusToColorConverter.cs" />
     <Compile Include="Converters\MeetingsConverter\MeetingTextDecorationConverter.cs" />
     <Compile Include="Converters\MeetingsConverter\MeetingTextForegroundConverter.cs" />

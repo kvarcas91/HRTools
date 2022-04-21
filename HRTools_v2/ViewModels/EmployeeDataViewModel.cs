@@ -380,6 +380,12 @@ namespace HRTools_v2.ViewModels
         private DelegateCommand<MeetingsEntity> _onMeetingCancelCommand = null;
         public DelegateCommand<MeetingsEntity> OnMeetingCancelCommand => _onMeetingCancelCommand ?? (_onMeetingCancelCommand = new DelegateCommand<MeetingsEntity>(CancelErMeeting));
 
+        private DelegateCommand<MeetingsEntity> _setMeetingPendingCommand = null;
+        public DelegateCommand<MeetingsEntity> SetMeetingPendingCommand => _setMeetingPendingCommand ?? (_setMeetingPendingCommand = new DelegateCommand<MeetingsEntity>(SetMeetingPending));
+
+        private DelegateCommand<MeetingsEntity> _reopenMeetingCommand = null;
+        public DelegateCommand<MeetingsEntity> ReopenMeetingCommand => _reopenMeetingCommand ?? (_reopenMeetingCommand = new DelegateCommand<MeetingsEntity>(ReopenMeeting));
+
         #endregion
 
         #endregion
@@ -725,6 +731,40 @@ namespace HRTools_v2.ViewModels
 
         }
 
+        private async void SetMeetingPending (MeetingsEntity meeting)
+        {
+            var repo = new MeetingsRepository();
+            var response = await repo.ChangeMeetingStatusAsync(meeting, "Pending");
+
+            if (response.Success)
+            {
+                SendToast("Meeting status has been updated!", NotificationType.Success);
+                if (TimeLineToggleSelection == TimelineOrigin.Meetings || TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimeLineToggleSelection);
+                MeetingsList.Swap(meeting, meeting);
+            }
+            else
+            {
+                SendToast(response.Message, NotificationType.Warning);
+            }
+        }
+
+        private async void ReopenMeeting (MeetingsEntity meeting)
+        {
+            var repo = new MeetingsRepository();
+            var response = await repo.ChangeMeetingStatusAsync(meeting, "Open");
+
+            if (response.Success)
+            {
+                SendToast("Meeting status has been updated!", NotificationType.Success);
+                if (TimeLineToggleSelection == TimelineOrigin.Meetings || TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimeLineToggleSelection);
+                MeetingsList.Swap(meeting, meeting);
+            }
+            else
+            {
+                SendToast(response.Message, NotificationType.Warning);
+            }
+        }
+
         private async void CancelErMeeting(MeetingsEntity meeting)
         {
             if (string.IsNullOrEmpty(ReasonForErClosure))
@@ -740,7 +780,7 @@ namespace HRTools_v2.ViewModels
             }
 
             var meetingRepo = new MeetingsRepository();
-            var response = await meetingRepo.CloseERMeeting(ref meeting, ReasonForErClosure);
+            var response = await meetingRepo.CloseERMeeting(meeting, ReasonForErClosure);
             if (response.Success)
             {
                 SendToast("Meeting has been closed!", NotificationType.Success);
