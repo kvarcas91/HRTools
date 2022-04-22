@@ -51,7 +51,8 @@ namespace Domain.Repository
             if (meeting.SecondMeetingDate == DateTime.MinValue) meeting.FirstMeetingOutcome = "Cancelled";
             meeting.MeetingStatus = "Cancelled";
             var tlQuery = $"INSERT INTO timeline {timeLine.GetHeader()} VALUES {timeLine.GetValues()};";
-            var query = $"UPDATE meetings SET meetingStatus = '{meeting.MeetingStatus}', firstMeetingOutcome = '{meeting.FirstMeetingOutcome}', SecondMeetingOutcome = '{meeting.SecondMeetingOutcome}' WHERE id = '{meeting.ID}'; {tlQuery}";
+            var query = $@"UPDATE meetings SET meetingStatus = '{meeting.MeetingStatus}', firstMeetingOutcome = '{meeting.FirstMeetingOutcome}', SecondMeetingOutcome = '{meeting.SecondMeetingOutcome}', 
+            updatedBy = '{meeting.UpdatedBy}', updatedAt = {meeting.UpdatedAt.DbNullableSanityCheck(DataStorage.LongDBDateFormat)} WHERE id = '{meeting.ID}'; {tlQuery}";
             return ExecuteAsync(query);
         }
 

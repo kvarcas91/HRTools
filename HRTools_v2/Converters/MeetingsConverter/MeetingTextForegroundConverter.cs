@@ -15,6 +15,7 @@ namespace HRTools_v2.Converters
                 case "Cancelled":
                 case "Resigned":
                 case "Terminated":
+                case "Closed":
                     return "Gray";
                 default:
                     return "Black";

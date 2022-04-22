@@ -1055,8 +1055,9 @@
 
                                         <Grid>
 
-                                            <Button HorizontalAlignment="Right"
-                                            Margin="5"
+                                            <Button 
+                                            Margin="-10 20 -10 -8"
+                                                HorizontalContentAlignment="Center"
                                             Background="Transparent" 
                                             materialDesign:ShadowAssist.ShadowEdges="None"
                                             materialDesign:ShadowAssist.ShadowDepth="Depth0"

@@ -16,6 +16,7 @@ namespace HRTools_v2.Converters
                 case "Cancelled":
                 case "Resigned":
                 case "Terminated":
+                case "Closed":
                     return Application.Current.FindResource("SecondaryListFontSize");
                 default:
                     return Application.Current.FindResource("PrimaryListFontSize");

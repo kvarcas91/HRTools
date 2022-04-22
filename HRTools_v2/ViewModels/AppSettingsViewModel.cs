@@ -13,7 +13,6 @@ using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
-using System;
 
 namespace HRTools_v2.ViewModels
 {
@@ -240,7 +239,7 @@ namespace HRTools_v2.ViewModels
             var csvOutput = csvReader.Get(dataMap);
             var repo = new SanctionsRepository();
             var response = await repo.InsertAllAsync(csvOutput);
-            IsMeetingsDataImportInProgress = false;
+            IsSanctionsDataImportInProgress = false;
 
             if (response.Success)
             {
