@@ -670,6 +670,8 @@ namespace HRTools_v2.ViewModels
                 SendToast("Resignation has been cancelled!", NotificationType.Success);
                 ResignationState = ResignationWidgetState.ResignationDoesNotExist;
                 if (TimeLineToggleSelection == TimelineOrigin.Resignations || TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimeLineToggleSelection);
+                GetAwal(SelectedEmployee.EmployeeID);
+                GetMeetings(SelectedEmployee.EmployeeID);
             }
             else
             {
@@ -728,7 +730,24 @@ namespace HRTools_v2.ViewModels
 
         private async void EditErMeeting(MeetingsEntity meeting)
         {
+            if (SanctionManager.IsLesser(EmployeeLiveSanctions.DisciplinarySanction, meeting.SecondMeetingOutcome))
+            {
+                SendToast("You cannot issue lesser sanction!", NotificationType.Information);
+                return;
+            }
 
+            var repo = new MeetingsRepository();
+            var response = await repo.UpdateAsync(meeting);
+            if (response.Success)
+            {
+                SendToast("Meeting has been updated!", NotificationType.Success);
+                if (TimeLineToggleSelection == TimelineOrigin.Meetings || TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimeLineToggleSelection);
+                MeetingsList.Swap(meeting, meeting);
+            }
+            else
+            {
+                SendToast(response.Message, NotificationType.Warning);
+            }
         }
 
         private async void SetMeetingPending (MeetingsEntity meeting)

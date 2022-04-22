@@ -3,6 +3,7 @@ using Domain.IO;
 using Domain.Models;
 using Domain.Models.AWAL;
 using Domain.Models.Meetings;
+using Domain.Models.Sanctions;
 using Domain.Repository;
 using Domain.Storage;
 using Domain.Types;
@@ -42,6 +43,13 @@ namespace HRTools_v2.ViewModels
             set { SetProperty(ref _meetingsMap, value); }
         }
 
+        private SanctionsImportMap _sanctionsMap;
+        public SanctionsImportMap SanctionsMap
+        {
+            get => _sanctionsMap;
+            set { SetProperty(ref _sanctionsMap, value); }
+        }
+
         #region Awal
 
         private bool _isAwalDataImportInProgress;
@@ -78,6 +86,23 @@ namespace HRTools_v2.ViewModels
 
         #endregion
 
+        #region Sanctions
+
+        private bool _isSanctionsDataImportInProgress;
+        public bool IsSanctionsDataImportInProgress
+        {
+            get => _isSanctionsDataImportInProgress;
+            set { SetProperty(ref _isSanctionsDataImportInProgress, value); }
+        }
+
+        private string _sanctionsFileName;
+        public string SanctionsFileName
+        {
+            get => _sanctionsFileName;
+            set { SetProperty(ref _sanctionsFileName, value); }
+        }
+
+        #endregion
 
         #endregion
 
@@ -103,6 +128,16 @@ namespace HRTools_v2.ViewModels
 
         #endregion
 
+        #region Sanctions
+
+        private DelegateCommand _importSanctionsFileCommand = null;
+        public DelegateCommand ImportSanctionsFileCommand => _importSanctionsFileCommand ?? (_importSanctionsFileCommand = new DelegateCommand(ImportSanctions));
+
+        private DelegateCommand _openSanctionsFileCommand = null;
+        public DelegateCommand OpenSanctionsFileCommand => _openSanctionsFileCommand ?? (_openSanctionsFileCommand = new DelegateCommand(OpenSanctionsFile));
+
+        #endregion
+
         #endregion
 
         private readonly IEventAggregator _eventAggregator;
@@ -112,6 +147,7 @@ namespace HRTools_v2.ViewModels
             _eventAggregator = eventAggregator;
             AwalMap = new AwalImportMap().SetDefaultValues();
             MeetingsMap = new MeetingsImportMap().SetDefaultValues();
+            SanctionsMap = new SanctionsImportMap().SetDefaultValues();
             IsAwalDataImportInProgress = false;
         }
 
@@ -189,6 +225,41 @@ namespace HRTools_v2.ViewModels
 
         #endregion
 
+        #region Sanctions
+
+        private async void ImportSanctions()
+        {
+            if (string.IsNullOrEmpty(MeetingsFileName))
+            {
+                SendMessage("Import Sanctions data as .csv file first", NotificationType.Information);
+                return;
+            }
+            IsSanctionsDataImportInProgress = true;
+            var dataMap = new DataMap(SanctionsMap, DataImportType.Sanctions);
+            var csvReader = new CSVStream(SanctionsFileName);
+            var csvOutput = csvReader.Get(dataMap);
+            var repo = new SanctionsRepository();
+            var response = await repo.InsertAllAsync(csvOutput);
+            IsMeetingsDataImportInProgress = false;
+
+            if (response.Success)
+            {
+                SendMessage("Sanctions data has been imported!", NotificationType.Success);
+            }
+            else SendMessage(response.Message, NotificationType.Warning);
+
+        }
+
+        private void OpenSanctionsFile()
+        {
+            var dialog = new DialogHelper(".csv", "CSV Files|*.csv");
+            var path = dialog.ShowOpenDialog();
+            if (string.IsNullOrEmpty(path)) return;
+
+            SanctionsFileName = FileHelper.FileFullName(path);
+        }
+
+        #endregion
 
         private void SendMessage(string message, NotificationType notificationType)
         {

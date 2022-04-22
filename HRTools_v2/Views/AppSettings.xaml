@@ -678,6 +678,247 @@
                             </StackPanel>
                         </Grid>
                     </Expander>
+
+                    <!-- Sanctions -->
+                    <Expander Header="Sanctions" Background="Transparent"
+                              BorderThickness="0 0 0 1"
+                              Margin="0 5"
+                              BorderBrush="DarkSlateGray">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+
+                            <StackPanel Orientation="Horizontal" Grid.Row="0">
+                                <Button Background="Transparent" 
+                                HorizontalAlignment="Left"
+                    materialDesign:ShadowAssist.ShadowEdges="None"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                        BorderThickness="0 0 0 1"
+                                        Command="{Binding OpenMeetingsFileCommand}"
+                    >
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="FolderOpenOutline" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+                                        <TextBlock Margin="10 0 0 0" Text="Open File" 
+                                           Foreground="DarkSlateGray"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <TextBlock Text="{Binding SanctionsFileName}"
+                                       VerticalAlignment="Center"
+                                       Margin="10 0 0 0"
+                                       FontSize="10"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1"
+                                    Orientation="Vertical"
+                                    Margin="10 10 0 0">
+
+                                <TextBlock Text="* Expected column names for each data point. If it fails to identify column name from file - value will be ignored"
+                                       VerticalAlignment="Center"
+                                           FontStyle="Italic"
+                                       Margin="10 5"/>
+
+                                <Grid Margin="0 10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding SanctionsMap.ID,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Case ID"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                         materialDesign:HintAssist.HelperText="* Mandatory"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"
+                                         />
+
+                                    <TextBox Grid.Column="1"
+                                         Text="{Binding SanctionsMap.EmployeeID,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                    materialDesign:HintAssist.Hint="Employee ID"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                         materialDesign:HintAssist.HelperText="* Mandatory"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"/>
+
+                                    <TextBox Grid.Column="2"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding SanctionsMap.UserID,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Login (userID)"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                          materialDesign:HintAssist.HelperText="If left blank - will attempt to fill from roster"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"/>
+
+                                </Grid>
+
+                                <Grid Margin="0 20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding SanctionsMap.EmployeeName,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Employee Name"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                          materialDesign:HintAssist.HelperText="If left blank - will attempt to fill from roster"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"
+                                         />
+
+                                    <TextBox Grid.Column="1"
+                                         Text="{Binding SanctionsMap.ManagerName,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                         materialDesign:HintAssist.Hint="Manager Name"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                         materialDesign:HintAssist.HelperText="If left blank - will attempt to fill from roster"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"/>
+
+                                    <TextBox Grid.Column="2"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding SanctionsMap.ShiftPattern,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Shift Pattern"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                          materialDesign:HintAssist.HelperText="If left blank - will attempt to fill from roster"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"/>
+
+                                </Grid>
+
+                                <Grid Margin="0 20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding SanctionsMap.Sanction,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Sanction"
+                                         materialDesign:HintAssist.IsFloating="True" />
+
+                                    <TextBox Grid.Column="1"
+                                         Text="{Binding SanctionsMap.SanctionStartDate,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                         materialDesign:HintAssist.Hint="Sanction start date"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                    <TextBox Grid.Column="2"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding SanctionsMap.SanctionEndDate,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Sanction end date"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                </Grid>
+
+                                <Grid Margin="0 20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                         Text="{Binding SanctionsMap.CreatedBy,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                         materialDesign:HintAssist.Hint="Case created by"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                    <TextBox Grid.Column="1"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding SanctionsMap.CreatedAt,Mode=TwoWay}"
+                                        materialDesign:HintAssist.Hint="Case created at"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                    <TextBox Grid.Column="2"
+                                         Text="{Binding SanctionsMap.MeetingType,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                         materialDesign:HintAssist.Hint="Meeting type"
+                                         materialDesign:HintAssist.HelperText="* Disciplinary/Health"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                </Grid>
+
+                                <Grid Margin="0 20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding SanctionsMap.UpdatedBy,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Case last updated by"
+                                         materialDesign:HintAssist.IsFloating="True" />
+
+                                    <TextBox Grid.Column="1"
+                                         Text="{Binding SanctionsMap.UpdatedAt,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                         materialDesign:HintAssist.Hint="Case last updated at"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                    <TextBox Grid.Column="2"
+                                         Text="{Binding SanctionsMap.MeetingType,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                         materialDesign:HintAssist.Hint="Type of the meeting"
+                                         materialDesign:HintAssist.HelperText="* Disciplinary/Health"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+                                </Grid>
+
+                                <Grid Margin="0 20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+
+                                    <TextBox Grid.Column="1"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding SanctionsMap.DepartmentID,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Department ID"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                </Grid>
+
+                                <Grid>
+
+                                    <Button Grid.Column="2"
+                                Margin="10"
+                            Background="Transparent" 
+                    materialDesign:ShadowAssist.ShadowEdges="None"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                        BorderBrush="DarkSlateGray"
+                    BorderThickness="1"
+                                            Visibility="{Binding IsSanctionsDataImportInProgress, Converter={StaticResource InverseBoolToVisConverter}}"
+                                Command="{Binding ImportSanctionsFileCommand}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="HomeImportOutline" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+                                            <TextBlock Margin="10 0 0 0" Text="Import" Foreground="DarkSlateGray"
+                                                   FontSize="12"/>
+                                        </StackPanel>
+                                    </Button>
+
+                                    <ProgressBar  Visibility="{Binding IsSanctionsDataImportInProgress, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                  IsIndeterminate="True"/>
+
+                                </Grid>
+                            </StackPanel>
+                        </Grid>
+                    </Expander>
+
                 </StackPanel>
             </Grid>
             
