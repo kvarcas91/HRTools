@@ -66,6 +66,7 @@ namespace Domain.Models.Meetings
             UserID = dataMap.GetStrValue(nameof(UserID), fields);
             EmployeeName = dataMap.GetStrValue(nameof(EmployeeName), fields);
             ShiftPattern = dataMap.GetStrValue(nameof(ShiftPattern), fields);
+            DepartmentID = dataMap.GetStrValue(nameof(DepartmentID), fields);
             ManagerName = dataMap.GetStrValue(nameof(ManagerName), fields);
             Enum.TryParse(dataMap.GetStrValue(nameof(MeetingType), fields), out MeetingType mType);
             MeetingType = mType;

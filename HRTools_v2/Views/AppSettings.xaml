@@ -697,7 +697,7 @@
                     materialDesign:ShadowAssist.ShadowEdges="None"
                     materialDesign:ShadowAssist.ShadowDepth="Depth0"
                                         BorderThickness="0 0 0 1"
-                                        Command="{Binding OpenMeetingsFileCommand}"
+                                        Command="{Binding OpenSanctionsFileCommand}"
                     >
                                     <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon Kind="FolderOpenOutline" 
@@ -774,7 +774,7 @@
                                          />
 
                                     <TextBox Grid.Column="1"
-                                         Text="{Binding SanctionsMap.ManagerName,Mode=TwoWay}"
+                                         Text="{Binding SanctionsMap.Manager,Mode=TwoWay}"
                                          Margin="0 0 20 0"
                                          materialDesign:HintAssist.Hint="Manager Name"
                                          materialDesign:HintAssist.IsFloating="True"
@@ -783,7 +783,7 @@
 
                                     <TextBox Grid.Column="2"
                                          Margin="0 0 20 0"
-                                         Text="{Binding SanctionsMap.ShiftPattern,Mode=TwoWay}"
+                                         Text="{Binding SanctionsMap.Shift,Mode=TwoWay}"
                                     materialDesign:HintAssist.Hint="Shift Pattern"
                                          materialDesign:HintAssist.IsFloating="True"
                                           materialDesign:HintAssist.HelperText="If left blank - will attempt to fill from roster"
@@ -856,14 +856,14 @@
 
                                     <TextBox Grid.Column="0"
                                          Margin="0 0 20 0"
-                                         Text="{Binding SanctionsMap.UpdatedBy,Mode=TwoWay}"
-                                    materialDesign:HintAssist.Hint="Case last updated by"
+                                         Text="{Binding SanctionsMap.OverridenBy,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Case overriden by"
                                          materialDesign:HintAssist.IsFloating="True" />
 
                                     <TextBox Grid.Column="1"
-                                         Text="{Binding SanctionsMap.UpdatedAt,Mode=TwoWay}"
+                                         Text="{Binding SanctionsMap.OverridenAt,Mode=TwoWay}"
                                          Margin="0 0 20 0"
-                                         materialDesign:HintAssist.Hint="Case last updated at"
+                                         materialDesign:HintAssist.Hint="Case overriden at"
                                          materialDesign:HintAssist.IsFloating="True"/>
 
                                     <TextBox Grid.Column="2"
@@ -881,14 +881,6 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-
-
-                                    <TextBox Grid.Column="1"
-                                         Margin="0 0 20 0"
-                                         Text="{Binding SanctionsMap.DepartmentID,Mode=TwoWay}"
-                                    materialDesign:HintAssist.Hint="Department ID"
-                                         materialDesign:HintAssist.IsFloating="True"/>
-
                                 </Grid>
 
                                 <Grid>

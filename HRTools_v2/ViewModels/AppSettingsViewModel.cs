@@ -229,7 +229,7 @@ namespace HRTools_v2.ViewModels
 
         private async void ImportSanctions()
         {
-            if (string.IsNullOrEmpty(MeetingsFileName))
+            if (string.IsNullOrEmpty(SanctionsFileName))
             {
                 SendMessage("Import Sanctions data as .csv file first", NotificationType.Information);
                 return;

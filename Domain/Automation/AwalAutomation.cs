@@ -71,7 +71,7 @@ namespace Domain.Automation
             stringBuilder.Append($@"UPDATE sanctions SET sanctionEndDate = '{DateTime.Now.ToString(DataStorage.ShortDBDateFormat)}', overriden = '1', overridenBy = '{Environment.UserName}', overridenAt = '{DateTime.Now.ToString(DataStorage.LongDBDateFormat)}' 
                                                 where employeeID = '{_newObj.EmployeeID}' AND sanctionEndDate > '{DateTime.Now.ToString(DataStorage.ShortDBDateFormat)}' AND meetingType = '{(int)sanction.MeetingType}';");
 
-            stringBuilder.Append($@"INSERT INTO sanctions {sanction.GetDbInsertHeader()} VALUES {sanction.GetDbInsertValues()};");
+            stringBuilder.Append($@"INSERT INTO sanctions {sanction.GetHeader()} VALUES {sanction.GetValues()};");
             return stringBuilder.ToString();
         }
 

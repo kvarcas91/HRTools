@@ -57,7 +57,7 @@ namespace Domain.DataManager
         public static bool IsLesser(string oldSanction, string newSanction)
         {
             if (string.IsNullOrEmpty(oldSanction) || string.IsNullOrEmpty(newSanction)) return false;
-            if (newSanction.Equals("Cancelled") || newSanction.Equals("Termination")) return false;
+            if (newSanction.Equals("Cancelled") || newSanction.Equals("Termination") || newSanction.Equals("NFA")) return false;
 
             var dt = DateTime.Now;
             return (GetSanctionEndDate(newSanction, dt) < GetSanctionEndDate(oldSanction, dt));

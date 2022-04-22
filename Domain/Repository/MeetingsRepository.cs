@@ -66,7 +66,7 @@ namespace Domain.Repository
             return ExecuteAsync(query);
         }
 
-        public Task<Response> Update(MeetingsEntity meeting)
+        public Task<Response> UpdateAsync(MeetingsEntity meeting)
         {
 
             var validationResponse = _validator.Validate(meeting);
@@ -74,7 +74,7 @@ namespace Domain.Repository
 
             var dbMeeting = GetScalar<MeetingsEntity>($"SELECT * FROM meetings WHERE id = '{meeting.ID}';");
             var timelineQuery = GetUpdateTimelineString(meeting, dbMeeting);
-            if (string.IsNullOrEmpty(timelineQuery)) return Task.Run(() => new Response { Success = false, Message = "No changes were made" });
+            if (string.IsNullOrEmpty(timelineQuery) && dbMeeting.Paperless == meeting.Paperless) return Task.Run(() => new Response { Success = false, Message = "No changes were made" });
 
             meeting.UpdatedAt = DateTime.Now;
             meeting.UpdatedBy = Environment.UserName;
@@ -84,7 +84,7 @@ namespace Domain.Repository
             var query = $@"UPDATE meetings SET firstMeetingDate = {meeting.FirstMeetingDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)}, firstMeetingOutcome = '{meeting.FirstMeetingOutcome}', 
                         secondMeetingDate = {meeting.FirstMeetingDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)}, secondMeetingOutcome = '{meeting.SecondMeetingOutcome}', updatedBy = '{Environment.UserName}', 
                         updatedAt = '{meeting.UpdatedAt.ToString(DataStorage.LongDBDateFormat)}', meetingStatus = '{meeting.MeetingStatus}', paperless = '{Convert.ToInt16(meeting.Paperless)}' 
-                        WHERE meetingID = '{meeting.ID}'; {timelineQuery}";
+                        WHERE id = '{meeting.ID}'; {timelineQuery}";
 
            
             Automate(meeting, dbMeeting, AutomationAction.OnUpdate);
@@ -109,7 +109,7 @@ namespace Domain.Repository
                 var message = string.IsNullOrEmpty(dbObj.FirstMeetingOutcome) ? $"ER meeting (ID: {meetitng.ID}) first meeting outcome ({meetitng.FirstMeetingOutcome}) has been recorded by {Environment.UserName}" : 
                     $"ER meeting (ID: {meetitng.ID}) first meeting outcome has been updated by {Environment.UserName}. Changed '{dbObj.FirstMeetingOutcome}' into '{meetitng.FirstMeetingOutcome}'";
 
-                var tl = new Timeline().Create(meetitng.EmployeeID, TimelineOrigin.AWAL, message);
+                var tl = new Timeline().Create(meetitng.EmployeeID, TimelineOrigin.Meetings, message);
                 if (!haveUpdate)
                 {
                     timelineString.Append($"{tl.GetHeader()} VALUES {tl.GetValues()}");
@@ -124,8 +124,12 @@ namespace Domain.Repository
                     meetitng.SecondMeetingDate == DateTime.MinValue ? $"second meeting date has been removed by {Environment.UserName}" :
                     $"ER meeting (ID: {meetitng.ID}) second meeting date has been updated by {Environment.UserName}. Changed '{dbObj.SecondMeetingDate.ToString(DataStorage.ShortPreviewDateFormat)}' into '{meetitng.SecondMeetingDate.ToString(DataStorage.ShortPreviewDateFormat)}'";
                 var tl = new Timeline().Create(meetitng.EmployeeID, TimelineOrigin.Meetings, message);
-                timelineString.Append($"{tl.GetHeader()} VALUES {tl.GetValues()}");
-                haveUpdate = true;
+                if (!haveUpdate)
+                {
+                    timelineString.Append($"{tl.GetHeader()} VALUES {tl.GetValues()}");
+                    haveUpdate = true;
+                }
+                else timelineString.Append($",{tl.GetValues()}");
             }
 
             if (meetitng.SecondMeetingOutcome != dbObj.SecondMeetingOutcome)
@@ -133,7 +137,7 @@ namespace Domain.Repository
                 var message = string.IsNullOrEmpty(dbObj.SecondMeetingOutcome) ? $"ER meeting (ID: {meetitng.ID}) second meeting outcome ({meetitng.SecondMeetingOutcome}) has been recorded by {Environment.UserName}" :
                     $"ER meeting (ID: {meetitng.ID}) second meeting outcome has been updated by {Environment.UserName}. Changed '{dbObj.SecondMeetingOutcome}' into '{meetitng.SecondMeetingOutcome}'";
 
-                var tl = new Timeline().Create(meetitng.EmployeeID, TimelineOrigin.AWAL, message);
+                var tl = new Timeline().Create(meetitng.EmployeeID, TimelineOrigin.Meetings, message);
                 if (!haveUpdate)
                 {
                     timelineString.Append($"{tl.GetHeader()} VALUES {tl.GetValues()}");
@@ -150,6 +154,7 @@ namespace Domain.Repository
             Task.Run(() =>
             {
                 var automation = new MeetingsAutomation(this).SetData(dbMeeting, meeting);
+                Task.Delay(1000);
                 automation.Invoke(action);
             });
 

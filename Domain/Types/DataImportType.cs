@@ -6,6 +6,7 @@
         Resignations, 
         Meetings, 
         CustomMeetings, 
-        Roster
+        Roster,
+        Sanctions
     }
 }

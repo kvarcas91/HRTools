@@ -63,7 +63,7 @@ namespace Domain.Repository
             if (awal.Awal1SentDate != DateTime.MinValue || awal.Awal2SentDate != DateTime.MinValue)
             {
                
-                WebHook.PostAsync(Environment.UserName == "eslut" ? DataStorage.AppSettings.TestWebHook : DataStorage.AppSettings.AwalChanelWebHook, $"Hello, please close AWAL case for {awal.EmployeeID} if exists");
+                WebHook.PostAsync(DataStorage.AppSettings.AwalChanelWebHook, $"Hello, please close AWAL case for {awal.EmployeeID} if exists");
             }
 
             return ExecuteAsync(query);
@@ -80,7 +80,7 @@ namespace Domain.Repository
             awal.UpdatedAt = DateTime.Now;
             awal.UpdatedBy = Environment.UserName;
             if (awal.DisciplinaryDate != DateTime.MinValue && string.IsNullOrEmpty(awal.Outcome)) awal.AwalStatus = AwalStatus.Pending;
-            if (awal.AwalStatus == AwalStatus.Cancelled && !awal.Outcome.Equals("Cancelled"))
+            if (!awal.Outcome.Equals("Cancelled"))
             {
                 switch(awal.Outcome)
                 {
@@ -97,9 +97,9 @@ namespace Domain.Repository
                 awal.AwalStatus = AwalStatus.Cancelled;
             }
 
-            var query = $@"UPDATE awal SET updatedBy = '{awal.UpdatedBy}', updatedAt = '{awal.UpdatedAt.ToString(DataStorage.LongDBDateFormat)}', firstNCNSDate = {awal.FirstNCNSDate.DbNullableSanityCheck(DataStorage.LongDBDateFormat)}, 
-                        awal1SentDate = {awal.Awal1SentDate.DbNullableSanityCheck(DataStorage.LongDBDateFormat)}, awal2SentDate = {awal.Awal2SentDate.DbNullableSanityCheck(DataStorage.LongDBDateFormat)}, 
-                        disciplinaryDate = {awal.DisciplinaryDate.DbNullableSanityCheck(DataStorage.LongDBDateFormat)}, outcome = '{awal.Outcome}', awalStatus = '{(int)awal.AwalStatus}' WHERE id = '{awal.ID}'; {timelineQuery}";
+            var query = $@"UPDATE awal SET updatedBy = '{awal.UpdatedBy}', updatedAt = '{awal.UpdatedAt.ToString(DataStorage.LongDBDateFormat)}', firstNCNSDate = {awal.FirstNCNSDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)}, 
+                        awal1SentDate = {awal.Awal1SentDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)}, awal2SentDate = {awal.Awal2SentDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)}, 
+                        disciplinaryDate = {awal.DisciplinaryDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)}, outcome = '{awal.Outcome}', awalStatus = '{(int)awal.AwalStatus}' WHERE id = '{awal.ID}'; {timelineQuery}";
 
             var dbAwal = GetScalar<AwalEntity>($"SELECT * FROM awal WHERE id = '{awal.ID}';");
             Automate(awal, dbAwal, AutomationAction.OnUpdate);
@@ -137,7 +137,7 @@ namespace Domain.Repository
                 var tl = new Timeline().Create(awal.EmployeeID, TimelineOrigin.AWAL, $"AWAL {awalType} has been requested by {Environment.UserName}");
                 Execute($"INSERT INTO timeline {tl.GetHeader()} VALUES {tl.GetValues()};");
 
-                WebHook.PostAsync(Environment.UserName == "eslut" ? DataStorage.AppSettings.TestWebHook : DataStorage.AppSettings.AwalChanelWebHook, $"Hello, please initiate AWAL {awalType} for {awal.EmployeeID}");
+                WebHook.PostAsync(DataStorage.AppSettings.AwalChanelWebHook, $"Hello, please initiate AWAL {awalType} for {awal.EmployeeID}");
                 return new Response { Success = true };
             });
 

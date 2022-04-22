@@ -1,4 +1,5 @@
 ﻿using Domain.DataManager;
+using Domain.Factory;
 using Domain.Models;
 using Domain.Models.Sanctions;
 using Domain.Storage;
@@ -30,6 +31,8 @@ namespace Domain.Repository
 
             return lastEditDate.ToString().Equals(sanctDate.ToString());
         }
+
+        public Task<Response> InsertAllAsync(IList<IDataImportObject> sanctionList) => base.InsertAllAsync(sanctionList, "sanctions");
 
         public Task<SanctionEntity> OverrideSanctionAsync(SanctionEntity sanction)
         {
@@ -94,7 +97,7 @@ namespace Domain.Repository
             timelineEntry.EventMessage = $"{sanction.Sanction} has been recorded by {Environment.UserName} and is active until {sanction.SanctionEndDate.ToString(DataStorage.ShortPreviewDateFormat)}";
             var timelineQuery = $"INSERT INTO timeline {timelineEntry.GetHeader()} VALUES {timelineEntry.GetValues()};";
 
-            string query = $@"INSERT INTO sanctions {sanction.GetDbInsertHeader()} VALUES {sanction.GetDbInsertValues()}; {timelineQuery}";
+            string query = $@"INSERT INTO sanctions {sanction.GetHeader()} VALUES {sanction.GetValues()}; {timelineQuery}";
             return ExecuteAsync(query);
         }
 

@@ -1,4 +1,5 @@
 ﻿using Domain.Models.Resignations;
+using Domain.Networking;
 using Domain.Repository;
 using Domain.Storage;
 using Domain.Types;
@@ -54,8 +55,17 @@ namespace Domain.Automation
         private string GetAwalReopenQuery() =>
              $"UPDATE awal SET awalStatus = '{(int)AwalStatus.Active}', outcome = NULL, updatedBy = '(tool_automation)', updatedAt = '{DateTime.Now.ToString(DataStorage.LongDBDateFormat)}' WHERE employeeID = '{_newObj.EmployeeID}' AND awalStatus = '{(int)AwalStatus.Resigned}';";
 
-        private string GetAwalQuery() => 
-            $"UPDATE awal SET awalStatus = '{(int)AwalStatus.Resigned}', outcome = 'Cancelled', updatedBy = '(tool_automation)', updatedAt = '{DateTime.Now.ToString(DataStorage.LongDBDateFormat)}' WHERE employeeID = '{_newObj.EmployeeID}' AND awalStatus in ({(int)AwalStatus.Pending}, {(int)AwalStatus.Active});";
+        private string GetAwalQuery()
+        {
+            var count = _repository.GetCachedScalar<int>($"SELECT COUNT(*) FROM awal WHERE awalStatus in ({(int)AwalStatus.Active}, {(int)AwalStatus.Pending}) AND employeeID = '{_newObj.EmployeeID}';");
+
+            if (count > 0)
+            {
+                WebHook.PostAsync(DataStorage.AppSettings.AwalChanelWebHook, $"Hello, please close AWAL case for {_newObj.EmployeeID} if exists");
+            }
+
+            return $"UPDATE awal SET awalStatus = '{(int)AwalStatus.Resigned}', outcome = 'Cancelled', updatedBy = '(tool_automation)', updatedAt = '{DateTime.Now.ToString(DataStorage.LongDBDateFormat)}' WHERE employeeID = '{_newObj.EmployeeID}' AND awalStatus in ({(int)AwalStatus.Pending}, {(int)AwalStatus.Active});";
+        }
 
         private string GetMeetingsQuery() => 
             $"UPDATE meetings SET meetingStatus = 'Resigned', updatedBy = '(tool_automation)', updatedAt = '{DateTime.Now.ToString(DataStorage.LongDBDateFormat)}' WHERE employeeID = '{_newObj.EmployeeID}' AND meetingStatus in ('Open', 'Pending');";

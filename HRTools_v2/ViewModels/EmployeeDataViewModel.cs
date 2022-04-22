@@ -581,8 +581,8 @@ namespace HRTools_v2.ViewModels
                 AwalList.Swap(awal, awal);
                 SendToast("AWAL case has been updated!", NotificationType.Success);
                 SetIsOnAwal();
-                GetAllSanctions(SelectedEmployee.EmployeeID);
-                GetSanctionPreview(SelectedEmployee.EmployeeID);
+                if (!string.IsNullOrEmpty(awal.Outcome)) GetAllSanctions(SelectedEmployee.EmployeeID);
+                if (!string.IsNullOrEmpty(awal.Outcome)) GetSanctionPreview(SelectedEmployee.EmployeeID);
                 GetHeaders(SelectedEmployee.EmployeeID);
                 if (TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimelineOrigin.AWAL);
             }
@@ -741,6 +741,11 @@ namespace HRTools_v2.ViewModels
             if (response.Success)
             {
                 SendToast("Meeting has been updated!", NotificationType.Success);
+                if (!string.IsNullOrEmpty(meeting.SecondMeetingOutcome))
+                {
+                    GetSanctionPreview(SelectedEmployee.EmployeeID);
+                    GetAllSanctions(SelectedEmployee.EmployeeID);
+                }
                 if (TimeLineToggleSelection == TimelineOrigin.Meetings || TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimeLineToggleSelection);
                 MeetingsList.Swap(meeting, meeting);
             }
@@ -1074,6 +1079,10 @@ namespace HRTools_v2.ViewModels
         private void ClearLists()
         {
             HasSanctionData = true;
+            HasMeetingsData = true;
+            HasAwalData = true;
+            MeetingsList.Clear();
+            AwalList.Clear();
             SanctionsList.Clear();
             Timeline.Clear();
         }

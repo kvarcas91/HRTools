@@ -59,6 +59,7 @@ namespace Domain.Repository
             Task.Run(() =>
             {
                 var automation = new ResignationsAutomation(this).SetData(null, obj);
+                Task.Delay(1000);
                 automation.Invoke(action);
             });
 
