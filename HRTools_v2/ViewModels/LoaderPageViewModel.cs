@@ -84,7 +84,6 @@ namespace HRTools_v2.ViewModels
             DataStorage.AppSettings = _settingsManager.Init();
             if (string.IsNullOrEmpty(DataStorage.AppSettings.SiteID))
             {
-               
                 MainLoaderText = "It seems that you don't have home site set. Please enter below your site ID and try again.";
                 LoadingPageUIState = LoadingPageState.SettingsFailedToLoad;
             }

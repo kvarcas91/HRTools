@@ -9,6 +9,7 @@ namespace Domain.Data
         public Settings Init()
         {
             Set("LocalDbPath", $@"{AppContext.BaseDirectory}Database\db.db");
+            Set("MeetingContentTestPath", $@"{AppContext.BaseDirectory}.Data");
 
             var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             var settings = ((AppSettingsSection)configFile.GetSection("Settings")).Settings;
@@ -29,6 +30,8 @@ namespace Domain.Data
                 output.SecurityChanelWebHook = settings["SecurityChanelWebHook"].Value;
                 output.AwalChanelWebHook = settings["AwalChanelWebHook"].Value;
                 output.TestWebHook = settings["TestWebHook"].Value;
+                output.MeetingContentProductionPath = settings["MeetingContentProductionPath"].Value;
+                output.MeetingContentTestPath = settings["MeetingContentTestPath"].Value;
             }
             catch
             {

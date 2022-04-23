@@ -12,7 +12,7 @@ namespace HRTools_v2.Converters
             {
                 DateTime.TryParse(value.ToString(), out DateTime endDate);
 
-                return endDate <= DateTime.Now ? "Gray" : "Black";
+                return endDate <= DateTime.Now ? "Gray" : "DarkSlateGray";
             }
             catch
             {

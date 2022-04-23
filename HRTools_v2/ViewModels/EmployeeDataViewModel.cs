@@ -1,5 +1,6 @@
 ﻿using Domain.DataManager;
 using Domain.Extensions;
+using Domain.IO;
 using Domain.Models;
 using Domain.Models.AWAL;
 using Domain.Models.CustomMeetings;
@@ -13,6 +14,7 @@ using Domain.States;
 using Domain.Storage;
 using Domain.Types;
 using HRTools_v2.Args;
+using HRTools_v2.Helpers;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -451,6 +453,16 @@ namespace HRTools_v2.ViewModels
 
         private DelegateCommand<MeetingsEntity> _reopenMeetingCommand = null;
         public DelegateCommand<MeetingsEntity> ReopenMeetingCommand => _reopenMeetingCommand ?? (_reopenMeetingCommand = new DelegateCommand<MeetingsEntity>(ReopenMeeting));
+
+        #endregion
+
+        #region Custom Meetings
+
+        private DelegateCommand<CustomMeetingEntity> _onCustomMeetingCancelCommand = null;
+        public DelegateCommand<CustomMeetingEntity> OnCustomMeetingCancelCommand => _onCustomMeetingCancelCommand ?? (_onCustomMeetingCancelCommand = new DelegateCommand<CustomMeetingEntity>(CancelCustomMeeting));
+
+        private DelegateCommand<CustomMeetingEntity> _addCaseFileCommand = null;
+        public DelegateCommand<CustomMeetingEntity> AddCaseFileCommand => _addCaseFileCommand ?? (_addCaseFileCommand = new DelegateCommand<CustomMeetingEntity>(AddCaseFile));
 
         #endregion
 
@@ -988,7 +1000,8 @@ namespace HRTools_v2.ViewModels
             var list = await repo.GetEmployeeCustomMeetingsAsync(id);
             foreach (var item in list)
             {
-                item.SetFileCount("");
+                item.SetFiles();
+                item.SetAge();
             }
 
             CustomMeetingsList.AddRange(list);
@@ -996,6 +1009,45 @@ namespace HRTools_v2.ViewModels
 
             WidgedState &= ~HomePageWidgetState.EmployeeCustomMeetingsLoading;
             WidgedState |= HomePageWidgetState.EmployeeCustomMeetingsLoaded;
+        }
+
+        private async void CancelCustomMeeting(CustomMeetingEntity meeting)
+        {
+            if (string.IsNullOrEmpty(ReasonForCustomClosure))
+            {
+                SendToast("Reason is mandatory!", NotificationType.Information);
+                return;
+            }
+
+            if (meeting.MeetingStatus != "Open" && meeting.MeetingStatus != "Pending")
+            {
+                SendToast("Meeting is already closed!", NotificationType.Information);
+                return;
+            }
+
+            var meetingRepo = new MeetingsRepository();
+            var response = await meetingRepo.CloseCustomMeeting(meeting, ReasonForCustomClosure);
+            if (response.Success)
+            {
+                SendToast("Meeting has been closed!", NotificationType.Success);
+                if (TimeLineToggleSelection == TimelineOrigin.CustomMeetings || TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimeLineToggleSelection);
+                ReasonForErClosure = string.Empty;
+                CustomMeetingsList.Swap(meeting, meeting);
+            }
+            else
+            {
+                SendToast(response.Message, NotificationType.Warning);
+            }
+
+        }
+
+        private async void AddCaseFile(CustomMeetingEntity meeting)
+        {
+            var dialog = new DialogHelper(".*", "");
+            var path = dialog.ShowOpenDialog();
+            if (string.IsNullOrEmpty(path)) return;
+
+            var response = await FileHelper.CopyFileToMeetingIDAsync(path, meeting.ID);
         }
 
         #endregion

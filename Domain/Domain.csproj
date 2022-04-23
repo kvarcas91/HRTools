@@ -130,6 +130,7 @@
     <Compile Include="Models\AWAL\AwalEntity.cs" />
     <Compile Include="Models\AWAL\AwalEntry.cs" />
     <Compile Include="Models\AWAL\AwalImportMap.cs" />
+    <Compile Include="Models\CaseFile.cs" />
     <Compile Include="Models\CustomMeetings\CustomMeetingEntity.cs" />
     <Compile Include="Models\CustomMeetings\CustomMeetingImportMap.cs" />
     <Compile Include="Models\DataSnips\DataPreview.cs" />

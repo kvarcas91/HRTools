@@ -15,6 +15,8 @@
         public string SecurityChanelWebHook { get; set; }
         public string AwalChanelWebHook { get; set; }
         public string TestWebHook { get; set; }
+        public string MeetingContentProductionPath { get; set; }
+        public string MeetingContentTestPath { get; set; }
 
         public Settings()
         {

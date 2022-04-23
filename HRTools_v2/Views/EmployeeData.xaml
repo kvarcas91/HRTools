@@ -978,8 +978,6 @@
 
 
                             </materialDesign:PopupBox>
-                            
-
 
                             <Separator Grid.Row="1" BorderBrush="LightGray" BorderThickness="1"/>
 
@@ -1127,7 +1125,7 @@
                             <ListView x:Name="customMeetingsListView"
                                 Grid.Row="2"
                                ItemsSource="{Binding CustomMeetingsList}"
-                                Style="{StaticResource CustomMeetingsListView}"
+                                Style="{StaticResource CtMeetingsListView}"
                                     Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='EmployeeCustomMeetingsLoaded'}"/>
 
                             <TextBlock Grid.Row="2"

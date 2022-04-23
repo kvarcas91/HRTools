@@ -1,7 +1,10 @@
 ﻿using Domain.Extensions;
 using Domain.Factory;
+using Domain.IO;
 using Domain.Storage;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Domain.Models.CustomMeetings
 {
@@ -48,8 +51,15 @@ namespace Domain.Models.CustomMeetings
         public string SecondMeetingOwner { get; set; }
         public string SecondMeetingHRSupport { get; set; }
         public string SecondMeetingOutcome { get; set; }
-
+       
+        public ObservableCollection<CaseFile> RelatedFiles { get; private set; }
         public int FileCount { get; set; }
+        public DateTime CaseAge { get; set; }
+
+        public CustomMeetingEntity()
+        {
+            RelatedFiles = new ObservableCollection<CaseFile>();
+        }
 
         public string GetHeader() =>
             $@"(id,createdAt,createdBy,updatedAt,updatedBy,closedAt,closedBy,meetingStatus,meetingType,exactCaseID,claimantID,claimantName,claimantUserID,claimantManager,claimantDepartment,
@@ -152,9 +162,19 @@ namespace Domain.Models.CustomMeetings
             }
         }
 
-        public void SetFileCount(string path)
+        public async void SetFiles()
         {
+            var fileList = await FileHelper.GetFolderContentFromMeetingID(ID);
+            foreach (var item in fileList)
+            {
+                RelatedFiles.Add(item);
+            }
+        }
 
+        public void SetAge()
+        {
+            DateTime endDate = ClosedAt.Equals(DateTime.MinValue) ? DateTime.Now : ClosedAt;
+            CaseAge = DateTime.Now.AddDays(-(endDate - CreatedAt).Days);
         }
     }
 }

@@ -35,8 +35,6 @@
                 <DataTemplate>
                     <Border Background="Transparent"
                             x:Name="container">
-
-                       
                         <Grid
                         Margin="10 5">
                             <Grid.RowDefinitions>
@@ -92,8 +90,6 @@
                                                  Foreground="{DynamicResource PrimaryHueDarkBrush}"/>
 
                                     </materialDesign:PopupBox.ToggleContent>
-
-
 
                                     <Button Grid.Column="1"
                                 Margin="0 -8"
@@ -707,7 +703,43 @@
         </Setter>
     </Style>
 
-    <Style x:Key="CustomMeetingsListView" TargetType="{x:Type ListView}" BasedOn="{StaticResource ListViewOnMouseOverDisabled}">
+    <Style  x:Key="CaseFileListView" TargetType="{x:Type ListView}" BasedOn="{StaticResource ListViewOnMouseOverDisabled}">
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Grid Margin="10 5 5 5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+
+                        <materialDesign:PackIcon Grid.Column="0"
+                                                 VerticalAlignment="Center"
+                                        Kind="FileDocumentOutline" Margin="0 0 10 0"
+                                                             Foreground="DarkSlateGray"/>
+
+                        <TextBlock Grid.Column="1" Text="{Binding FullName}"
+                                               VerticalAlignment="Center"
+                                   TextTrimming="CharacterEllipsis"
+                                               Foreground="DarkSlateGray" 
+                                   Margin="0 0 10 0"/>
+
+                        <Button Grid.Column="2" 
+                                Padding="5"
+                                Style="{StaticResource MaterialDesignFlatButton}">
+                            <materialDesign:PackIcon 
+                                        Kind="TrashCanOutline"
+                                        Foreground="DarkSlateGray"/>
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style x:Key="CtMeetingsListView" TargetType="{x:Type ListView}" BasedOn="{StaticResource ListViewOnMouseOverDisabled}">
         <Setter Property="ItemTemplate">
             <Setter.Value>
                 <DataTemplate>
@@ -720,6 +752,7 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="0.7*"/>
                                     <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="0.7*"/>
                                     <ColumnDefinition Width="0.3*"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
@@ -736,7 +769,7 @@
                                                      Height="5"
                                                       Margin="0 0 5 0"
                                                      VerticalAlignment="Center"/>
-                                             <TextBlock Text="Open"
+                                             <TextBlock Text="{Binding MeetingStatus}"
                                                VerticalAlignment="Center" 
                                                 TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
                                                 FontSize="{Binding MeetingStatus, Converter={converters:MeetingTextSizeConverter}}"
@@ -748,21 +781,41 @@
                                         </TextBlock>
 
                                 <!-- Meeting type -->
-                                <TextBlock Grid.Column="1"
-                                                Text="{Binding MeetingType}"
-                                                       VerticalAlignment="Center"
+                                <StackPanel Grid.Column="1" Orientation="Vertical"
+                                            Margin="5">
+                                    <TextBlock 
+                                            Text="Meeting Type"
+                                                FontSize="{StaticResource SecondaryListFontSize}"
+                                                Foreground="Gray"/>
+                                    <TextBlock Text="{Binding MeetingType}"
+                                                VerticalAlignment="Center"
                                                 TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
                                                 FontSize="{Binding MeetingStatus, Converter={converters:MeetingTextSizeConverter}}"
                                                 Foreground="{Binding MeetingStatus, Converter={converters:MeetingTextForegroundConverter}}"/>
+                                </StackPanel>
 
+                                <!-- Case Age -->
+                                <StackPanel Grid.Column="2" Orientation="Vertical"
+                                            Margin="5">
+                                    <TextBlock 
+                                            Text="Case age"
+                                                FontSize="{StaticResource SecondaryListFontSize}"
+                                                Foreground="Gray"/>
+                                    <TextBlock 
+                                                  Text="{Binding CaseAge, Converter={converters:TenureToStringConverter}}"
+                                                   TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
+                                                   FontSize="{Binding MeetingStatus, Converter={converters:MeetingTextSizeConverter}}"
+                                                   Foreground="{Binding MeetingStatus, Converter={converters:MeetingTextForegroundConverter}}"/>
+                                </StackPanel>
+                                
                                 <!-- Separator -->
-                                <Rectangle Grid.Column="2"
+                                <Rectangle Grid.Column="3"
                                             VerticalAlignment="Stretch" 
                                            Fill="LightGray" Width="1"
                                            Margin="2"/>
 
                                 <!-- Meeting 1 -->
-                                <StackPanel Grid.Column="3" Orientation="Vertical"
+                                <StackPanel Grid.Column="4" Orientation="Vertical"
                                             Margin="5">
                                     <TextBlock 
                                             Text="First meeting date"
@@ -776,7 +829,7 @@
                                 </StackPanel>
 
                                 <!-- Meeting 1 outcome -->
-                                <StackPanel Grid.Column="4" Orientation="Vertical"
+                                <StackPanel Grid.Column="5" Orientation="Vertical"
                                             Margin="5">
                                     <TextBlock 
                                    Text="First meeting outcome"
@@ -790,13 +843,13 @@
                                 </StackPanel>
 
                                 <!-- Separator -->
-                                <Rectangle Grid.Column="5"
+                                <Rectangle Grid.Column="6"
                                             VerticalAlignment="Stretch" 
                                            Fill="LightGray" Width="1"
                                            Margin="2"/>
 
                                 <!-- Meeting 2 Date -->
-                                <StackPanel Grid.Column="6" Orientation="Vertical"
+                                <StackPanel Grid.Column="7" Orientation="Vertical"
                                             Margin="5">
                                     <TextBlock 
                                    Text="Second meeting date"
@@ -810,7 +863,7 @@
                                 </StackPanel>
 
                                 <!-- Meeting 2 outcome -->
-                                <StackPanel Grid.Column="7" Orientation="Vertical"
+                                <StackPanel Grid.Column="8" Orientation="Vertical"
                                             Margin="5">
                                     <TextBlock 
                                    Text="Second meeting outcome"
@@ -826,7 +879,7 @@
                             </Grid>
                         </Expander.Header>
 
-                        <Grid Margin="50 0 5 0">
+                        <Grid Margin="50 0 20 0">
 
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="0.7*"/>
@@ -837,6 +890,10 @@
                                 <ColumnDefinition Width="0.3*"/>
                                 <ColumnDefinition Width="2*"/>
                             </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
                             <!-- EXACT -->
                             <StackPanel Grid.Column="0" Orientation="Vertical"
@@ -844,8 +901,12 @@
                                 <TextBlock 
                                    Text="Exact case ID"
                                 FontSize="{StaticResource SecondaryListFontSize}"
+                                    
                                 Foreground="Gray"/>
-                                <TextBlock 
+                                <TextBox 
+                                    IsReadOnly="True"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="0"
                                   Text="{Binding ExactCaseID}"
                                     TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
                                     FontSize="10"
@@ -873,7 +934,7 @@
                                 FontSize="{StaticResource SecondaryListFontSize}"
                                 Foreground="Gray"/>
                                     <TextBlock 
-                                  Text="{Binding FirstMeetingOwner}"
+                                  Text="{Binding FirstMeetingOwner, Converter={converters:LoginToFullNameConverter}}"
                                  TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
                                        FontSize="10"
                                    Foreground="{Binding MeetingStatus, Converter={converters:MeetingTextForegroundConverter}}"/>
@@ -887,7 +948,7 @@
                                 FontSize="{StaticResource SecondaryListFontSize}"
                                 Foreground="Gray"/>
                                     <TextBlock 
-                                  Text="{Binding FirstMeetingHRSupport}"
+                                  Text="{Binding FirstMeetingHRSupport, Converter={converters:LoginToFullNameConverter}}"
                                  TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
                                        FontSize="10"
                                    Foreground="{Binding MeetingStatus, Converter={converters:MeetingTextForegroundConverter}}"/>
@@ -916,7 +977,7 @@
                                 FontSize="{StaticResource SecondaryListFontSize}"
                                 Foreground="Gray"/>
                                     <TextBlock 
-                                  Text="{Binding SecondMeetingOwner}"
+                                  Text="{Binding SecondMeetingOwner, Converter={converters:LoginToFullNameConverter}}"
                                  TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
                                        FontSize="10"
                                    Foreground="{Binding MeetingStatus, Converter={converters:MeetingTextForegroundConverter}}"/>
@@ -930,7 +991,7 @@
                                 FontSize="{StaticResource SecondaryListFontSize}"
                                 Foreground="Gray"/>
                                     <TextBlock 
-                                  Text="{Binding SecondMeetingHRSupport}"
+                                  Text="{Binding SecondMeetingHRSupport, Converter={converters:LoginToFullNameConverter}}"
                                  TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
                                        FontSize="10"
                                    Foreground="{Binding MeetingStatus, Converter={converters:MeetingTextForegroundConverter}}"/>
@@ -944,17 +1005,43 @@
                                            Fill="LightGray" Width="1"
                                            Margin="2"/>
 
+                            <!-- Controls -->
+                            <Grid Grid.Column="6">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
-                            <StackPanel Grid.Column="6"
-                                                Orientation="Horizontal"
-                                                HorizontalAlignment="Right">
+                                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                    <CheckBox Content="Paperless"
+                                                    HorizontalAlignment="Center"
+                                                    Style="{StaticResource MaterialDesignFilterChipPrimaryOutlineCheckBox}"
+                                                    IsChecked="{Binding Paperless}"
+                                              IsEnabled="False"
+                                              FontSize="10"/>
 
-                                <materialDesign:Badged Badge="{Binding FileCount}"
-                                                       Padding="0 0 8 0">
+                                    <CheckBox Content="Union Present"
+                                        Style="{StaticResource MaterialDesignFilterChipAccentOutlineCheckBox}"
+                                      IsChecked="{Binding IsUnionPresent}"
+                                              IsEnabled="False"
+                                              FontSize="10"/>
+                                    
+                                    <CheckBox Content="WIM Raised"
+                                        Style="{StaticResource MaterialDesignFilterChipAccentOutlineCheckBox}"
+                                      IsChecked="{Binding IsWIMRaised}"
+                                              IsEnabled="False"
+                                              FontSize="10"/>
+                                    
+                                </StackPanel>
+
+                                <materialDesign:Badged Grid.Row="0" 
+                                                 HorizontalAlignment="Right"
+                                    Badge="{Binding RelatedFiles.Count}"
+                                                       Padding="0 0 8 0"
+                                                       >
                                     <materialDesign:PopupBox 
                                                  Background="Transparent"
-                                                 StaysOpen="True"
-                                                 HorizontalAlignment="Right">
+                                                 StaysOpen="True">
 
                                         <materialDesign:PopupBox.ToggleContent>
 
@@ -971,37 +1058,285 @@
 
                                         </materialDesign:PopupBox.ToggleContent>
 
-                                        <Grid Margin="0 5 0 5" Width="300">
+                                        <Grid Width="400" MaxHeight="600">
+
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+
+
+                                            <Grid Grid.Row="0" Margin="10 0 0 0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <TextBlock Grid.Row="0" Text="Files / Documents"
+                                                   FontWeight="Bold"
+                                                   Foreground="DarkSlateGray"
+                                                   VerticalAlignment="Center"/>
+
+                                                <Button Background="{DynamicResource CardBackground}" 
+                                                        Margin="0 -8 0 -10"
+                                                    Grid.Row="0" Grid.Column="1"
+                                                    materialDesign:ShadowAssist.ShadowEdges="None"
+                                                    materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                                    BorderThickness="0"
+                                                        Command="{Binding ElementName=customMeetingsListView, Path=DataContext.AddCaseFileCommand}"
+                                                        CommandParameter="{Binding}">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <materialDesign:PackIcon Kind="FileDocumentEditOutline" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"
+                                                                                 Width="12" Height="12"/>
+                                                        <TextBlock Margin="10 0 0 0" Text="Add new" Foreground="DarkSlateGray"
+                                                                   VerticalAlignment="Center"
+                                                   FontSize="10"/>
+                                                    </StackPanel>
+                                                </Button>
+
+                                            </Grid>
+
+                                            <Separator Grid.Row="1" Grid.ColumnSpan="7" BorderBrush="LightGray" BorderThickness="1"/>
+
+                                            <ListView Grid.Row="2"
+                                             ItemsSource="{Binding RelatedFiles}"
+                                            Style="{StaticResource CaseFileListView}"/>
+                                        </Grid>
+                                        
+                                        
+                                    </materialDesign:PopupBox>
+                                </materialDesign:Badged>
+
+                                <StackPanel Grid.Row="1"
+                            Orientation="Horizontal"
+                                    HorizontalAlignment="Right">
+
+                                    <!-- Info -->
+                                    <Grid Background="Transparent" Margin="0 0 5 0">
+                                        <materialDesign:PackIcon Kind="InfoCircleOutline" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="DarkSlateGray"/>
+                                        <Grid.ToolTip>
+
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+
+                                                <TextBlock Grid.Row="0" Visibility="{Binding CreatedBy, Converter={converters:NullToVisibilityConverter}, ConverterParameter='tooltip'}">
+                                    <Run Text="{Binding CreatedBy, Converter={converters:UserToTextConverter}, ConverterParameter='created'}"/>
+                                    <Run Text="{Binding CreatedAt, Converter={converters:DateTimeToToolTipConverter}}"/>
+                                                </TextBlock>
+
+                                                <TextBlock Grid.Row="1" Visibility="{Binding UpdatedBy, Converter={converters:NullToVisibilityConverter}, ConverterParameter='tooltip'}">
+                                    <Run Text="{Binding UpdatedBy, Converter={converters:UserToTextConverter}, ConverterParameter='updated'}"/>
+                                    <Run Text="{Binding UpdatedAt, Converter={converters:DateTimeToToolTipConverter}}"/>
+                                                </TextBlock>
+
+                                                <TextBlock Grid.Row="1" Visibility="{Binding ClosedBy, Converter={converters:NullToVisibilityConverter}, ConverterParameter='tooltip'}">
+                                    <Run Text="{Binding ClosedBy, Converter={converters:UserToTextConverter}, ConverterParameter='closed'}"/>
+                                    <Run Text="{Binding ClosedAt, Converter={converters:DateTimeToToolTipConverter}}"/>
+                                                </TextBlock>
+
+                                            </Grid>
+                                        </Grid.ToolTip>
+                                    </Grid>
+
+                                    <!-- Edit case -->
+                                    <materialDesign:PopupBox 
+                                     Background="Transparent"
+                                    StaysOpen="True">
+
+                                        <materialDesign:PopupBox.ToggleContent>
+
+                                            <Border Background="Transparent" 
+                                                Padding="10"
+                                                ToolTip="Edit case"
+                                                materialDesign:ShadowAssist.ShadowEdges="None"
+                                                materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                                BorderThickness="0">
+
+                                                <materialDesign:PackIcon Kind="EditOutline" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+
+                                            </Border>
+
+                                        </materialDesign:PopupBox.ToggleContent>
+
+                                        <Grid Background="Transparent" Margin="10 0 10 0"
+                                                Width="400">
+
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
 
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
 
-                                            <materialDesign:PackIcon Grid.Column="0"
-                                        Kind="FileDocumentOutline" Margin="0 0 10 0"
-                                                             Foreground="LightSlateGray"/>
+                                            <DatePicker Grid.Row="0" Grid.Column="0"
+                                            Margin="5 5 15 5"
+                                            materialDesign:HintAssist.Hint="First Meeting Date"
+                                            materialDesign:HintAssist.IsFloating="True"
+                                            Text="{Binding FirstMeetingDate, Mode=TwoWay, Converter={converters:DateTimeToStringConverter}, ConverterParameter=5}"/>
 
-                                            <TextBlock Grid.Column="1" Text="Check up stuff.pdf"
-                                               VerticalAlignment="Center"
-                                               Foreground="LightSlateGray"/>
+                                            <ComboBox Grid.Row="1" Grid.Column="0"
+                                            BorderThickness="0"
+                                            Margin="5 5 15 5"
+                                            SelectedValue=""
+                                            VerticalContentAlignment="Center"
+                                            materialDesign:HintAssist.Hint="Outcomes"
+                                            materialDesign:HintAssist.IsFloating="True"
+                                            ItemsSource="{Binding FirstMeetingOutcomeList}"
+                                            SelectedItem="{Binding FirstMeetingOutcome, Mode=TwoWay}">
+                                            </ComboBox>
 
-                                            <materialDesign:PackIcon Grid.Column="2"
-                                        Kind="TrashCanOutline" Margin="0 0 10 0"
-                                                             Foreground="LightSlateGray"/>
+                                            <DatePicker Grid.Row="0" Grid.Column="1"
+                                            Margin="5 5 15 5"
+                                            materialDesign:HintAssist.Hint="Second Meeting Date"
+                                            materialDesign:HintAssist.IsFloating="True"
+                                            Text="{Binding SecondMeetingDate, Mode=TwoWay, Converter={converters:DateTimeToStringConverter}, ConverterParameter=5}"/>
 
-                                            <materialDesign:PackIcon Grid.Column="3"
-                                        Kind="OpenInNew" Margin="0 0 10 0"
-                                                             Foreground="LightSlateGray"/>
+
+                                            <ComboBox Grid.Row="1" Grid.Column="1"
+                                            BorderThickness="0"
+                                            Margin="5 5 15 5"
+                                            SelectedValue=""
+                                            VerticalContentAlignment="Center"
+                                            materialDesign:HintAssist.Hint="Outcomes"
+                                            materialDesign:HintAssist.IsFloating="True"
+                                                  IsEnabled="{Binding FirstMeetingOutcome, Converter={converters:MeetingOutcomeToNextStageConverter}}"
+                                            ItemsSource="{Binding SecondMeetingOutcomeList}"
+                                            SelectedItem="{Binding SecondMeetingOutcome, Mode=TwoWay}">
+                                            </ComboBox>
+
+
+                                            <Separator Grid.Row="2" Grid.ColumnSpan="2" BorderBrush="LightGray" BorderThickness="1"
+                                            Margin="1"/>
+
+
+                                            <StackPanel Grid.Row="3" Grid.Column="0"
+                                                   Orientation="Horizontal"
+                                                    HorizontalAlignment="Left">
+
+                                                <CheckBox Content="Paperless"
+                                                    HorizontalAlignment="Center"
+                                                    Style="{StaticResource MaterialDesignFilterChipPrimaryOutlineCheckBox}"
+                                                    IsChecked="{Binding Paperless}"
+                                              FontSize="10"/>
+
+                                                <CheckBox Content="Union Present"
+                                        Style="{StaticResource MaterialDesignFilterChipAccentOutlineCheckBox}"
+                                      IsChecked="{Binding IsUnionPresent}"
+                                              FontSize="10"/>
+
+                                                <CheckBox Content="WIM Raised"
+                                        Style="{StaticResource MaterialDesignFilterChipAccentOutlineCheckBox}"
+                                      IsChecked="{Binding IsWIMRaised}"
+                                              FontSize="10"/>
+
+                                            </StackPanel>
+
+                                            <Button Grid.Row="3" Grid.Column="1"
+                                            HorizontalAlignment="Right"
+                                                Margin="5"
+                                                Background="Transparent" 
+                                                materialDesign:ShadowAssist.ShadowEdges="None"
+                                                materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                                BorderBrush="DarkSlateGray"
+                                                BorderThickness="1" >
+                                                <StackPanel Orientation="Horizontal">
+                                                    <materialDesign:PackIcon Kind="CreateOutline" 
+                                                                VerticalAlignment="Center"
+                                                                Foreground="DarkSlateGray"/>
+                                                    <TextBlock Margin="10 0 0 0" Text="Submit" Foreground="DarkSlateGray"/>
+                                                </StackPanel>
+                                            </Button>
+
 
                                         </Grid>
 
                                     </materialDesign:PopupBox>
-                                </materialDesign:Badged>
 
-                            </StackPanel>
+                                    <!-- Close case -->
+                                    <materialDesign:PopupBox 
+                                     Background="Transparent"
+                                    StaysOpen="True">
+
+                                        <materialDesign:PopupBox.ToggleContent>
+
+                                            <Border Background="Transparent" 
+                                            Padding="10"
+                                                ToolTip="Close meeting case without outcome"
+                                            materialDesign:ShadowAssist.ShadowEdges="None"
+                                            materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                            BorderThickness="0">
+
+                                                <materialDesign:PackIcon Kind="CloseOutline" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+
+                                            </Border>
+
+                                        </materialDesign:PopupBox.ToggleContent>
+
+                                        <StackPanel Background="Transparent" Margin="10 0 10 0"
+                                                Width="300"
+                                                Orientation="Vertical">
+
+                                            <TextBox 
+                                            Text="{Binding ElementName=customMeetingsListView, Path=DataContext.ReasonForCustomClosure}"
+                                            Background="Transparent"
+                                            materialDesign:HintAssist.Hint="Reason for Closure"
+                                            materialDesign:HintAssist.IsFloating="True"
+                                            materialDesign:HintAssist.HelperText="* Mandatory"
+                                            materialDesign:HintAssist.HelperTextFontSize="8"
+                                            BorderThickness="0"
+                                            Margin="5"
+                                            TextWrapping="Wrap" />
+
+
+                                            <Grid>
+
+                                                <Button 
+                                            Margin="-10 20 -10 -8"
+                                                HorizontalContentAlignment="Center"
+                                            Background="Transparent" 
+                                            materialDesign:ShadowAssist.ShadowEdges="None"
+                                            materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                            BorderBrush="DarkSlateGray"
+                                            BorderThickness="1"
+                                            Command="{Binding ElementName=customMeetingsListView, Path=DataContext.OnCustomMeetingCancelCommand}"
+                                            CommandParameter="{Binding}">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <materialDesign:PackIcon Kind="CreateOutline" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+                                                        <TextBlock Margin="10 0 0 0" Text="Submit" Foreground="DarkSlateGray"
+                                                   FontSize="12"/>
+                                                    </StackPanel>
+                                                </Button>
+                                            </Grid>
+
+                                        </StackPanel>
+
+                                    </materialDesign:PopupBox>
+
+                                </StackPanel>
+
+                            </Grid>
+
+                            <Separator Grid.Row="1" Grid.ColumnSpan="7" BorderBrush="LightGray" BorderThickness="1"/>
+
 
                         </Grid>
 
@@ -1060,8 +1395,6 @@
                                     IsReadOnly="True"
                                     BorderBrush="Transparent"
                                     BorderThickness="0"
-                                    materialDesign:HintAssist.IsFloating="True"
-                                    materialDesign:HintAssist.Hint="Case ID"
                                     TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
                                     FontSize="{Binding MeetingStatus, Converter={converters:MeetingTextSizeConverter}}"
                                     Foreground="{Binding MeetingStatus, Converter={converters:MeetingTextForegroundConverter}}"/>
@@ -1396,5 +1729,6 @@
         </Setter>
     </Style>
 
+    
 
 </ResourceDictionary>

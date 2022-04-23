@@ -18,7 +18,7 @@ namespace HRTools_v2.Converters
                 case "Closed":
                     return "Gray";
                 default:
-                    return "Black";
+                    return "DarkSlateGray";
             }
         }
 

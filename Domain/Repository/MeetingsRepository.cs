@@ -63,6 +63,31 @@ namespace Domain.Repository
             return ExecuteAsync(query);
         }
 
+        public Task<Response> CloseCustomMeeting(CustomMeetingEntity meeting, string closureReason)
+        {
+            var emplId = string.Empty;
+            if (string.IsNullOrEmpty(meeting.ClaimantID) && !string.IsNullOrEmpty(meeting.RespondentID)) emplId = meeting.RespondentID;
+            if (string.IsNullOrEmpty(meeting.RespondentID) && !string.IsNullOrEmpty(meeting.ClaimantID)) emplId = meeting.ClaimantID;
+
+            var timeLine2 = new Timeline();
+            var tl2Query = string.Empty;
+            if (string.IsNullOrEmpty(emplId))
+            {
+                emplId = meeting.ClaimantID;
+                timeLine2 = timeLine2.Create(meeting.RespondentID, TimelineOrigin.CustomMeetings, $"{meeting.MeetingType} meeting has been cancelled by {Environment.UserName} due to '{closureReason}'");
+                tl2Query = $",{timeLine2.GetValues()}";
+            }
+            var timeLine = new Timeline().Create(emplId, TimelineOrigin.CustomMeetings, $"{meeting.MeetingType} meeting has been cancelled by {Environment.UserName} due to '{closureReason}'");
+            if (meeting.SecondMeetingDate != DateTime.MinValue) meeting.SecondMeetingOutcome = "Cancelled";
+            if (meeting.SecondMeetingDate == DateTime.MinValue) meeting.FirstMeetingOutcome = "Cancelled";
+
+            meeting.MeetingStatus = "Cancelled";
+            var tlQuery = $"INSERT INTO timeline {timeLine.GetHeader()} VALUES {timeLine.GetValues()}{tl2Query};";
+            var query = $@"UPDATE custom_meetings SET meetingStatus = '{meeting.MeetingStatus}', firstMeetingOutcome = '{meeting.FirstMeetingOutcome}', SecondMeetingOutcome = '{meeting.SecondMeetingOutcome}', 
+            closedBy = '{meeting.ClosedBy}', closedAt = {meeting.ClosedAt.DbNullableSanityCheck(DataStorage.LongDBDateFormat)} WHERE id = '{meeting.ID}'; {tlQuery}";
+            return ExecuteAsync(query);
+        }
+
         public Task<Response> ChangeMeetingStatusAsync(MeetingsEntity meeting, string status)
         {
             var timeLine = new Timeline().Create(meeting.EmployeeID, TimelineOrigin.Meetings, $"Meeting status (meeting ID: '{meeting.ID}') has been changed from '{meeting.MeetingStatus}' to '{status}' by {Environment.UserName}");

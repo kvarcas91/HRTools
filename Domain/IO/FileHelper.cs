@@ -1,7 +1,10 @@
 ﻿using Domain.DataManager;
+using Domain.Models;
 using Domain.Repository;
 using Domain.Storage;
+using Domain.Types;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -110,6 +113,35 @@ namespace Domain.IO
             });
         }
 
+        private static long GetFileSize(string FilePath)
+        {
+            if (File.Exists(FilePath))
+            {
+                return new FileInfo(FilePath).Length;
+            }
+            return 0;
+        }
+
+        public static Task<Response> CopyFileToMeetingIDAsync(string from, string meetingID)
+        {
+            return Task.Run(() =>
+            {
+                try
+                {
+                    if (GetFileSize(from) / 1024 > 25) return new Response { Success = false, Message = "File is too big. Maximum file size - 25mb" };
+                    var to = Environment.UserName == "eslut" ? $"{DataStorage.AppSettings.MeetingContentTestPath}{meetingID}" : $"{DataStorage.AppSettings.MeetingContentProductionPath}{meetingID}";
+                    File.Copy(from, to);
+                    return new Response { Success = true};
+                }
+                catch (Exception e)
+                {
+                    LoggerManager.Log($"{NAME}.CopyFileAsync", e.Message);
+                    return new Response { Success = false, Message = e.Message };
+                }
+
+            });
+        }
+
         public static Task<bool> CopyAndReplaceFileAsync(string from, string to)
         {
             return Task.Run(() =>
@@ -136,6 +168,25 @@ namespace Domain.IO
         public static DateTime GetLastWriteTime(string path)
         {
             return File.GetLastWriteTime(path);
+        }
+
+        public static Task<List<CaseFile>> GetFolderContentFromMeetingID(string id)
+        {
+            return Task.Run(() =>
+            {
+                var path = Environment.UserName == "eslut" ? $"{DataStorage.AppSettings.MeetingContentTestPath}\\{id}" : $"{DataStorage.AppSettings.MeetingContentProductionPath}\\{id}";
+                var output = new List<CaseFile>();
+
+                if (!Directory.Exists(path)) return output;
+                string[] contentFiles = Directory.GetFiles(path);
+                foreach (var item in contentFiles)
+                {
+                    output.Add(new CaseFile(item, Path.GetFileNameWithoutExtension(item), Path.GetExtension(item)));
+                }
+
+                return output;
+
+            });
         }
     }
 }

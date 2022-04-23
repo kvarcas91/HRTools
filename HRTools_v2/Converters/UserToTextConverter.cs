@@ -19,6 +19,8 @@ namespace HRTools_v2.Converters
                     return $"Last updated by {value} ";
                 case "bridged":
                     return $"Bridge created by {value} ";
+                case "closed":
+                    return $"Closed by {value} ";
                 default:
                     return "";
             }
