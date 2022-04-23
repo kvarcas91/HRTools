@@ -121,6 +121,13 @@ namespace Domain.Repository
             return GetCachedAsync<EmplComment>(query);
         }
 
+        public Task<IEnumerable<EmplTask>> GetTasksAsync(string emplId, TimelineOrigin origin)
+        {
+            var originQuery = origin == TimelineOrigin.ALL ? "" : $"AND taskOrigin = '{origin}'";
+            var query = $"SELECT * FROM tasks WHERE employeeID = '{emplId}' {originQuery} ORDER BY createdAt DESC;";
+            return GetCachedAsync<EmplTask>(query);
+        }
+
         public Task<Response> InsertCommentAsync(EmplComment comment) => ExecuteAsync($"INSERT INTO comments {comment.GetHeader()} VALUES {comment.GetValues()};");
 
         public Task<Response> DeleteCommentAsync(EmplComment comment) => ExecuteAsync($"DELETE FROM comments WHERE id = '{comment.ID}';");

@@ -12,8 +12,14 @@ namespace HRTools_v2.Converters
             try
             {
                 var awalStatus = (AwalStatus)value;
-
-                return awalStatus.Equals(AwalStatus.Cancelled) ? "Gray" : "Black";
+                switch (awalStatus)
+                {
+                    case AwalStatus.Cancelled:
+                    case AwalStatus.Resigned:
+                        return "Gray";
+                    default:
+                        return "Black";
+                }
             }
             catch
             {

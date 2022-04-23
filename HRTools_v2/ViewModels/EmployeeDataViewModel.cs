@@ -189,6 +189,31 @@ namespace HRTools_v2.ViewModels
 
         #endregion
 
+        #region Tasks
+
+        private ObservableCollection<EmplTask> _tasks;
+        public ObservableCollection<EmplTask> Tasks
+        {
+            get { return _tasks; }
+            set { SetProperty(ref _tasks, value); }
+        }
+
+        private string _taskContent;
+        public string TaskContent
+        {
+            get { return _taskContent; }
+            set { SetProperty(ref _taskContent, value); }
+        }
+
+        private DateTime _taskDueDate;
+        public DateTime TaskDueDate
+        {
+            get { return _taskDueDate; }
+            set { SetProperty(ref _taskDueDate, value); }
+        }
+
+        #endregion
+
         #region Sanction Props
 
         private ObservableCollection<SanctionEntity> _sanctionsList;
@@ -276,6 +301,13 @@ namespace HRTools_v2.ViewModels
         {
             get => _hasCommentsData;
             set { SetProperty(ref _hasCommentsData, value); }
+        }
+
+        private bool _hasTasksData;
+        public bool HasTasksData
+        {
+            get => _hasTasksData;
+            set { SetProperty(ref _hasTasksData, value); }
         }
 
         private bool _hasAwalData;
@@ -414,6 +446,7 @@ namespace HRTools_v2.ViewModels
             AwalSanctionList = new List<string>();
             Timeline = new ObservableCollection<Timeline>();
             Comments = new ObservableCollection<EmplComment>();
+            Tasks = new ObservableCollection<EmplTask>();
             MeetingsList = new ObservableCollection<MeetingsEntity>();
             MeetingTypes = new ObservableCollection<string> { MeetingType.Disciplinary.ToString(), MeetingType.Health.ToString()};
 
@@ -444,6 +477,7 @@ namespace HRTools_v2.ViewModels
             GetAdapt(selectedEmployeeId);
             GetPersonalLeaveData(selectedEmployeeId);
             GetComments(selectedEmployeeId, GetOriginFromTab(SelectedTabIndex));
+            GetTasks(selectedEmployeeId, GetOriginFromTab(SelectedTabIndex));
         }
 
         #region Data Getters
@@ -478,6 +512,22 @@ namespace HRTools_v2.ViewModels
 
             WidgedState &= ~HomePageWidgetState.EmployeeCommentsLoading;
             WidgedState |= HomePageWidgetState.EmployeeCommentsLoaded;
+        }
+
+        private async void GetTasks(string id, TimelineOrigin origin)
+        {
+            WidgedState |= HomePageWidgetState.EmployeeTasksLoading;
+            WidgedState &= ~HomePageWidgetState.EmployeeTasksLoaded;
+
+            Tasks.Clear();
+
+
+            Tasks.AddRange(await _previewRepository.GetTasksAsync(id, origin));
+            HasTasksData = Comments.Count > 0;
+
+
+            WidgedState &= ~HomePageWidgetState.EmployeeTasksLoading;
+            WidgedState |= HomePageWidgetState.EmployeeTasksLoaded;
         }
 
         private async void GetEmployeeStatus(string id)
@@ -534,7 +584,7 @@ namespace HRTools_v2.ViewModels
 
         private void SetIsOnAwal()
         {
-            var activeAwal = AwalList.Where(x => x.AwalStatus.Equals(AwalStatus.Active)).FirstOrDefault();
+            var activeAwal = AwalList.Where(x => x.AwalStatus.Equals(AwalStatus.Active) || x.AwalStatus.Equals(AwalStatus.Pending)).FirstOrDefault();
             IsOnAwal = activeAwal != null;
         }
 

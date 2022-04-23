@@ -21,7 +21,9 @@ namespace Domain.Types
         EmployeeTimelineLoading = 0x1000,
         EmployeeTimelineLoaded = 0x2000,
         EmployeeCommentsLoading = 0x4000,
-        EmployeeCommentsLoaded = 0x8000
+        EmployeeCommentsLoaded = 0x8000,
+        EmployeeTasksLoading = 0x10000,
+        EmployeeTasksLoaded = 0x20000
 
     }
 }

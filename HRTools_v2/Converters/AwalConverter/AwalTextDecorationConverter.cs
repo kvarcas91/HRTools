@@ -15,6 +15,7 @@ namespace HRTools_v2.Converters
                 switch (awalStatus)
                 {
                     case AwalStatus.Cancelled:
+                    case AwalStatus.Resigned:
                         return "Strikethrough";
                     default:
                         return "None";
