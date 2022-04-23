@@ -2,6 +2,7 @@
 using Domain.Extensions;
 using Domain.Models;
 using Domain.Models.AWAL;
+using Domain.Models.CustomMeetings;
 using Domain.Models.DataSnips;
 using Domain.Models.Meetings;
 using Domain.Models.Resignations;
@@ -112,6 +113,32 @@ namespace HRTools_v2.ViewModels
         {
             get => _meetingTypes;
             set { SetProperty(ref _meetingTypes, value); }
+        }
+
+
+        #endregion
+
+        #region Custom Meetings
+
+        private ObservableCollection<CustomMeetingEntity> _customMeetingsList;
+        public ObservableCollection<CustomMeetingEntity> CustomMeetingsList
+        {
+            get { return _customMeetingsList; }
+            set { SetProperty(ref _customMeetingsList, value); }
+        }
+
+        private string _reasonForCustomClosure;
+        public string ReasonForCustomClosure
+        {
+            get => _reasonForCustomClosure;
+            set { SetProperty(ref _reasonForCustomClosure, value); }
+        }
+
+        private ObservableCollection<string> _customMeetingTypes;
+        public ObservableCollection<string> CustomMeetingTypes
+        {
+            get => _customMeetingTypes;
+            set { SetProperty(ref _customMeetingTypes, value); }
         }
 
 
@@ -296,6 +323,13 @@ namespace HRTools_v2.ViewModels
             set { SetProperty(ref _hasMeetingsData, value); }
         }
 
+        private bool _hasCustomMeetingsData;
+        public bool HasCustomMeetingsData
+        {
+            get => _hasCustomMeetingsData;
+            set { SetProperty(ref _hasCustomMeetingsData, value); }
+        }
+
         private bool _hasCommentsData;
         public bool HasCommentsData
         {
@@ -448,6 +482,7 @@ namespace HRTools_v2.ViewModels
             Comments = new ObservableCollection<EmplComment>();
             Tasks = new ObservableCollection<EmplTask>();
             MeetingsList = new ObservableCollection<MeetingsEntity>();
+            CustomMeetingsList = new ObservableCollection<CustomMeetingEntity>();
             MeetingTypes = new ObservableCollection<string> { MeetingType.Disciplinary.ToString(), MeetingType.Health.ToString()};
 
             SanctionList = SanctionManager.GetSanctions();
@@ -498,6 +533,8 @@ namespace HRTools_v2.ViewModels
             WidgedState |= HomePageWidgetState.EmployeeTimelineLoaded;
         }
 
+        #region Supportive Data
+
         private async void GetComments(string id, TimelineOrigin origin)
         {
             WidgedState |= HomePageWidgetState.EmployeeCommentsLoading;
@@ -512,6 +549,45 @@ namespace HRTools_v2.ViewModels
 
             WidgedState &= ~HomePageWidgetState.EmployeeCommentsLoading;
             WidgedState |= HomePageWidgetState.EmployeeCommentsLoaded;
+        }
+
+        private async void AddComment()
+        {
+            if (string.IsNullOrEmpty(CommentText))
+            {
+                SendToast("CAnnot add empty comment", NotificationType.Information);
+                return;
+            }
+            var comment = new EmplComment().Create(CommentText.Trim(), SelectedEmployee.EmployeeID, GetOriginFromTab(SelectedTabIndex));
+            var response = await _previewRepository.InsertCommentAsync(comment);
+
+            if (response.Success)
+            {
+                SendToast("Comment has been added!", NotificationType.Success);
+                Comments.Insert(0, comment);
+                CommentText = String.Empty;
+                HasCommentsData = Comments.Count > 0;
+            }
+            else
+            {
+                SendToast(response.Message, NotificationType.Information);
+            }
+        }
+
+        private async void DeleteComment(EmplComment? comment)
+        {
+            if (comment == null) return;
+            var response = await _previewRepository.DeleteCommentAsync(comment.Value);
+            if (response.Success)
+            {
+                Comments.Remove(comment.Value);
+                HasCommentsData = Comments.Count > 0;
+                SendToast("Comment has been removed", NotificationType.Success);
+            }
+            else
+            {
+                SendToast(response.Message, NotificationType.Warning);
+            }
         }
 
         private async void GetTasks(string id, TimelineOrigin origin)
@@ -529,6 +605,8 @@ namespace HRTools_v2.ViewModels
             WidgedState &= ~HomePageWidgetState.EmployeeTasksLoading;
             WidgedState |= HomePageWidgetState.EmployeeTasksLoaded;
         }
+
+        #endregion
 
         private async void GetEmployeeStatus(string id)
         {
@@ -898,10 +976,29 @@ namespace HRTools_v2.ViewModels
 
         #endregion
 
-        private void GetCustomMeetings(string id)
-        {
+        #region Custom Meetings
 
+        private async void GetCustomMeetings(string id)
+        {
+            CustomMeetingsList.Clear();
+            WidgedState &= ~HomePageWidgetState.EmployeeCustomMeetingsLoaded;
+            WidgedState |= HomePageWidgetState.EmployeeCustomMeetingsLoading;
+
+            var repo = new MeetingsRepository();
+            var list = await repo.GetEmployeeCustomMeetingsAsync(id);
+            foreach (var item in list)
+            {
+                item.SetFileCount("");
+            }
+
+            CustomMeetingsList.AddRange(list);
+            HasCustomMeetingsData = CustomMeetingsList.Count > 0;
+
+            WidgedState &= ~HomePageWidgetState.EmployeeCustomMeetingsLoading;
+            WidgedState |= HomePageWidgetState.EmployeeCustomMeetingsLoaded;
         }
+
+        #endregion
 
         private void GetAdapt(string id)
         {
@@ -1046,45 +1143,6 @@ namespace HRTools_v2.ViewModels
 
         #endregion
 
-        private async void AddComment()
-        {
-            if (string.IsNullOrEmpty(CommentText))
-            {
-                SendToast("CAnnot add empty comment", NotificationType.Information);
-                return;
-            }
-            var comment = new EmplComment().Create(CommentText.Trim(), SelectedEmployee.EmployeeID, GetOriginFromTab(SelectedTabIndex));
-            var response = await _previewRepository.InsertCommentAsync(comment);
-
-            if (response.Success)
-            {
-                SendToast("Comment has been added!", NotificationType.Success);
-                Comments.Insert(0, comment);
-                CommentText = String.Empty;
-                HasCommentsData = Comments.Count > 0;
-            }
-            else
-            {
-                SendToast(response.Message, NotificationType.Information);
-            }
-        }
-
-        private async void DeleteComment(EmplComment? comment)
-        {
-            if (comment == null) return;
-            var response = await _previewRepository.DeleteCommentAsync(comment.Value);
-            if (response.Success)
-            {
-                Comments.Remove(comment.Value);
-                HasCommentsData = Comments.Count > 0;
-                SendToast("Comment has been removed", NotificationType.Success);
-            }
-            else
-            {
-                SendToast(response.Message, NotificationType.Warning);
-            }
-        }
-        
         private async void GetHeaders(string emplId)
         {
             PreviewEmplDataSnip = await _previewRepository.GetEmployeePreviewAsync(emplId);

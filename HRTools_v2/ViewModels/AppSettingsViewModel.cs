@@ -2,6 +2,7 @@
 using Domain.IO;
 using Domain.Models;
 using Domain.Models.AWAL;
+using Domain.Models.CustomMeetings;
 using Domain.Models.Meetings;
 using Domain.Models.Sanctions;
 using Domain.Repository;
@@ -40,6 +41,13 @@ namespace HRTools_v2.ViewModels
         {
             get => _meetingsMap;
             set { SetProperty(ref _meetingsMap, value); }
+        }
+
+        private CustomMeetingImportMap _customMeetingsMap;
+        public CustomMeetingImportMap CustomMeetingsMap
+        {
+            get => _customMeetingsMap;
+            set { SetProperty(ref _customMeetingsMap, value); }
         }
 
         private SanctionsImportMap _sanctionsMap;
@@ -81,6 +89,24 @@ namespace HRTools_v2.ViewModels
         {
             get => _meetingsFileName;
             set { SetProperty(ref _meetingsFileName, value); }
+        }
+
+        #endregion
+
+        #region Custom Meetings
+
+        private bool _isCustomMeetingsDataImportInProgress;
+        public bool IsCustomMeetingsDataImportInProgress
+        {
+            get => _isCustomMeetingsDataImportInProgress;
+            set { SetProperty(ref _isCustomMeetingsDataImportInProgress, value); }
+        }
+
+        private string _customMeetingsFileName;
+        public string CustomMeetingsFileName
+        {
+            get => _customMeetingsFileName;
+            set { SetProperty(ref _customMeetingsFileName, value); }
         }
 
         #endregion
@@ -127,6 +153,16 @@ namespace HRTools_v2.ViewModels
 
         #endregion
 
+        #region Custom Meetings
+
+        private DelegateCommand _importCustomMeetingsFileCommand = null;
+        public DelegateCommand ImportCustomMeetingsFileCommand => _importCustomMeetingsFileCommand ?? (_importCustomMeetingsFileCommand = new DelegateCommand(ImportCustomMeetings));
+
+        private DelegateCommand _openCustomMeetingsFileCommand = null;
+        public DelegateCommand OpenCustomMeetingsFileCommand => _openCustomMeetingsFileCommand ?? (_openCustomMeetingsFileCommand = new DelegateCommand(OpenCustomMeetingsFile));
+
+        #endregion
+
         #region Sanctions
 
         private DelegateCommand _importSanctionsFileCommand = null;
@@ -146,8 +182,8 @@ namespace HRTools_v2.ViewModels
             _eventAggregator = eventAggregator;
             AwalMap = new AwalImportMap().SetDefaultValues();
             MeetingsMap = new MeetingsImportMap().SetDefaultValues();
+            CustomMeetingsMap = new CustomMeetingImportMap().SetDefaultValues();
             SanctionsMap = new SanctionsImportMap().SetDefaultValues();
-            IsAwalDataImportInProgress = false;
         }
 
         #region Awal
@@ -220,6 +256,43 @@ namespace HRTools_v2.ViewModels
             if (string.IsNullOrEmpty(path)) return;
 
             MeetingsFileName = FileHelper.FileFullName(path);
+        }
+
+        #endregion
+
+        #region Custom Meetings
+
+        private async void ImportCustomMeetings()
+        {
+            if (string.IsNullOrEmpty(CustomMeetingsFileName))
+            {
+                SendMessage("Import custom meetings data as .csv file first", NotificationType.Information);
+                return;
+            }
+            IsCustomMeetingsDataImportInProgress = true;
+            var dataMap = new DataMap(CustomMeetingsMap, DataImportType.CustomMeetings);
+            var csvReader = new CSVStream(CustomMeetingsFileName);
+            var csvOutput = csvReader.Get(dataMap);
+            var awalRepo = new MeetingsRepository();
+            var response = await awalRepo.InsertCustomAllAsync(csvOutput);
+            IsCustomMeetingsDataImportInProgress = false;
+
+            if (response.Success)
+            {
+                SendMessage("Custom meetings data has been imported!", NotificationType.Success);
+            }
+            else SendMessage(response.Message, NotificationType.Warning);
+
+
+        }
+
+        private void OpenCustomMeetingsFile()
+        {
+            var dialog = new DialogHelper(".csv", "CSV Files|*.csv");
+            var path = dialog.ShowOpenDialog();
+            if (string.IsNullOrEmpty(path)) return;
+
+            CustomMeetingsFileName = FileHelper.FileFullName(path);
         }
 
         #endregion

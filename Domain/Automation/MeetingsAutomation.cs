@@ -6,10 +6,7 @@ using Domain.Repository;
 using Domain.Storage;
 using Domain.Types;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Automation
 {
@@ -81,7 +78,8 @@ namespace Domain.Automation
                 WebHook.PostAsync(DataStorage.AppSettings.AwalChanelWebHook, $"Hello, please close AWAL case for {_newObj.EmployeeID} if exists");
             }
             var stringBuilder = new StringBuilder();
-            stringBuilder.Append($"UPDATE meetings SET meetingStatus = 'Cancelled', updatedBy = '(tool_automation)', updatedAt = '{DateTime.Now.ToString(DataStorage.LongDBDateFormat)}' WHERE meetingStatus in ('Open', 'Pending') AND employeeID = '{_newObj.EmployeeID}';");
+            stringBuilder.Append($"UPDATE meetings SET meetingStatus = 'Cancelled', updatedBy = '(tool_automation)', updatedAt = '{DateTime.Now.ToString(DataStorage.LongDBDateFormat)}' WHERE meetingStatus in ('Open', 'Pending') AND employeeID = '{_newObj.EmployeeID}' AND id != '{_newObj.ID}';");
+            stringBuilder.Append($"UPDATE custom_meetings SET meetingStatus = 'Cancelled', updatedBy = '(tool_automation)', updatedAt = '{DateTime.Now.ToString(DataStorage.LongDBDateFormat)}' WHERE meetingStatus in ('Open', 'Pending') AND (claimantID = '{_newObj.EmployeeID}' OR respondentID = '{_newObj.EmployeeID}');");
             stringBuilder.Append($"UPDATE awal SET awalStatus = '{(int)AwalStatus.Cancelled}', outcome = 'Cancelled', updatedBy = '(tool_automation)', updatedAt = '{DateTime.Now.ToString(DataStorage.LongDBDateFormat)}' WHERE employeeID = '{_newObj.EmployeeID}' AND awalStatus in ({(int)AwalStatus.Pending}, {(int)AwalStatus.Active});");
 
             return stringBuilder.ToString();

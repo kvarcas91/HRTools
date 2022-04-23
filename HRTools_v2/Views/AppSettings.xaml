@@ -679,6 +679,419 @@
                         </Grid>
                     </Expander>
 
+                    <!-- Custom Meetings -->
+                    <Expander Header="Custom meetings" Background="Transparent"
+                              BorderThickness="0 0 0 1"
+                              Margin="0 5"
+                              BorderBrush="DarkSlateGray">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+
+                            <StackPanel Orientation="Horizontal" Grid.Row="0">
+                                <Button Background="Transparent" 
+                                HorizontalAlignment="Left"
+                    materialDesign:ShadowAssist.ShadowEdges="None"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                        BorderThickness="0 0 0 1"
+                                        Command="{Binding OpenCustomMeetingsFileCommand}"
+                    >
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="FolderOpenOutline" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+                                        <TextBlock Margin="10 0 0 0" Text="Open File" 
+                                           Foreground="DarkSlateGray"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <TextBlock Text="{Binding CustomMeetingsFileName}"
+                                       VerticalAlignment="Center"
+                                       Margin="10 0 0 0"
+                                       FontSize="10"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1"
+                                    Orientation="Vertical"
+                                    Margin="10 10 0 0">
+
+                                <TextBlock Text="* Expected column names for each data point. If it fails to identify column name from file - value will be ignored"
+                                       VerticalAlignment="Center"
+                                           FontStyle="Italic"
+                                       Margin="10 5"/>
+
+                                <Grid Margin="0 10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding CustomMeetingsMap.ID,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Case ID"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"
+                                         />
+
+                                    <TextBox Grid.Column="1"
+                                         Text="{Binding CustomMeetingsMap.MeetingStatus,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                    materialDesign:HintAssist.Hint="Meeting status"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"/>
+
+                                    <TextBox Grid.Column="2"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding CustomMeetingsMap.ExactCaseID,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Exact case ID"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"/>
+
+                                </Grid>
+                                
+                                <Grid Margin="0 10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding CustomMeetingsMap.MeetingType,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Meeting type"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                         materialDesign:HintAssist.HelperText="* Investigation/Grievance etc."
+                                         materialDesign:HintAssist.HelperTextFontSize="8"
+                                         />
+
+                                    <TextBox Grid.Column="1"
+                                         Text="{Binding CustomMeetingsMap.ClaimantID,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                    materialDesign:HintAssist.Hint="Claimant employee ID"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                         materialDesign:HintAssist.HelperText="* Mandatory"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"/>
+
+                                    <TextBox Grid.Column="2"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding CustomMeetingsMap.ClaimantUserID,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Claimant login (userID)"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                          materialDesign:HintAssist.HelperText="If left blank - will attempt to fill from roster"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"/>
+
+                                </Grid>
+
+                                <Grid Margin="0 20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding CustomMeetingsMap.ClaimantName,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Claimant name"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                          materialDesign:HintAssist.HelperText="If left blank - will attempt to fill from roster"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"
+                                         />
+
+                                    <TextBox Grid.Column="1"
+                                         Text="{Binding CustomMeetingsMap.Manager,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                         materialDesign:HintAssist.Hint="Claimant manager name"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                         materialDesign:HintAssist.HelperText="If left blank - will attempt to fill from roster"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"/>
+
+                                    <TextBox Grid.Column="2"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding CustomMeetingsMap.ClaimantShift,Mode=TwoWay}"
+                                        materialDesign:HintAssist.Hint="Claimant shift pattern"
+                                         materialDesign:HintAssist.IsFloating="True"
+                                          materialDesign:HintAssist.HelperText="If left blank - will attempt to fill from roster"
+                                         materialDesign:HintAssist.HelperTextFontSize="8"/>
+
+                                </Grid>
+
+                                <Grid Margin="0 20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding CustomMeetingsMap.ClaimantDepartment,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Claimant department"
+                                         materialDesign:HintAssist.IsFloating="True" />
+
+                                    <TextBox Grid.Column="1"
+                                         Text="{Binding CustomMeetingsMap.ClaimantEmploymentStartDate,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                         materialDesign:HintAssist.Hint="Claimant employment start date"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                    <TextBox Grid.Column="2"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding CustomMeetingsMap.RespondentID,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Respondent employee ID"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                </Grid>
+
+                                <Grid Margin="0 20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding CustomMeetingsMap.RespondentName,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Respondent name"
+                                         materialDesign:HintAssist.IsFloating="True" />
+
+                                    <TextBox Grid.Column="1"
+                                         Text="{Binding CustomMeetingsMap.RespondentUserID,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                         materialDesign:HintAssist.Hint="Respondent login (user ID)"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                    <TextBox Grid.Column="2"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding CustomMeetingsMap.RespondentManager,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Respondent manager name"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                </Grid>
+
+                                <Grid Margin="0 20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding CustomMeetingsMap.RespondentDepartment,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Respondent department"
+                                         materialDesign:HintAssist.IsFloating="True" />
+
+                                    <TextBox Grid.Column="1"
+                                         Text="{Binding CustomMeetingsMap.RespondentShift,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                         materialDesign:HintAssist.Hint="Respondent shift pattern"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                    <TextBox Grid.Column="2"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding CustomMeetingsMap.RespondentEmploymentStartDate,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Respondent employment start date"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                </Grid>
+
+                                <Grid Margin="0 20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding CustomMeetingsMap.Paperless,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Paperless"
+                                         materialDesign:HintAssist.IsFloating="True" />
+
+                                    <TextBox Grid.Column="1"
+                                         Text="{Binding CustomMeetingsMap.IsUnionPresent,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                         materialDesign:HintAssist.Hint="Union present"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                    <TextBox Grid.Column="2"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding CustomMeetingsMap.IsWIMRaised,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="WIM raised"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                </Grid>
+
+                                <Grid Margin="0 20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding CustomMeetingsMap.CreatedAt,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Case created at"
+                                         materialDesign:HintAssist.IsFloating="True" />
+
+                                    <TextBox Grid.Column="1"
+                                         Text="{Binding CustomMeetingsMap.CreatedBy,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                         materialDesign:HintAssist.Hint="Case created by"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                    <TextBox Grid.Column="2"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding CustomMeetingsMap.UpdatedAt,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Case last updated at"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                </Grid>
+
+                                <Grid Margin="0 20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBox Grid.Column="0"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding CustomMeetingsMap.UpdatedBy,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Case last updated by"
+                                         materialDesign:HintAssist.IsFloating="True" />
+
+                                    <TextBox Grid.Column="1"
+                                         Text="{Binding CustomMeetingsMap.ClosedAt,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                         materialDesign:HintAssist.Hint="Case closed at"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                    <TextBox Grid.Column="2"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding CustomMeetingsMap.ClosedBy,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Case closed by"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                </Grid>
+
+                                <Grid Margin="0 20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+
+                                    <TextBox Grid.Column="0"
+                                         Text="{Binding CustomMeetingsMap.FirstMeetingDate,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                         materialDesign:HintAssist.Hint="First meeting date"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                    <TextBox Grid.Column="1"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding CustomMeetingsMap.FirstMeetingOwner,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="First meeting owner (AM/OM login)"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                    <TextBox Grid.Column="2"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding CustomMeetingsMap.FirstMeetingHRSupport,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="First meeting HR support (login)"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                </Grid>
+
+                                <Grid Margin="0 20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+
+                                    <TextBox Grid.Column="0"
+                                         Text="{Binding CustomMeetingsMap.FirstMeetingOutcome,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                         materialDesign:HintAssist.Hint="First meeting outcome"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                    <TextBox Grid.Column="1"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding CustomMeetingsMap.SecondMeetingDate,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Second meeting date"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                    <TextBox Grid.Column="2"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding CustomMeetingsMap.SecondMeetingOwner,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Second meeting owner (AM/OM login)"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                </Grid>
+                                
+                                <Grid Margin="0 20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+
+                                    <TextBox Grid.Column="0"
+                                         Text="{Binding CustomMeetingsMap.SecondMeetingHRSupport,Mode=TwoWay}"
+                                         Margin="0 0 20 0"
+                                         materialDesign:HintAssist.Hint="Second meeting HR support (login)"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                    <TextBox Grid.Column="1"
+                                         Margin="0 0 20 0"
+                                         Text="{Binding CustomMeetingsMap.SecondMeetingOutcome,Mode=TwoWay}"
+                                    materialDesign:HintAssist.Hint="Second meeting outcome"
+                                         materialDesign:HintAssist.IsFloating="True"/>
+
+                                </Grid>
+
+                                <Grid>
+
+                                    <Button Grid.Column="2"
+                                Margin="10"
+                            Background="Transparent" 
+                    materialDesign:ShadowAssist.ShadowEdges="None"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                        BorderBrush="DarkSlateGray"
+                    BorderThickness="1"
+                                            Visibility="{Binding IsCustomMeetingsDataImportInProgress, Converter={StaticResource InverseBoolToVisConverter}}"
+                                Command="{Binding ImportCustomMeetingsFileCommand}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="HomeImportOutline" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+                                            <TextBlock Margin="10 0 0 0" Text="Import" Foreground="DarkSlateGray"
+                                                   FontSize="12"/>
+                                        </StackPanel>
+                                    </Button>
+
+                                    <ProgressBar  Visibility="{Binding IsCustomMeetingsDataImportInProgress, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                  IsIndeterminate="True"/>
+
+                                </Grid>
+
+
+                            </StackPanel>
+                        </Grid>
+                    </Expander>
+                    
                     <!-- Sanctions -->
                     <Expander Header="Sanctions" Background="Transparent"
                               BorderThickness="0 0 0 1"

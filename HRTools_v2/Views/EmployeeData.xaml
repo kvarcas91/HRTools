@@ -11,6 +11,7 @@
              d:Background="{DynamicResource Background}"
              xmlns:converters="clr-namespace:HRTools_v2.Converters"
              d:DesignHeight="750" d:DesignWidth="1400">
+   
     <!-- Employee Content -->
     <Grid>
 
@@ -264,7 +265,7 @@
             <Grid.ColumnDefinitions>
 
                 <!-- Main column -->
-                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="4*"/>
 
                 <!-- Supportive column -->
                 <ColumnDefinition Width="*"/>
@@ -1018,7 +1019,126 @@
                                 <TextBlock Text="Custom Meetings"/>
                             </materialDesign:Badged>
                         </TabItem.Header>
-                        <TextBlock Text="second tab text"/>
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="42"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <materialDesign:PopupBox 
+                                     Background="Transparent"
+                                     StaysOpen="True"
+                                HorizontalAlignment="Right">
+
+                                <materialDesign:PopupBox.ToggleContent>
+
+                                    <Border Background="Transparent" 
+                                        Padding="10"
+                                        materialDesign:ShadowAssist.ShadowEdges="None"
+                                        materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                        >
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="Add" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+                                            <TextBlock Margin="10 0 0 0" Text="Add new" Foreground="DarkSlateGray"
+                                                   FontSize="12"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                </materialDesign:PopupBox.ToggleContent>
+
+
+                                <Grid Background="Transparent" Margin="10 0 10 0"
+                                                Width="200">
+
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBox 
+                                    Text="{Binding NewCustomMeetingCase.ID, Mode=TwoWay}"
+                                    Background="Transparent"
+                                    materialDesign:HintAssist.Hint="Meeting ID"
+                                    materialDesign:HintAssist.IsFloating="True"
+                                    BorderThickness="0"
+                                    
+                                    TextWrapping="Wrap" 
+                                        Margin="5 5 15 5"/>
+
+                                    <ComboBox 
+                                        Grid.Row="1"
+                                        BorderThickness="0"
+                                        Margin="5"
+                                        SelectedValue=""
+                                        VerticalContentAlignment="Center"
+                                        materialDesign:HintAssist.Hint="Meeting Origin"
+                                        materialDesign:HintAssist.IsFloating="True"
+                                        ItemsSource="{Binding CustomMeetingTypes}"
+                                        SelectedItem="{Binding NewCustomMeetingCase.MeetingType, Mode=TwoWay}"
+                                        IsSynchronizedWithCurrentItem="True">
+                                    </ComboBox>
+
+                                    <Separator Grid.Row="3" BorderBrush="LightGray" BorderThickness="1"
+                                            Margin="1"/>
+
+                                    <Grid Grid.Row="4">
+
+                                        <Button HorizontalContentAlignment="Center"
+                                                    Margin="-10 0 -10 -8"
+                                                    Background="Transparent" 
+                                                    materialDesign:ShadowAssist.ShadowEdges="None"
+                                                    materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                                    BorderBrush="DarkSlateGray"
+                                                    BorderThickness="1"
+                                                    Command="{Binding OnErMeetingCreateCommand}"
+                                                    >
+                                            <StackPanel Orientation="Horizontal">
+                                                <materialDesign:PackIcon Kind="CreateOutline" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+                                                <TextBlock Margin="10 0 0 0" Text="Submit" Foreground="DarkSlateGray"
+                                                   FontSize="12"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </Grid>
+
+                                </Grid>
+
+
+                            </materialDesign:PopupBox>
+
+                            <Separator Grid.Row="1" BorderBrush="LightGray" BorderThickness="1"/>
+
+                            <ProgressBar Grid.Row="2"
+                                Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                             IsIndeterminate="True"
+                                             Width="90"
+                                             Height="90" 
+                                             Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='EmployeeCustomMeetingsLoading'}"/>
+
+                            <ListView x:Name="customMeetingsListView"
+                                Grid.Row="2"
+                               ItemsSource="{Binding CustomMeetingsList}"
+                                Style="{StaticResource CustomMeetingsListView}"
+                                    Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='EmployeeCustomMeetingsLoaded'}"/>
+
+                            <TextBlock Grid.Row="2"
+                                Text="No Data"
+                                           Visibility="{Binding HasCustomMeetingsData, Converter={StaticResource InverseBoolToVisConverter}}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           Foreground="Gray"
+                                           FontSize="{StaticResource NoDataFontSize}"/>
+                                        
+                        </Grid>
                     </TabItem>
 
                     <!-- AWAL -->
@@ -1335,164 +1455,6 @@
                                         VerticalAlignment="Center"/>
 
                     </Grid>
-
-
-                </materialDesign:Card>
-
-                <!-- Files / Documents -->
-                <materialDesign:Card Grid.Row="2" Margin="5 5 5 5" 
-                                     Height="250"
-                             materialDesign:ShadowAssist.ShadowDepth="Depth0"
-                                     Visibility="{Binding IsFileSectionVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-
-                    <Grid Margin="10">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
-                        <!-- Header -->
-                        <Grid Grid.Row="0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-
-                            <TextBlock Grid.Row="0" Text="Files / Documents"
-                                           FontWeight="Bold"
-                                           Foreground="DarkSlateGray"
-                                           VerticalAlignment="Center"/>
-
-                            <Button Background="{DynamicResource CardBackground}" 
-                                        Grid.Row="0" Grid.Column="1"
-                    materialDesign:ShadowAssist.ShadowEdges="None"
-                    materialDesign:ShadowAssist.ShadowDepth="Depth0"
-                                        BorderThickness="0"
-                    >
-                                <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="FileDocumentEditOutline" 
-                                                                 VerticalAlignment="Center"
-                                                                 Foreground="DarkSlateGray"/>
-                                    <TextBlock Margin="10 0 0 0" Text="Add new" Foreground="DarkSlateGray"
-                                                   FontSize="12"/>
-                                </StackPanel>
-                            </Button>
-
-                        </Grid>
-
-                        <StackPanel Grid.Row="1" Orientation="Vertical" Margin="0 10 0 0">
-
-                            <Grid Margin="0 5 0 5">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-
-
-                                <materialDesign:PackIcon Grid.Column="0"
-                                        Kind="FileDocumentOutline" Margin="0 0 10 0"
-                                                             Foreground="LightSlateGray"/>
-
-                                <TextBlock Grid.Column="1" Text="Check up stuff.pdf"
-                                               VerticalAlignment="Center"
-                                               Foreground="LightSlateGray"/>
-
-                                <materialDesign:PackIcon Grid.Column="2"
-                                        Kind="TrashCanOutline" Margin="0 0 10 0"
-                                                             Foreground="LightSlateGray"/>
-
-                                <materialDesign:PackIcon Grid.Column="3"
-                                        Kind="OpenInNew" Margin="0 0 10 0"
-                                                             Foreground="LightSlateGray"/>
-
-                            </Grid>
-
-                            <Grid Margin="0 5 0 5">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-
-
-                                <materialDesign:PackIcon Grid.Column="0"
-                                        Kind="FileDocumentOutline" Margin="0 0 10 0"
-                                                             Foreground="LightSlateGray"/>
-
-                                <TextBlock Grid.Column="1" Text="Check up stuff.pdf"
-                                               VerticalAlignment="Center"
-                                               Foreground="LightSlateGray"/>
-
-                                <materialDesign:PackIcon Grid.Column="2"
-                                        Kind="TrashCanOutline" Margin="0 0 10 0"
-                                                             Foreground="LightSlateGray"/>
-
-                                <materialDesign:PackIcon Grid.Column="3"
-                                        Kind="OpenInNew" Margin="0 0 10 0"
-                                                             Foreground="LightSlateGray"/>
-
-                            </Grid>
-
-                            <Grid Margin="0 5 0 5">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-
-
-                                <materialDesign:PackIcon Grid.Column="0"
-                                        Kind="FileDocumentOutline" Margin="0 0 10 0"
-                                                             Foreground="LightSlateGray"/>
-
-                                <TextBlock Grid.Column="1" Text="Check up stuff.pdf"
-                                               VerticalAlignment="Center"
-                                               Foreground="LightSlateGray"/>
-
-                                <materialDesign:PackIcon Grid.Column="2"
-                                        Kind="TrashCanOutline" Margin="0 0 10 0"
-                                                             Foreground="LightSlateGray"/>
-
-                                <materialDesign:PackIcon Grid.Column="3"
-                                        Kind="OpenInNew" Margin="0 0 10 0"
-                                                             Foreground="LightSlateGray"/>
-
-                            </Grid>
-                            <Grid Margin="0 5 0 5">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-
-
-                                <materialDesign:PackIcon Grid.Column="0"
-                                        Kind="FileDocumentOutline" Margin="0 0 10 0"
-                                                             Foreground="LightSlateGray"/>
-
-                                <TextBlock Grid.Column="1" Text="investigation meeting.pdf"
-                                               VerticalAlignment="Center"
-                                               Foreground="LightSlateGray"/>
-
-                                <materialDesign:PackIcon Grid.Column="2"
-                                        Kind="TrashCanOutline" Margin="0 0 10 0"
-                                                             Foreground="LightSlateGray"/>
-
-                                <materialDesign:PackIcon Grid.Column="3"
-                                        Kind="OpenInNew" Margin="0 0 10 0"
-                                                             Foreground="LightSlateGray"/>
-
-                            </Grid>
-
-                        </StackPanel>
-
-                    </Grid>
-
 
 
                 </materialDesign:Card>

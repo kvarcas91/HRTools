@@ -75,15 +75,23 @@ namespace Domain.Automation
             return stringBuilder.ToString();
         }
 
-        private string GetMeetingsQuery() => 
-            $"UPDATE meetings SET meetingStatus = 'Pending', updatedBy = '(tool_automation)', updatedAt = '{DateTime.Now.ToString(DataStorage.LongDBDateFormat)}' WHERE meetingStatus = 'Open' AND employeeID = '{_newObj.EmployeeID}';";
+        private string GetMeetingsQuery()
+        {
+            var stringBuilder = new StringBuilder();
+            stringBuilder.Append($"UPDATE meetings SET meetingStatus = 'Pending', updatedBy = '(tool_automation)', updatedAt = '{DateTime.Now.ToString(DataStorage.LongDBDateFormat)}' WHERE meetingStatus = 'Open' AND employeeID = '{_newObj.EmployeeID}';");
+            stringBuilder.Append($"UPDATE custom_meetings SET meetingStatus = 'Pending', updatedBy = '(tool_automation)', updatedAt = '{DateTime.Now.ToString(DataStorage.LongDBDateFormat)}' WHERE meetingStatus = 'Open' AND (claimantID = '{_newObj.EmployeeID}' OR respondentID = '{_newObj.EmployeeID}');");
+
+            return stringBuilder.ToString();
+        }
+           
 
         private string GetTerminationQuery()
         {
             if (!_newObj.Outcome.Equals("Termination")) return string.Empty;
 
             var stringBuilder = new StringBuilder();
-            stringBuilder.Append($"UPDATE meetings SET meetingStatus = 'Cancelled' WHERE meetingStatus in ('Open', 'Pending') AND employeeID = '{_newObj.EmployeeID}';");
+            stringBuilder.Append($"UPDATE meetings SET meetingStatus = 'Cancelled', updatedBy = '(tool_automation)', updatedAt = '{DateTime.Now.ToString(DataStorage.LongDBDateFormat)}' WHERE meetingStatus in ('Open', 'Pending') AND employeeID = '{_newObj.EmployeeID}';");
+            stringBuilder.Append($"UPDATE custom_meetings SET meetingStatus = 'Cancelled', updatedBy = '(tool_automation)', updatedAt = '{DateTime.Now.ToString(DataStorage.LongDBDateFormat)}' WHERE meetingStatus in ('Open', 'Pending') AND (claimantID = '{_newObj.EmployeeID}' OR respondentID = '{_newObj.EmployeeID}');");
 
             return stringBuilder.ToString();
         }

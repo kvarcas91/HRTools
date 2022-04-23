@@ -707,6 +707,310 @@
         </Setter>
     </Style>
 
+    <Style x:Key="CustomMeetingsListView" TargetType="{x:Type ListView}" BasedOn="{StaticResource ListViewOnMouseOverDisabled}">
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Expander Grid.Row="2" 
+                                      Background="Transparent">
+
+                        <Expander.Header>
+                            <Grid>
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="0.7*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="0.3*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="0.3*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Meeting status -->
+                                <TextBlock Grid.Column="0"  VerticalAlignment="Center" >
+                                            <StackPanel Orientation="Horizontal">
+                                             <Ellipse Fill="{Binding MeetingStatus, Converter={converters:MeetingStatusToColorConverter}}"
+                                                     Width="5"
+                                                     Height="5"
+                                                      Margin="0 0 5 0"
+                                                     VerticalAlignment="Center"/>
+                                             <TextBlock Text="Open"
+                                               VerticalAlignment="Center" 
+                                                TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
+                                                FontSize="{Binding MeetingStatus, Converter={converters:MeetingTextSizeConverter}}"
+                                                Foreground="{Binding MeetingStatus, Converter={converters:MeetingTextForegroundConverter}}"
+                                             Padding="0 0 5 2"/>
+                                       
+                                            
+                                            </StackPanel>
+                                        </TextBlock>
+
+                                <!-- Meeting type -->
+                                <TextBlock Grid.Column="1"
+                                                Text="{Binding MeetingType}"
+                                                       VerticalAlignment="Center"
+                                                TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
+                                                FontSize="{Binding MeetingStatus, Converter={converters:MeetingTextSizeConverter}}"
+                                                Foreground="{Binding MeetingStatus, Converter={converters:MeetingTextForegroundConverter}}"/>
+
+                                <!-- Separator -->
+                                <Rectangle Grid.Column="2"
+                                            VerticalAlignment="Stretch" 
+                                           Fill="LightGray" Width="1"
+                                           Margin="2"/>
+
+                                <!-- Meeting 1 -->
+                                <StackPanel Grid.Column="3" Orientation="Vertical"
+                                            Margin="5">
+                                    <TextBlock 
+                                            Text="First meeting date"
+                                                FontSize="{StaticResource SecondaryListFontSize}"
+                                                Foreground="Gray"/>
+                                    <TextBlock 
+                                                  Text="{Binding FirstMeetingDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"
+                                                   TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
+                                                   FontSize="{Binding MeetingStatus, Converter={converters:MeetingTextSizeConverter}}"
+                                                   Foreground="{Binding MeetingStatus, Converter={converters:MeetingTextForegroundConverter}}"/>
+                                </StackPanel>
+
+                                <!-- Meeting 1 outcome -->
+                                <StackPanel Grid.Column="4" Orientation="Vertical"
+                                            Margin="5">
+                                    <TextBlock 
+                                   Text="First meeting outcome"
+                                FontSize="{StaticResource SecondaryListFontSize}"
+                                Foreground="Gray"/>
+                                    <TextBlock 
+                                  Text="{Binding FirstMeetingOutcome}"
+                                 TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
+                                       FontSize="{Binding MeetingStatus, Converter={converters:MeetingTextSizeConverter}}"
+                                   Foreground="{Binding MeetingStatus, Converter={converters:MeetingTextForegroundConverter}}"/>
+                                </StackPanel>
+
+                                <!-- Separator -->
+                                <Rectangle Grid.Column="5"
+                                            VerticalAlignment="Stretch" 
+                                           Fill="LightGray" Width="1"
+                                           Margin="2"/>
+
+                                <!-- Meeting 2 Date -->
+                                <StackPanel Grid.Column="6" Orientation="Vertical"
+                                            Margin="5">
+                                    <TextBlock 
+                                   Text="Second meeting date"
+                                FontSize="{StaticResource SecondaryListFontSize}"
+                                Foreground="Gray"/>
+                                    <TextBlock 
+                                  Text="{Binding SecondMeetingDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"
+                                 TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
+                                       FontSize="{Binding MeetingStatus, Converter={converters:MeetingTextSizeConverter}}"
+                                   Foreground="{Binding MeetingStatus, Converter={converters:MeetingTextForegroundConverter}}"/>
+                                </StackPanel>
+
+                                <!-- Meeting 2 outcome -->
+                                <StackPanel Grid.Column="7" Orientation="Vertical"
+                                            Margin="5">
+                                    <TextBlock 
+                                   Text="Second meeting outcome"
+                                FontSize="{StaticResource SecondaryListFontSize}"
+                                Foreground="Gray"/>
+                                    <TextBlock 
+                                  Text="{Binding SecondMeetingOutcome}"
+                                 TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
+                                       FontSize="{Binding MeetingStatus, Converter={converters:MeetingTextSizeConverter}}"
+                                   Foreground="{Binding MeetingStatus, Converter={converters:MeetingTextForegroundConverter}}"/>
+                                </StackPanel>
+
+                            </Grid>
+                        </Expander.Header>
+
+                        <Grid Margin="50 0 5 0">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.7*"/>
+                                <ColumnDefinition Width="0.3*"/>
+                                <ColumnDefinition Width="0.7*"/>
+                                <ColumnDefinition Width="0.3*"/>
+                                <ColumnDefinition Width="0.7*"/>
+                                <ColumnDefinition Width="0.3*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- EXACT -->
+                            <StackPanel Grid.Column="0" Orientation="Vertical"
+                                            Margin="5">
+                                <TextBlock 
+                                   Text="Exact case ID"
+                                FontSize="{StaticResource SecondaryListFontSize}"
+                                Foreground="Gray"/>
+                                <TextBlock 
+                                  Text="{Binding ExactCaseID}"
+                                    TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
+                                    FontSize="10"
+                                   Foreground="{Binding MeetingStatus, Converter={converters:MeetingTextForegroundConverter}}"/>
+                            </StackPanel>
+
+                            <!-- Separator -->
+                            <Rectangle Grid.Column="1"
+                                    VerticalAlignment="Stretch" 
+                                           Fill="LightGray" Width="1"
+                                           Margin="2"/>
+
+                            <!-- First Meeting -->
+                            <Grid Grid.Column="2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Meeting 1 owner -->
+                                <StackPanel Grid.Row="0" Orientation="Vertical"
+                                            Margin="5">
+                                    <TextBlock 
+                                   Text="First meeting owner"
+                                FontSize="{StaticResource SecondaryListFontSize}"
+                                Foreground="Gray"/>
+                                    <TextBlock 
+                                  Text="{Binding FirstMeetingOwner}"
+                                 TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
+                                       FontSize="10"
+                                   Foreground="{Binding MeetingStatus, Converter={converters:MeetingTextForegroundConverter}}"/>
+                                </StackPanel>
+
+                                <!-- Meeting 1 HR support -->
+                                <StackPanel Grid.Row="1" Orientation="Vertical"
+                                            Margin="5">
+                                    <TextBlock 
+                                   Text="First meeting HR support"
+                                FontSize="{StaticResource SecondaryListFontSize}"
+                                Foreground="Gray"/>
+                                    <TextBlock 
+                                  Text="{Binding FirstMeetingHRSupport}"
+                                 TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
+                                       FontSize="10"
+                                   Foreground="{Binding MeetingStatus, Converter={converters:MeetingTextForegroundConverter}}"/>
+                                </StackPanel>
+
+                            </Grid>
+
+                            <!-- Separator -->
+                            <Rectangle Grid.Column="3"
+                                    VerticalAlignment="Stretch" 
+                                           Fill="LightGray" Width="1"
+                                           Margin="2"/>
+
+                            <!-- Second Meeting -->
+                            <Grid Grid.Column="4">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Meeting 2 owner -->
+                                <StackPanel Grid.Row="0" Orientation="Vertical"
+                                            Margin="5">
+                                    <TextBlock 
+                                   Text="Second meeting owner"
+                                FontSize="{StaticResource SecondaryListFontSize}"
+                                Foreground="Gray"/>
+                                    <TextBlock 
+                                  Text="{Binding SecondMeetingOwner}"
+                                 TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
+                                       FontSize="10"
+                                   Foreground="{Binding MeetingStatus, Converter={converters:MeetingTextForegroundConverter}}"/>
+                                </StackPanel>
+
+                                <!-- Meeting 2 HR support -->
+                                <StackPanel Grid.Row="1" Orientation="Vertical"
+                                            Margin="5">
+                                    <TextBlock 
+                                   Text="Second meeting HR support"
+                                FontSize="{StaticResource SecondaryListFontSize}"
+                                Foreground="Gray"/>
+                                    <TextBlock 
+                                  Text="{Binding SecondMeetingHRSupport}"
+                                 TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
+                                       FontSize="10"
+                                   Foreground="{Binding MeetingStatus, Converter={converters:MeetingTextForegroundConverter}}"/>
+                                </StackPanel>
+
+                            </Grid>
+
+                            <!-- Separator -->
+                            <Rectangle Grid.Column="5"
+                                    VerticalAlignment="Stretch" 
+                                           Fill="LightGray" Width="1"
+                                           Margin="2"/>
+
+
+                            <StackPanel Grid.Column="6"
+                                                Orientation="Horizontal"
+                                                HorizontalAlignment="Right">
+
+                                <materialDesign:Badged Badge="{Binding FileCount}"
+                                                       Padding="0 0 8 0">
+                                    <materialDesign:PopupBox 
+                                                 Background="Transparent"
+                                                 StaysOpen="True"
+                                                 HorizontalAlignment="Right">
+
+                                        <materialDesign:PopupBox.ToggleContent>
+
+                                            <Border Background="Transparent" 
+                                                            Padding="10"
+                                                            materialDesign:ShadowAssist.ShadowEdges="None"
+                                                            materialDesign:ShadowAssist.ShadowDepth="Depth0">
+
+                                                <materialDesign:PackIcon Kind="FoldersOutline" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+
+                                            </Border>
+
+                                        </materialDesign:PopupBox.ToggleContent>
+
+                                        <Grid Margin="0 5 0 5" Width="300">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+
+                                            <materialDesign:PackIcon Grid.Column="0"
+                                        Kind="FileDocumentOutline" Margin="0 0 10 0"
+                                                             Foreground="LightSlateGray"/>
+
+                                            <TextBlock Grid.Column="1" Text="Check up stuff.pdf"
+                                               VerticalAlignment="Center"
+                                               Foreground="LightSlateGray"/>
+
+                                            <materialDesign:PackIcon Grid.Column="2"
+                                        Kind="TrashCanOutline" Margin="0 0 10 0"
+                                                             Foreground="LightSlateGray"/>
+
+                                            <materialDesign:PackIcon Grid.Column="3"
+                                        Kind="OpenInNew" Margin="0 0 10 0"
+                                                             Foreground="LightSlateGray"/>
+
+                                        </Grid>
+
+                                    </materialDesign:PopupBox>
+                                </materialDesign:Badged>
+
+                            </StackPanel>
+
+                        </Grid>
+
+                    </Expander>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
     <Style  x:Key="ErMeetingsListView" TargetType="{x:Type ListView}" BasedOn="{StaticResource ListViewOnMouseOverDisabled}">
         <Setter Property="ItemTemplate">
             <Setter.Value>
@@ -756,9 +1060,11 @@
                                     IsReadOnly="True"
                                     BorderBrush="Transparent"
                                     BorderThickness="0"
-                                 TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
-                                       FontSize="{Binding MeetingStatus, Converter={converters:MeetingTextSizeConverter}}"
-                                   Foreground="{Binding MeetingStatus, Converter={converters:MeetingTextForegroundConverter}}"/>
+                                    materialDesign:HintAssist.IsFloating="True"
+                                    materialDesign:HintAssist.Hint="Case ID"
+                                    TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
+                                    FontSize="{Binding MeetingStatus, Converter={converters:MeetingTextSizeConverter}}"
+                                    Foreground="{Binding MeetingStatus, Converter={converters:MeetingTextForegroundConverter}}"/>
                             </StackPanel>
 
                             <!-- Meeting Progress -->

@@ -4,6 +4,7 @@ using Domain.DataValidation.Meetings;
 using Domain.Extensions;
 using Domain.Factory;
 using Domain.Models;
+using Domain.Models.CustomMeetings;
 using Domain.Models.Meetings;
 using Domain.Storage;
 using Domain.Types;
@@ -17,7 +18,7 @@ namespace Domain.Repository
     public class MeetingsRepository : BaseRepository
     {
 
-        private IDataValidation _validator;
+        private readonly IDataValidation _validator;
 
         public MeetingsRepository()
         {
@@ -26,7 +27,13 @@ namespace Domain.Repository
 
         public Task<Response> InsertAllAsync(IList<IDataImportObject> awalList) => base.InsertAllAsync(awalList, "meetings");
 
-        public Task<IEnumerable<MeetingsEntity>> GetEmployeeMeetingsAsync(string emplId) => GetCachedAsync<MeetingsEntity>($"SELECT * FROM meetings WHERE employeeID = '{emplId}' ORDER BY createdAt DESC");
+        public Task<Response> InsertCustomAllAsync(IList<IDataImportObject> awalList) => base.InsertAllAsync(awalList, "custom_meetings");
+
+        public Task<IEnumerable<MeetingsEntity>> GetEmployeeMeetingsAsync(string emplId) => 
+            GetCachedAsync<MeetingsEntity>($"SELECT * FROM meetings WHERE employeeID = '{emplId}' ORDER BY createdAt DESC");
+
+        public Task<IEnumerable<CustomMeetingEntity>> GetEmployeeCustomMeetingsAsync(string emplId) =>
+            GetCachedAsync<CustomMeetingEntity>($"SELECT * FROM custom_meetings WHERE claimantID = '{emplId}' OR respondentID = '{emplId}' ORDER BY createdAt DESC");
 
         public Task<Response> InsertAsync(MeetingsEntity meeting)
         {

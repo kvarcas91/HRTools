@@ -29,7 +29,6 @@ namespace Domain.Models.Meetings
 
         public MeetingsImportMap SetDefaultValues()
         {
-
             ID = "id";
             EmployeeID = "employeeID";
             EmployeeName = "employeeName";
