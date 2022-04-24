@@ -165,6 +165,7 @@ namespace Domain.Models.CustomMeetings
         public async void SetFiles()
         {
             var fileList = await FileHelper.GetFolderContentFromMeetingID(ID);
+            RelatedFiles.Clear();
             foreach (var item in fileList)
             {
                 RelatedFiles.Add(item);

@@ -1122,10 +1122,11 @@
                                              Height="90" 
                                              Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='EmployeeCustomMeetingsLoading'}"/>
 
+                            
                             <ListView x:Name="customMeetingsListView"
                                 Grid.Row="2"
                                ItemsSource="{Binding CustomMeetingsList}"
-                                Style="{StaticResource CtMeetingsListView}"
+                                Style="{StaticResource CustomMeetingsListView}"
                                     Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='EmployeeCustomMeetingsLoaded'}"/>
 
                             <TextBlock Grid.Row="2"

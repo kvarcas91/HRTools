@@ -82,6 +82,9 @@ namespace Domain.Repository
             if (meeting.SecondMeetingDate == DateTime.MinValue) meeting.FirstMeetingOutcome = "Cancelled";
 
             meeting.MeetingStatus = "Cancelled";
+            meeting.ClosedAt = DateTime.Now;
+            meeting.ClosedBy = Environment.UserName;
+
             var tlQuery = $"INSERT INTO timeline {timeLine.GetHeader()} VALUES {timeLine.GetValues()}{tl2Query};";
             var query = $@"UPDATE custom_meetings SET meetingStatus = '{meeting.MeetingStatus}', firstMeetingOutcome = '{meeting.FirstMeetingOutcome}', SecondMeetingOutcome = '{meeting.SecondMeetingOutcome}', 
             closedBy = '{meeting.ClosedBy}', closedAt = {meeting.ClosedAt.DbNullableSanityCheck(DataStorage.LongDBDateFormat)} WHERE id = '{meeting.ID}'; {tlQuery}";

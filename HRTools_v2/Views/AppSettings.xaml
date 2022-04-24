@@ -805,7 +805,7 @@
                                          />
 
                                     <TextBox Grid.Column="1"
-                                         Text="{Binding CustomMeetingsMap.Manager,Mode=TwoWay}"
+                                         Text="{Binding CustomMeetingsMap.ClaimantManager,Mode=TwoWay}"
                                          Margin="0 0 20 0"
                                          materialDesign:HintAssist.Hint="Claimant manager name"
                                          materialDesign:HintAssist.IsFloating="True"

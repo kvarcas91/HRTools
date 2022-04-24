@@ -464,6 +464,9 @@ namespace HRTools_v2.ViewModels
         private DelegateCommand<CustomMeetingEntity> _addCaseFileCommand = null;
         public DelegateCommand<CustomMeetingEntity> AddCaseFileCommand => _addCaseFileCommand ?? (_addCaseFileCommand = new DelegateCommand<CustomMeetingEntity>(AddCaseFile));
 
+        private DelegateCommand<CaseFile?> _removeFileCommand = null;
+        public DelegateCommand<CaseFile?> RemoveFileCommand => _removeFileCommand ?? (_removeFileCommand = new DelegateCommand<CaseFile?>(RemoveFile));
+
         #endregion
 
         #endregion
@@ -1048,6 +1051,26 @@ namespace HRTools_v2.ViewModels
             if (string.IsNullOrEmpty(path)) return;
 
             var response = await FileHelper.CopyFileToMeetingIDAsync(path, meeting.ID);
+            if (response.Success)
+            {
+                meeting.SetFiles();
+            }
+        }
+
+        private void RemoveFile (CaseFile? file)
+        {
+            if (file == null) return;
+
+            var meetingID = FileHelper.GetParentName(file.Value.Path);
+            if (meetingID == null) return;
+
+            FileHelper.Delete(file.Value.Path);
+            var meeting = CustomMeetingsList.Where(x => x.ID == meetingID).FirstOrDefault();
+            if (meeting == null) return;
+
+            SendToast("File has been removed", NotificationType.Success);
+            meeting.SetFiles();
+            CustomMeetingsList.Swap(meeting, meeting);
         }
 
         #endregion

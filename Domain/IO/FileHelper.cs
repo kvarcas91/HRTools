@@ -128,9 +128,9 @@ namespace Domain.IO
             {
                 try
                 {
-                    if (GetFileSize(from) / 1024 > 25) return new Response { Success = false, Message = "File is too big. Maximum file size - 25mb" };
-                    var to = Environment.UserName == "eslut" ? $"{DataStorage.AppSettings.MeetingContentTestPath}{meetingID}" : $"{DataStorage.AppSettings.MeetingContentProductionPath}{meetingID}";
-                    File.Copy(from, to);
+                    if (GetFileSize(from) / 1024 / 1024 > 25) return new Response { Success = false, Message = "File is too big. Maximum file size - 25mb" };
+                    var to = Environment.UserName == "eslut" ? $"{DataStorage.AppSettings.MeetingContentTestPath}\\{meetingID}" : $"{DataStorage.AppSettings.MeetingContentProductionPath}\\{meetingID}";
+                    File.Copy(from, $"{to}\\{Path.GetFileName(from)}");
                     return new Response { Success = true};
                 }
                 catch (Exception e)
@@ -188,5 +188,14 @@ namespace Domain.IO
 
             });
         }
+
+        public static void Delete(string path)
+        {
+            FileInfo file = new FileInfo(path);
+            file.Delete();
+        }
+
+        public static string GetParentName(string path) => Path.GetFileNameWithoutExtension(Directory.GetParent(path).Name);
+        
     }
 }
