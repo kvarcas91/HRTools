@@ -78,12 +78,12 @@ namespace HRTools_v2.Views
             {
                 AutoUpdater.ShowSkipButton = false;
                 AutoUpdater.RunUpdateAsAdmin = false;
-                AutoUpdater.Start("");
+                AutoUpdater.Start("https://github.com/kvarcas91/HRTools/blob/master/HRTools_v2/versionControl.xml");
 
                 DispatcherTimer timer = new DispatcherTimer { Interval = TimeSpan.FromMinutes(10) };
                 timer.Tick += delegate
                 {
-                    AutoUpdater.Start("");
+                    AutoUpdater.Start("https://github.com/kvarcas91/HRTools/blob/master/HRTools_v2/versionControl.xml");
                 };
                 timer.Start();
 
