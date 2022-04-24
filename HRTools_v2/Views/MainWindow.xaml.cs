@@ -1,4 +1,5 @@
-﻿using HRTools_v2.Helpers;
+﻿using AutoUpdaterDotNET;
+using HRTools_v2.Helpers;
 using HRTools_v2.ViewModels;
 using HRTools_v2.Views.Awal;
 using Prism.Ioc;
@@ -6,6 +7,7 @@ using Prism.Regions;
 using System;
 using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Threading;
 
 namespace HRTools_v2.Views
 {
@@ -71,6 +73,21 @@ namespace HRTools_v2.Views
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+
+            if (!Environment.UserName.Equals("eslut"))
+            {
+                AutoUpdater.ShowSkipButton = false;
+                AutoUpdater.RunUpdateAsAdmin = false;
+                AutoUpdater.Start("");
+
+                DispatcherTimer timer = new DispatcherTimer { Interval = TimeSpan.FromMinutes(10) };
+                timer.Tick += delegate
+                {
+                    AutoUpdater.Start("");
+                };
+                timer.Start();
+
+            }
 
             _loaderPage = _container.Resolve<LoaderPage>();
             _homePage = _container.Resolve<HomePage>();
