@@ -189,11 +189,11 @@
                         <StackPanel Grid.Column="3" Orientation="Vertical"
                                             Margin="5">
                             <TextBlock 
-                                   Text="Issued by"
+                                   Text="Recorded by"
                                 FontSize="{StaticResource SecondaryListFontSize}"
                                 Foreground="Gray"/>
                             <TextBlock 
-                                   Text="{Binding CreatedBy}"
+                                   Text="{Binding CreatedBy, Converter={converters:LoginToFullNameConverter}}"
                                 TextDecorations="{Binding SanctionEndDate, Converter={converters:SanctionTextDecorationConverter}}"
                                        FontSize="{Binding SanctionEndDate, Converter={converters:SanctionTextSizeConverter}}"
                                    Foreground="{Binding SanctionEndDate, Converter={converters:SanctionTextForegroundConverter}}"/>
@@ -234,7 +234,7 @@
                                 Foreground="Gray"
                                    TextTrimming="WordEllipsis"/>
                                 <TextBlock 
-                                   Text="{Binding OverridenBy}"
+                                   Text="{Binding OverridenBy, Converter={converters:LoginToFullNameConverter}}"
                                 FontSize="{StaticResource PrimaryListFontSize}"
                                    TextTrimming="WordEllipsis"/>
                             </StackPanel>
@@ -534,7 +534,7 @@
                                                        Margin="0 5 0 0">
                                                 <Run Text='"'/>
                                                 <Run Text="{Binding ReasonForClosure}" FontStyle="Italic"/>
-                                                 <Run Text='"'/>
+                                                <Run Text='"'/>
                                             </TextBlock>
                                         </Grid>
                                     </Grid.ToolTip>
@@ -1668,7 +1668,6 @@
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
 
                                         <TextBlock Grid.Row="0" Visibility="{Binding CreatedBy, Converter={converters:NullToVisibilityConverter}, ConverterParameter='tooltip'}">
@@ -1681,7 +1680,7 @@
                                     <Run Text="{Binding UpdatedAt, Converter={converters:DateTimeToToolTipConverter}}"/>
                                         </TextBlock>
 
-                                        <TextBlock Grid.Row="1" Visibility="{Binding ClosedBy, Converter={converters:NullToVisibilityConverter}, ConverterParameter='tooltip'}">
+                                        <TextBlock Grid.Row="2" Visibility="{Binding ClosedBy, Converter={converters:NullToVisibilityConverter}, ConverterParameter='tooltip'}">
                                     <Run Text="{Binding ClosedBy, Converter={converters:UserToTextConverter}, ConverterParameter='closed'}"/>
                                     <Run Text="{Binding ClosedAt, Converter={converters:DateTimeToToolTipConverter}}"/>
                                         </TextBlock>
@@ -1941,10 +1940,7 @@
 
                                 </materialDesign:PopupBox>
                             </materialDesign:Badged>
-
-                            
-                            
-                            
+   
                         </Grid>
   
                     </Grid>

@@ -873,7 +873,8 @@ namespace HRTools_v2.ViewModels
 
         private async void EditErMeeting(MeetingsEntity meeting)
         {
-            if (SanctionManager.IsLesser(EmployeeLiveSanctions.DisciplinarySanction, meeting.SecondMeetingOutcome))
+            var sanction = meeting.MeetingType == MeetingType.Health ? EmployeeLiveSanctions.HealthSanction : EmployeeLiveSanctions.DisciplinarySanction;
+            if (SanctionManager.IsLesser(sanction, meeting.SecondMeetingOutcome))
             {
                 SendToast("You cannot issue lesser sanction!", NotificationType.Information);
                 return;

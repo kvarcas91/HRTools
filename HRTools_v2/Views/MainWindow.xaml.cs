@@ -74,17 +74,17 @@ namespace HRTools_v2.Views
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
 
-            AutoUpdater.ShowSkipButton = false;
-            AutoUpdater.RunUpdateAsAdmin = false;
-            AutoUpdater.ReportErrors = true;
-            AutoUpdater.Start("https://github.com/kvarcas91/HRTools/blob/master/HRTools_v2/versionControl.xml");
+            //AutoUpdater.ShowSkipButton = false;
+            //AutoUpdater.RunUpdateAsAdmin = false;
+            //AutoUpdater.ReportErrors = true;
+            //AutoUpdater.Start("https://github.com/kvarcas91/HRTools/blob/master/HRTools_v2/versionControl.xml");
 
-            DispatcherTimer timer = new DispatcherTimer { Interval = TimeSpan.FromMinutes(10) };
-            timer.Tick += delegate
-            {
-                AutoUpdater.Start("https://github.com/kvarcas91/HRTools/blob/master/HRTools_v2/versionControl.xml");
-            };
-            timer.Start();
+            //DispatcherTimer timer = new DispatcherTimer { Interval = TimeSpan.FromMinutes(10) };
+            //timer.Tick += delegate
+            //{
+            //    AutoUpdater.Start("https://github.com/kvarcas91/HRTools/blob/master/HRTools_v2/versionControl.xml");
+            //};
+            //timer.Start();
 
 
             _loaderPage = _container.Resolve<LoaderPage>();

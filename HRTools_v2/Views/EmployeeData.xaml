@@ -1336,6 +1336,7 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
+                <!-- Comments -->
                 <materialDesign:Card Grid.Row="0" Margin="5 0 5 10" 
                              materialDesign:ShadowAssist.ShadowDepth="Depth0">
 

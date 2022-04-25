@@ -118,7 +118,7 @@ namespace Domain.Repository
             if ((!string.IsNullOrEmpty(meeting.FirstMeetingOutcome) && meeting.FirstMeetingOutcome == "NFA") || !string.IsNullOrEmpty(meeting.SecondMeetingOutcome)) meeting.MeetingStatus = "Closed";
 
             var query = $@"UPDATE meetings SET firstMeetingDate = {meeting.FirstMeetingDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)}, firstMeetingOutcome = '{meeting.FirstMeetingOutcome}', 
-                        secondMeetingDate = {meeting.FirstMeetingDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)}, secondMeetingOutcome = '{meeting.SecondMeetingOutcome}', updatedBy = '{Environment.UserName}', 
+                        secondMeetingDate = {meeting.SecondMeetingDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)}, secondMeetingOutcome = '{meeting.SecondMeetingOutcome}', updatedBy = '{Environment.UserName}', 
                         updatedAt = '{meeting.UpdatedAt.ToString(DataStorage.LongDBDateFormat)}', meetingStatus = '{meeting.MeetingStatus}', paperless = '{Convert.ToInt16(meeting.Paperless)}' 
                         WHERE id = '{meeting.ID}'; {timelineQuery}";
 
