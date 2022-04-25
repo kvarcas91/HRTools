@@ -81,7 +81,7 @@ namespace Domain.Automation
             $"UPDATE meetings SET meetingStatus = 'Resigned', updatedBy = '(tool_automation)', updatedAt = '{DateTime.Now.ToString(DataStorage.LongDBDateFormat)}' WHERE employeeID = '{_newObj.EmployeeID}' AND meetingStatus in ('Open', 'Pending');";
 
         private string GetCustomMeetingsQuery() =>
-             $"UPDATE custom_meetings SET meetingStatus = 'Resigned', updatedBy = '(tool_automation)', updatedAt = '{DateTime.Now.ToString(DataStorage.LongDBDateFormat)}' WHERE employeeID = '{_newObj.EmployeeID}' AND meetingStatus in ('Open', 'Pending');";
+             $"UPDATE custom_meetings SET meetingStatus = 'Resigned', updatedBy = '(tool_automation)', updatedAt = '{DateTime.Now.ToString(DataStorage.LongDBDateFormat)}' WHERE (claimantID = '{_newObj.EmployeeID}' OR respondentID = '{_newObj.EmployeeID}') AND meetingStatus in ('Open', 'Pending');";
 
     }
 }

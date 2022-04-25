@@ -51,7 +51,8 @@ namespace Domain.Models.CustomMeetings
         public string SecondMeetingOwner { get; set; }
         public string SecondMeetingHRSupport { get; set; }
         public string SecondMeetingOutcome { get; set; }
-       
+        public string Actor { get; set; }
+
         public ObservableCollection<CaseFile> RelatedFiles { get; private set; }
         public int FileCount { get; set; }
         public DateTime CaseAge { get; set; }
@@ -65,9 +66,10 @@ namespace Domain.Models.CustomMeetings
             MeetingStatus = "Open";
         }
 
-        public CustomMeetingEntity(string meetingType) : this()
+        public CustomMeetingEntity(string meetingType, string exactCaseID) : this()
         {
             MeetingType = meetingType;
+            ExactCaseID = exactCaseID;
         }
 
         public string GetHeader() =>
@@ -179,6 +181,12 @@ namespace Domain.Models.CustomMeetings
         {
             DateTime endDate = ClosedAt.Equals(DateTime.MinValue) ? DateTime.Now : ClosedAt;
             CaseAge = DateTime.Now.AddDays(-(endDate - CreatedAt).Days);
+        }
+
+        public void SetActor(string emplId)
+        {
+            if (ClaimantID == emplId) Actor = "Claimant";
+            else Actor = "Respondent";
         }
     }
 }

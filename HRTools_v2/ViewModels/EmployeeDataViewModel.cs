@@ -53,20 +53,6 @@ namespace HRTools_v2.ViewModels
             set { SetProperty(ref _selectedEmployee, value); }
         }
 
-        private Roster _claimant;
-        public Roster Claimant
-        {
-            get => _claimant;
-            set { SetProperty(ref _claimant, value); }
-        }
-
-        private Roster _respondent;
-        public Roster Respondent
-        {
-            get => _respondent;
-            set { SetProperty(ref _respondent, value); }
-        }
-
         private EmployeeDataPreview _previewEmplDataSnip;
         public EmployeeDataPreview PreviewEmplDataSnip
         {
@@ -137,6 +123,20 @@ namespace HRTools_v2.ViewModels
 
         #region Custom Meetings
 
+        private Roster _claimant;
+        public Roster Claimant
+        {
+            get => _claimant;
+            set { SetProperty(ref _claimant, value); }
+        }
+
+        private Roster _respondent;
+        public Roster Respondent
+        {
+            get => _respondent;
+            set { SetProperty(ref _respondent, value); }
+        }
+
         private ObservableCollection<CustomMeetingEntity> _customMeetingsList;
         public ObservableCollection<CustomMeetingEntity> CustomMeetingsList
         {
@@ -144,11 +144,18 @@ namespace HRTools_v2.ViewModels
             set { SetProperty(ref _customMeetingsList, value); }
         }
 
-        private string _customMeetingType = string.Empty;
+        private string _customMeetingType;
         public string CustomMeetingType
         {
             get { return _customMeetingType; }
             set { SetProperty(ref _customMeetingType, value); }
+        }
+
+        private string _exactCaseID;
+        public string ExactCaseID
+        {
+            get { return _exactCaseID; }
+            set { SetProperty(ref _exactCaseID, value); }
         }
 
         private List<string> _meetingTypeList;
@@ -623,6 +630,15 @@ namespace HRTools_v2.ViewModels
             GetTasks(selectedEmployeeId, GetOriginFromTab(SelectedTabIndex));
         }
 
+        private async void GetEmployeeStatus(string id)
+        {
+            WidgedState |= HomePageWidgetState.EmployeeStatusLoading;
+            var emplStatus = await _previewRepository.GetEmployeeStatusSnipAsync(id);
+            EmplStatus = emplStatus.SuspensionCount > 0 ? EmploymentStatus.Suspended : emplStatus.IsRosterActive ? EmploymentStatus.Active : EmploymentStatus.NotActive;
+            WidgedState &= ~HomePageWidgetState.EmployeeStatusLoading;
+            WidgedState |= HomePageWidgetState.EmployeeStatusLoaded;
+        }
+
         #region Data Getters
 
         private async void GetTimeline(string id, TimelineOrigin origin)
@@ -715,15 +731,6 @@ namespace HRTools_v2.ViewModels
         }
 
         #endregion
-
-        private async void GetEmployeeStatus(string id)
-        {
-            WidgedState |= HomePageWidgetState.EmployeeStatusLoading;
-            var emplStatus = await _previewRepository.GetEmployeeStatusSnipAsync(id);
-            EmplStatus = emplStatus.SuspensionCount > 0 ? EmploymentStatus.Suspended : emplStatus.IsRosterActive ? EmploymentStatus.Active : EmploymentStatus.NotActive;
-            WidgedState &= ~HomePageWidgetState.EmployeeStatusLoading;
-            WidgedState |= HomePageWidgetState.EmployeeStatusLoaded;
-        }
 
         #region AWAL
 
@@ -1064,6 +1071,12 @@ namespace HRTools_v2.ViewModels
                 return;
             }
 
+            if (!NewMeetingCase.ID.IsValidDigitID())
+            {
+                SendToast("Please enter valid case ID! Or, did you mean to create custom case?", NotificationType.Information);
+                return;
+            }
+
             var newMeeting = new MeetingsEntity(NewMeetingCase, SelectedEmployee);
             var meetingRepo = new MeetingsRepository();
             var response = await meetingRepo.InsertAsync(newMeeting);
@@ -1101,7 +1114,7 @@ namespace HRTools_v2.ViewModels
                 return;
             }
 
-            var meeting = new CustomMeetingEntity(CustomMeetingType).SetClaimant(Claimant).SetRespondent(Respondent);
+            var meeting = new CustomMeetingEntity(CustomMeetingType, ExactCaseID).SetClaimant(Claimant).SetRespondent(Respondent);
 
             var meetingRepo = new MeetingsRepository();
             var response = await meetingRepo.InsertCustomAsync(meeting);
@@ -1131,7 +1144,7 @@ namespace HRTools_v2.ViewModels
             CustomMeetingType = null;
             Claimant = null;
             Respondent = null;
-
+            ExactCaseID = null;
         }
 
         private async void GetCustomMeetings(string id)
@@ -1146,6 +1159,7 @@ namespace HRTools_v2.ViewModels
             {
                 item.SetFiles();
                 item.SetAge();
+                item.SetActor(SelectedEmployee.EmployeeID);
             }
 
             CustomMeetingsList.AddRange(list);
@@ -1326,7 +1340,6 @@ namespace HRTools_v2.ViewModels
         }
 
         #endregion
-
 
         private void GetPersonalLeaveData(string id)
         {
@@ -1522,9 +1535,12 @@ namespace HRTools_v2.ViewModels
         {
             if (!_isPageActive) return;
 
+            ClearCreateCustomMeetingSelections();
+            ClearLists();
             SelectedEmployee = selectedEmployee;
             Avatar = DataStorage.AppSettings.UserImgURL.Replace("{userID}", SelectedEmployee.UserID);
             GetEmployeeData(selectedEmployee.EmployeeID);
+            
         }
 
         private void SendToast(string message, NotificationType notificationType)
@@ -1536,26 +1552,8 @@ namespace HRTools_v2.ViewModels
 
         private void OnTabChange(uint tabIndex)
         {
-            IsFileSectionVisible = false;
-            switch (tabIndex)
-            {
-                case 0:
-                    if (SelectedEmployee != null) GetComments(SelectedEmployee.EmployeeID, GetOriginFromTab(tabIndex));
-                    break;
-                    case 1:
-                    if (SelectedEmployee != null) GetComments(SelectedEmployee.EmployeeID, GetOriginFromTab(tabIndex));
-                    break;
-                case 2:
-                    if (SelectedEmployee != null) GetComments(SelectedEmployee.EmployeeID, GetOriginFromTab(tabIndex));
-                    break;
-                case 3:
-                    IsFileSectionVisible = true;
-                    if (SelectedEmployee != null) GetComments(SelectedEmployee.EmployeeID, GetOriginFromTab(tabIndex));
-                    break;
-                default:
-                    if (SelectedEmployee != null) GetComments(SelectedEmployee.EmployeeID, GetOriginFromTab(tabIndex));
-                    break;
-            }
+            if (SelectedEmployee == null) return;
+            GetComments(SelectedEmployee.EmployeeID, GetOriginFromTab(tabIndex));
         }
 
         private TimelineOrigin GetOriginFromTab(uint tabIndex)
@@ -1569,7 +1567,7 @@ namespace HRTools_v2.ViewModels
                     case 2:
                     return TimelineOrigin.Meetings;
                     case 3:
-                    return TimelineOrigin.Meetings;
+                    return TimelineOrigin.CustomMeetings;
                 case 4:
                     return TimelineOrigin.AWAL;
                 default:

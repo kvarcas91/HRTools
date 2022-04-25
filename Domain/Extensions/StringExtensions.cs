@@ -6,5 +6,15 @@
         {
             return query?.Replace("'", "''");
         }
+
+        public static bool IsValidDigitID(this string str)
+        {
+            foreach (var c in str.Trim())
+            {
+                if (!char.IsLetter(c)) return false;
+            }
+
+            return true;
+        }
     }
 }

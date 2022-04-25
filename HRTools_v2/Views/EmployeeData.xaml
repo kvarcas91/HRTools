@@ -1085,6 +1085,11 @@
                                     IsSynchronizedWithCurrentItem="True">
                                         </ComboBox>
 
+                                        <TextBox Text="{Binding ExactCaseID, Mode=TwoWay}"
+                                                 Margin="2"
+                                                 materialDesign:HintAssist.Hint="Exact case ID"
+                                                 materialDesign:HintAssist.IsFloating="True"/>
+
                                     </StackPanel>
 
                                     <!-- Claimant -->

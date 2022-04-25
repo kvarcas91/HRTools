@@ -52,7 +52,7 @@ namespace Domain.Models.Meetings
             DepartmentID = empl.DepartmentID;
             Enum.TryParse(entry.MeetingType, out MeetingType mType);
             MeetingType = mType;
-            ID = entry.ID;
+            ID = entry.ID.Trim();
             FirstMeetingDate = entry.FirstMeetingDate;
             SetProgress();
         }

@@ -138,10 +138,10 @@
 
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="0.5*"/>
+                            <ColumnDefinition Width="0.3*"/>
+                            <ColumnDefinition Width="1.5*"/>
+                            <ColumnDefinition Width="0.5*"/>
                             <ColumnDefinition Width="3*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
@@ -1526,29 +1526,30 @@
                                         </Grid.ColumnDefinitions>
 
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
                                             <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
 
-                                        <!-- EXACT -->
-                                        <StackPanel Grid.Column="0" Orientation="Vertical"
-                                            Margin="5">
-                                            <TextBlock 
-                                   Text="Exact case ID"
-                                FontSize="{StaticResource SecondaryListFontSize}"
-                                    
-                                Foreground="Gray"/>
-                                            
-                                            <TextBox 
-                                    IsReadOnly="True"
-                                    BorderBrush="Transparent"
-                                    BorderThickness="0"
-                                  Text="{Binding ExactCaseID}"
-                                    TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
-                                    FontSize="10"
-                                   Foreground="{Binding MeetingStatus, Converter={converters:MeetingTextForegroundConverter}}"/>
-                                        </StackPanel>
+                                        <!-- Exact / Actor -->
+                                        <Grid Grid.Column="0"
+                                                    Margin="5">
 
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+
+                                            <TextBlock Grid.Row="0"
+                                                    FontSize="{StaticResource SecondaryListFontSize}"
+                                                    Foreground="Gray">
+                                                <Run Text="Actor - "/>
+                                                <Run Text="{Binding Actor}" FontWeight="Bold"/>
+                                            </TextBlock>
+
+                                            
+
+                                        </Grid>
+                                        
                                         <!-- Separator -->
                                         <Rectangle Grid.Column="1"
                                     VerticalAlignment="Stretch" 
@@ -1638,6 +1639,25 @@
                                         <StackPanel Grid.Row="1" Grid.ColumnSpan="5"
                                     Margin="5" Orientation="Horizontal">
 
+                                            <!-- EXACT -->
+                                            <StackPanel Orientation="Vertical"
+                                                Margin="5 0" Width="150">
+                                                <TextBlock 
+                                                Text="Exact case ID"
+                                                FontSize="{StaticResource SecondaryListFontSize}"
+                                                Foreground="Gray"/>
+
+                                                <TextBox 
+                                                IsReadOnly="True"
+                                                BorderBrush="Transparent"
+                                                BorderThickness="0"
+                                              Text="{Binding ExactCaseID}"
+                                                TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
+                                                FontSize="10"
+                                               Foreground="{Binding MeetingStatus, Converter={converters:MeetingTextForegroundConverter}}"/>
+                                            </StackPanel>
+
+
                                             <CheckBox Content="Paperless"
                                                     HorizontalAlignment="Center"
                                                     Style="{StaticResource MaterialDesignFilterChipPrimaryOutlineCheckBox}"
@@ -1657,6 +1677,7 @@
                                               IsEnabled="False"
                                               FontSize="10"/>
 
+                                            
                                         </StackPanel>
 
                                     </Grid>
