@@ -39,10 +39,32 @@ namespace Domain.Repository
         {
             if (IsErMeetingExists(meeting.ID)) return Task.Run(() => new Response { Success = false, Message = "ER case with this ID already exists" });
 
-            var timeLine = new Timeline().Create(meeting.EmployeeID, TimelineOrigin.Meetings, $" ER meeting (type - {meeting.MeetingType}) has been created by {meeting.CreatedBy}. Case ID: {meeting.ID}");
+            var timeLine = new Timeline().Create(meeting.EmployeeID, TimelineOrigin.Meetings, $"ER meeting (type - {meeting.MeetingType}) has been created by {meeting.CreatedBy}. Case ID: {meeting.ID}");
             var tlQuery = $"INSERT INTO timeline {timeLine.GetHeader()} VALUES {timeLine.GetValues()};";
 
             var query = $"INSERT INTO meetings {meeting.GetHeader()} VALUES {meeting.GetValues()}; {tlQuery}";
+            return ExecuteAsync(query);
+        }
+
+        public Task<Response> InsertCustomAsync(CustomMeetingEntity meeting)
+        {
+            var tlQueryBuilder = new StringBuilder("INSERT INTO timeline ");
+            if (!string.IsNullOrEmpty(meeting.ClaimantName))
+            {
+                var timeLine = new Timeline().Create(meeting.ClaimantID, TimelineOrigin.CustomMeetings, $"{meeting.MeetingType} has been created by {meeting.CreatedBy}");
+                tlQueryBuilder.Append($"{timeLine.GetHeader()} VALUES {timeLine.GetValues()}");
+            }
+            if (!string.IsNullOrEmpty(meeting.RespondentName))
+            {
+                var timeLine = new Timeline().Create(meeting.RespondentID, TimelineOrigin.CustomMeetings, $"{meeting.MeetingType} has been created by {meeting.CreatedBy}");
+                if (string.IsNullOrEmpty(meeting.ClaimantName)) tlQueryBuilder.Append($"{timeLine.GetHeader()} VALUES ");
+                else tlQueryBuilder.Append(",");
+                tlQueryBuilder.Append(timeLine.GetValues());
+            }
+
+            tlQueryBuilder.Append(";");
+
+            var query = $"INSERT INTO custom_meetings {meeting.GetHeader()} VALUES {meeting.GetValues()}; {tlQueryBuilder.ToString()}";
             return ExecuteAsync(query);
         }
 

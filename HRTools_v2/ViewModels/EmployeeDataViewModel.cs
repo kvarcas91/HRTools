@@ -1,4 +1,5 @@
-﻿using Domain.DataManager;
+﻿using Domain.Data;
+using Domain.DataManager;
 using Domain.Extensions;
 using Domain.IO;
 using Domain.Models;
@@ -50,6 +51,20 @@ namespace HRTools_v2.ViewModels
         {
             get => _selectedEmployee;
             set { SetProperty(ref _selectedEmployee, value); }
+        }
+
+        private Roster _claimant;
+        public Roster Claimant
+        {
+            get => _claimant;
+            set { SetProperty(ref _claimant, value); }
+        }
+
+        private Roster _respondent;
+        public Roster Respondent
+        {
+            get => _respondent;
+            set { SetProperty(ref _respondent, value); }
         }
 
         private EmployeeDataPreview _previewEmplDataSnip;
@@ -129,6 +144,20 @@ namespace HRTools_v2.ViewModels
             set { SetProperty(ref _customMeetingsList, value); }
         }
 
+        private string _customMeetingType = string.Empty;
+        public string CustomMeetingType
+        {
+            get { return _customMeetingType; }
+            set { SetProperty(ref _customMeetingType, value); }
+        }
+
+        private List<string> _meetingTypeList;
+        public List<string> MeetingTypeList
+        {
+            get { return _meetingTypeList; }
+            set { SetProperty(ref _meetingTypeList, value); }
+        }
+
         private string _reasonForCustomClosure;
         public string ReasonForCustomClosure
         {
@@ -143,6 +172,44 @@ namespace HRTools_v2.ViewModels
             set { SetProperty(ref _customMeetingTypes, value); }
         }
 
+        #region Search
+
+        private string _claimantSearchText = string.Empty;
+        public string ClaimantSearchText
+        {
+            get => _claimantSearchText;
+            set { SetProperty(ref _claimantSearchText, value); HandleClaimantSearch(); }
+        }
+
+        private string _respondentSearchText = string.Empty;
+        public string RespondentSearchText
+        {
+            get => _respondentSearchText;
+            set { SetProperty(ref _respondentSearchText, value); HandleRespondentSearch(); }
+        }
+
+        private ObservableCollection<Roster> _suggestionList;
+        public ObservableCollection<Roster> SuggestionList
+        {
+            get { return _suggestionList; }
+            set { SetProperty(ref _suggestionList, value); }
+        }
+
+        private UIComponentState _claimantSearchComponentState;
+        public UIComponentState ClaimantSearchComponentState
+        {
+            get => _claimantSearchComponentState;
+            set { SetProperty(ref _claimantSearchComponentState, value); }
+        }
+
+        private UIComponentState _respondentSearchComponentState;
+        public UIComponentState RespondentSearchComponentState
+        {
+            get => _respondentSearchComponentState;
+            set { SetProperty(ref _respondentSearchComponentState, value); }
+        }
+
+        #endregion
 
         #endregion
 
@@ -458,6 +525,9 @@ namespace HRTools_v2.ViewModels
 
         #region Custom Meetings
 
+        private DelegateCommand _onCustomMeetingCreateCommand = null;
+        public DelegateCommand OnCustomMeetingCreateCommand => _onCustomMeetingCreateCommand ?? (_onCustomMeetingCreateCommand = new DelegateCommand(CreateCustomMeeting));
+
         private DelegateCommand<CustomMeetingEntity> _onCustomMeetingCancelCommand = null;
         public DelegateCommand<CustomMeetingEntity> OnCustomMeetingCancelCommand => _onCustomMeetingCancelCommand ?? (_onCustomMeetingCancelCommand = new DelegateCommand<CustomMeetingEntity>(CancelCustomMeeting));
 
@@ -467,6 +537,18 @@ namespace HRTools_v2.ViewModels
         private DelegateCommand<CaseFile?> _removeFileCommand = null;
         public DelegateCommand<CaseFile?> RemoveFileCommand => _removeFileCommand ?? (_removeFileCommand = new DelegateCommand<CaseFile?>(RemoveFile));
 
+        private DelegateCommand<CaseFile?> _openFileCommand = null;
+        public DelegateCommand<CaseFile?> OpenFileCommand => _openFileCommand ?? (_openFileCommand = new DelegateCommand<CaseFile?>(OpenFile));
+
+        private DelegateCommand<Roster> _onClaimantSelectedCommand = null;
+        public DelegateCommand<Roster> OnClaimantSelectedCommand => _onClaimantSelectedCommand ?? (_onClaimantSelectedCommand = new DelegateCommand<Roster>(OnClaimantSelected));
+
+        private DelegateCommand<Roster> _onRespondentSelectedCommand = null;
+        public DelegateCommand<Roster> OnRespondentSelectedCommand => _onRespondentSelectedCommand ?? (_onRespondentSelectedCommand = new DelegateCommand<Roster>(OnRespondentSelected));
+
+        private DelegateCommand<string> _assignMeetingParticipantCommand = null;
+        public DelegateCommand<string> AssignMeetingParticipantCommand => _assignMeetingParticipantCommand ?? (_assignMeetingParticipantCommand = new DelegateCommand<string>(AssignMeetingParticipant));
+
         #endregion
 
         #endregion
@@ -474,11 +556,17 @@ namespace HRTools_v2.ViewModels
         private bool _isPageActive;
         private readonly IEventAggregator _eventAggregator;
         private readonly PreviewRepository _previewRepository;
+        private readonly SearchProvider<Roster> _dataProvider;
 
         public EmployeeDataViewModel(IEventAggregator eventAggregator)
         {
             _eventAggregator = eventAggregator;
             _previewRepository = new PreviewRepository();
+            _dataProvider = new SearchProvider<Roster>();
+
+            ClaimantSearchComponentState = UIComponentState.Hidden;
+            RespondentSearchComponentState = UIComponentState.Hidden;
+
             _isPageActive = false;
             Avatar = string.Empty;
             SelectedTabIndex = 0;
@@ -499,6 +587,12 @@ namespace HRTools_v2.ViewModels
             MeetingsList = new ObservableCollection<MeetingsEntity>();
             CustomMeetingsList = new ObservableCollection<CustomMeetingEntity>();
             MeetingTypes = new ObservableCollection<string> { MeetingType.Disciplinary.ToString(), MeetingType.Health.ToString()};
+            SuggestionList = new ObservableCollection<Roster>();
+
+            MeetingTypeList = new List<string>
+            {
+                "", "Adapt", "Time Fraud", "Investigation", "Appeal", "Grievance", "Eligibility", "Formal Probation Review", "TWA"
+            };
 
             SanctionList = SanctionManager.GetSanctions();
             AwalSanctionList = SanctionManager.GetAwalSanctions();
@@ -524,7 +618,6 @@ namespace HRTools_v2.ViewModels
             GetAwal(selectedEmployeeId);
             GetMeetings(selectedEmployeeId);
             GetCustomMeetings(selectedEmployeeId);
-            GetAdapt(selectedEmployeeId);
             GetPersonalLeaveData(selectedEmployeeId);
             GetComments(selectedEmployeeId, GetOriginFromTab(SelectedTabIndex));
             GetTasks(selectedEmployeeId, GetOriginFromTab(SelectedTabIndex));
@@ -994,6 +1087,53 @@ namespace HRTools_v2.ViewModels
 
         #region Custom Meetings
 
+        private async void CreateCustomMeeting()
+        {
+            if (string.IsNullOrEmpty(CustomMeetingType))
+            {
+                SendToast("Please select meeting type", NotificationType.Information);
+                return;
+            }
+
+            if (Claimant == null && Respondent == null)
+            {
+                SendToast("Please select Claimant and/or Respondent", NotificationType.Information);
+                return;
+            }
+
+            var meeting = new CustomMeetingEntity(CustomMeetingType).SetClaimant(Claimant).SetRespondent(Respondent);
+
+            var meetingRepo = new MeetingsRepository();
+            var response = await meetingRepo.InsertCustomAsync(meeting);
+
+            if (response.Success)
+            {
+                SendToast("Meeting has been created!", NotificationType.Success);
+                meeting.SetAge();
+                CustomMeetingsList.Insert(0, meeting);
+                HasCustomMeetingsData = CustomMeetingsList.Count > 0;
+                if (TimeLineToggleSelection == TimelineOrigin.CustomMeetings || TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimeLineToggleSelection);
+                GetHeaders(SelectedEmployee.EmployeeID);
+                ClearCreateCustomMeetingSelections();
+
+                var path = Environment.UserName == "eslut" ? $"{DataStorage.AppSettings.MeetingContentTestPath}\\{meeting.ID}" : $"{DataStorage.AppSettings.MeetingContentProductionPath}\\{meeting.ID}";
+                FileHelper.CreateDirectoryIfNotExists(path);
+            }
+            else
+            {
+                SendToast(response.Message, NotificationType.Warning);
+            }
+           
+        }
+
+        private void ClearCreateCustomMeetingSelections()
+        {
+            CustomMeetingType = null;
+            Claimant = null;
+            Respondent = null;
+
+        }
+
         private async void GetCustomMeetings(string id)
         {
             CustomMeetingsList.Clear();
@@ -1074,12 +1214,119 @@ namespace HRTools_v2.ViewModels
             CustomMeetingsList.Swap(meeting, meeting);
         }
 
-        #endregion
-
-        private void GetAdapt(string id)
+        private void OpenFile(CaseFile? file)
         {
+            if (file == null) return;
+            FileHelper.RunProcess(file.Value.Path);
+        }
+
+        private void OnClaimantSelected(Roster empl)
+        {
+            ClaimantSearchComponentState = UIComponentState.Hidden;
+            SuggestionList.Clear();
+
+            Claimant = empl;
+            if (Respondent == Claimant) Respondent = null;
+        }
+
+        private void OnRespondentSelected(Roster empl)
+        {
+            RespondentSearchComponentState = UIComponentState.Hidden;
+            SuggestionList.Clear();
+
+            Respondent = empl;
+            if (Respondent == Claimant) Claimant = null;
+        }
+
+        public async void HandleClaimantSearch()
+        {
+            SuggestionList.Clear();
+
+            if (string.IsNullOrEmpty(ClaimantSearchText))
+            {
+                ClaimantSearchComponentState = UIComponentState.Hidden;
+                Claimant = null;
+                return;
+            }
+
+            ClaimantSearchComponentState = UIComponentState.Loading;
+
+            if (_dataProvider.IsSearching)
+            {
+                _dataProvider.SetValues(ClaimantSearchText);
+                return;
+            }
+
+            _dataProvider.SetValues(ClaimantSearchText, DataStorage.RosterList);
+            var result = await _dataProvider.LookUpAsync();
+            
+            UpdateList(result, ClaimantSearchText);
+            ClaimantSearchComponentState = result.Count > 0 ? UIComponentState.Visible : UIComponentState.Empty;
 
         }
+
+        public async void HandleRespondentSearch()
+        {
+            SuggestionList.Clear();
+
+            if (string.IsNullOrEmpty(RespondentSearchText))
+            {
+                RespondentSearchComponentState = UIComponentState.Hidden;
+                Respondent = null;
+                return;
+            }
+
+            RespondentSearchComponentState = UIComponentState.Loading;
+
+            if (_dataProvider.IsSearching)
+            {
+                _dataProvider.SetValues(RespondentSearchText);
+                return;
+            }
+
+            _dataProvider.SetValues(RespondentSearchText, DataStorage.RosterList);
+            var result = await _dataProvider.LookUpAsync();
+
+            UpdateList(result, RespondentSearchText);
+            RespondentSearchComponentState = result.Count > 0 ? UIComponentState.Visible : UIComponentState.Empty;
+        }
+
+        private void UpdateList(List<Roster> list, string searchText)
+        {
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                if (list.Count > 50)
+                {
+                    SuggestionList.AddRange(list.GetRange(0, 49));
+                }
+                else
+                {
+                    SuggestionList.AddRange(list);
+                }
+            }
+        }
+
+        private void AssignMeetingParticipant(string type)
+        {
+            if (string.IsNullOrEmpty(type)) return;
+
+            switch(type)
+            {
+                case "Claimant":
+                    Claimant = SelectedEmployee;
+                    if (Respondent == Claimant) Respondent = null;
+                    break;
+                case "Respondent":
+                    Respondent = SelectedEmployee;
+                    if (Respondent == Claimant) Claimant = null;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        #endregion
+
 
         private void GetPersonalLeaveData(string id)
         {

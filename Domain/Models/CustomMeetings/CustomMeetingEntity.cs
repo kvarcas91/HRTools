@@ -59,6 +59,15 @@ namespace Domain.Models.CustomMeetings
         public CustomMeetingEntity()
         {
             RelatedFiles = new ObservableCollection<CaseFile>();
+            ID = Guid.NewGuid().ToString();
+            CreatedAt = DateTime.Now;
+            CreatedBy = Environment.UserName;
+            MeetingStatus = "Open";
+        }
+
+        public CustomMeetingEntity(string meetingType) : this()
+        {
+            MeetingType = meetingType;
         }
 
         public string GetHeader() =>
@@ -126,40 +135,34 @@ namespace Domain.Models.CustomMeetings
             return this;
         }
 
-        private void SetClaimant(Roster claimant)
+        public CustomMeetingEntity SetClaimant(Roster claimant)
         {
-            if (claimant != null)
-            {
-                ClaimantID = claimant.EmployeeID;
-                ClaimantName = claimant.EmployeeName;
-                ClaimantManager = claimant.ManagerName;
-                ClaimantDepartment = claimant.DepartmentID;
-                ClaimantShift = claimant.ShiftPattern;
-                ClaimantUserID = claimant.UserID;
-                ClaimantEmploymentStartDate = claimant.EmploymentStartDate;
-            }
-            else
-            {
-                ClaimantName = string.Empty;
-            }
+            if (claimant == null) return this;
+
+            ClaimantID = claimant.EmployeeID;
+            ClaimantName = claimant.EmployeeName;
+            ClaimantManager = claimant.ManagerName;
+            ClaimantDepartment = claimant.DepartmentID;
+            ClaimantShift = claimant.ShiftPattern;
+            ClaimantUserID = claimant.UserID;
+            ClaimantEmploymentStartDate = claimant.EmploymentStartDate;
+
+            return this;
         }
 
-        private void SetRespondent(Roster respondent)
+        public CustomMeetingEntity SetRespondent(Roster respondent)
         {
-            if (respondent != null)
-            {
-                RespondentID = respondent.EmployeeID;
-                RespondentName = respondent.EmployeeName;
-                RespondentManager = respondent.ManagerName;
-                RespondentDepartment = respondent.DepartmentID;
-                RespondentShift = respondent.ShiftPattern;
-                RespondentUserID = respondent.UserID;
-                RespondentEmploymentStartDate = respondent.EmploymentStartDate;
-            }
-            else
-            {
-                RespondentName = string.Empty;
-            }
+            if (respondent == null) return this;
+
+            RespondentID = respondent.EmployeeID;
+            RespondentName = respondent.EmployeeName;
+            RespondentManager = respondent.ManagerName;
+            RespondentDepartment = respondent.DepartmentID;
+            RespondentShift = respondent.ShiftPattern;
+            RespondentUserID = respondent.UserID;
+            RespondentEmploymentStartDate = respondent.EmploymentStartDate;
+
+            return this;
         }
 
         public async void SetFiles()

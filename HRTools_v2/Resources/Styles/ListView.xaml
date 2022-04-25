@@ -708,6 +708,14 @@
             <Setter.Value>
                 <DataTemplate>
                     <Grid Margin="10 5 5 5">
+
+                        <Grid.InputBindings>
+                            <MouseBinding Gesture="LeftDoubleClick" 
+                                              Command="{Binding ElementName=customMeetingsListView,Path=DataContext.OpenFileCommand}"
+                                              CommandParameter="{Binding}"/>
+                        </Grid.InputBindings>
+                        
+                        
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>

@@ -10,7 +10,7 @@ namespace HRTools_v2.Converters
     {
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (string.IsNullOrEmpty(value.ToString())) return value;
+            if (value == null || string.IsNullOrEmpty(value.ToString())) return value;
            var name = DataStorage.RosterList.Where(x => x.UserID == value.ToString()).Select(n => n.EmployeeName).FirstOrDefault();
             if (name != null)
             {

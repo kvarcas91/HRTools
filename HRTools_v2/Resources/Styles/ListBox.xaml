@@ -44,6 +44,74 @@
         </Setter>
     </Style>
 
-   
+    <Style  x:Key="ClaimantSearchListBox" TargetType="{x:Type ListBox}" BasedOn="{StaticResource ListBox}">
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Grid VerticalAlignment="Center" 
+                          HorizontalAlignment="Stretch"
+                          Margin="5">
+
+                        <Grid.InputBindings>
+                            <MouseBinding Gesture="LeftClick" 
+                                          Command="{Binding ElementName=claimantSearchListBox, Path=DataContext.OnClaimantSelectedCommand}"
+                                          CommandParameter="{Binding}"/>
+                        </Grid.InputBindings>
+
+                        <StackPanel Orientation="Vertical" >
+
+                            <!-- Employee Name -->
+                            <TextBlock 
+                                   Text="{Binding EmployeeName}"
+                                FontSize="{StaticResource SearchPrimaryFontSize}"
+                                   TextTrimming="WordEllipsis"/>
+                            <TextBlock 
+                                   Text="{Binding ManagerName}"
+                                FontSize="{StaticResource SearchSecondaryFontSize}"
+                                Foreground="Gray"
+                                   TextTrimming="WordEllipsis"/>
+
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style  x:Key="RespondentSearchListBox" TargetType="{x:Type ListBox}" BasedOn="{StaticResource ListBox}">
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Grid VerticalAlignment="Center" 
+                          HorizontalAlignment="Stretch"
+                          Margin="5">
+
+                        <Grid.InputBindings>
+                            <MouseBinding Gesture="LeftClick" 
+                                          Command="{Binding ElementName=respondentSearchListBox, Path=DataContext.OnRespondentSelectedCommand}"
+                                          CommandParameter="{Binding}"/>
+                        </Grid.InputBindings>
+
+                        <StackPanel Orientation="Vertical" >
+
+                            <!-- Employee Name -->
+                            <TextBlock 
+                                   Text="{Binding EmployeeName}"
+                                FontSize="{StaticResource SearchPrimaryFontSize}"
+                                   TextTrimming="WordEllipsis"/>
+                            <TextBlock 
+                                   Text="{Binding ManagerName}"
+                                FontSize="{StaticResource SearchSecondaryFontSize}"
+                                Foreground="Gray"
+                                   TextTrimming="WordEllipsis"/>
+
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
 
 </ResourceDictionary>

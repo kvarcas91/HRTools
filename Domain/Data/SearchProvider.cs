@@ -1,6 +1,4 @@
-﻿using Domain.DataManager;
-using Domain.Interfaces;
-using Domain.Types;
+﻿using Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,7 +8,7 @@ namespace Domain.Data
     public class SearchProvider<T> where T : ISearchable
     {
         private int _searchIteration;
-        private int _searchIterationCap;
+        private readonly int _searchIterationCap;
         private string lookupValue;
         private IEnumerable<T> _list;
 
