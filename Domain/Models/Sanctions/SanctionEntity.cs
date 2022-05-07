@@ -2,6 +2,7 @@
 using Domain.Extensions;
 using Domain.Factory;
 using Domain.Interfaces;
+using Domain.Models.CustomMeetings;
 using Domain.Storage;
 using Domain.Types;
 using System;
@@ -77,6 +78,16 @@ namespace Domain.Models.Sanctions
             EmployeeName = empl.EmployeeName;
             Shift = empl.ShiftPattern;
             Manager = empl.ManagerName;
+            return this;
+        }
+
+        public SanctionEntity SetEmployee(CustomMeetingEntity empl)
+        {
+            EmployeeID = empl.RespondentID;
+            UserID = empl.RespondentUserID;
+            EmployeeName = empl.RespondentName;
+            Shift = empl.RespondentShift;
+            Manager = empl.RespondentManager;
             return this;
         }
 

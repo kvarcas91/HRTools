@@ -213,6 +213,7 @@ namespace Domain.Models.CustomMeetings
                     break;
                 case "Appeal":
                     FirstMeetingOutcomeList = new List<string> { "", "Upheld", "Overturned" };
+                    SecondMeetingOutcomeList = new List<string>();
                     break;
                 case "Grievance":
                     FirstMeetingOutcomeList = new List<string> { "", "NFA", "Mediation", "Informal Resolution", "Proceed to Disciplinary Hearing" };
@@ -220,9 +221,11 @@ namespace Domain.Models.CustomMeetings
                     break;
                 case "Formal Probation Review":
                     FirstMeetingOutcomeList = new List<string> { "", "NFA", "Extension", "Probation Failed/Termination" };
+                    SecondMeetingOutcomeList = new List<string>();
                     break;
                 case "TWA":
                     FirstMeetingOutcomeList = new List<string> { "", "NFA", "Temporary Work Adjustments" };
+                    SecondMeetingOutcomeList = new List<string>();
                     break;
                 default:
                     FirstMeetingOutcomeList = new List<string>();

@@ -556,6 +556,8 @@ namespace HRTools_v2.ViewModels
         private DelegateCommand<string> _assignMeetingParticipantCommand = null;
         public DelegateCommand<string> AssignMeetingParticipantCommand => _assignMeetingParticipantCommand ?? (_assignMeetingParticipantCommand = new DelegateCommand<string>(AssignMeetingParticipant));
 
+        private DelegateCommand<CustomMeetingEntity> _updateCustomMeetingCommand = null;
+        public DelegateCommand<CustomMeetingEntity> UpdateCustomMeetingCommand => _updateCustomMeetingCommand ?? (_updateCustomMeetingCommand = new DelegateCommand<CustomMeetingEntity>(UpdateCustomMeeting));
         #endregion
 
         #endregion
@@ -1335,6 +1337,36 @@ namespace HRTools_v2.ViewModels
                 default:
                     break;
             }
+        }
+
+        private async void UpdateCustomMeeting(CustomMeetingEntity meeting)
+        {
+            if (meeting == null) return;
+
+            if (SanctionManager.IsLesser(EmployeeLiveSanctions.DisciplinarySanction, meeting.SecondMeetingOutcome))
+            {
+                SendToast("You cannot issue lesser sanction!", NotificationType.Information);
+                return;
+            }
+
+            var repo = new MeetingsRepository();
+            var response = await repo.UpdateCustomAsync(meeting);
+            if (response.Success)
+            {
+                SendToast("Meeting has been updated!", NotificationType.Success);
+                if (!string.IsNullOrEmpty(meeting.SecondMeetingOutcome))
+                {
+                    GetSanctionPreview(SelectedEmployee.EmployeeID);
+                    GetAllSanctions(SelectedEmployee.EmployeeID);
+                }
+                if (TimeLineToggleSelection == TimelineOrigin.CustomMeetings || TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimeLineToggleSelection);
+                CustomMeetingsList.Swap(meeting, meeting);
+            }
+            else
+            {
+                SendToast(response.Message, NotificationType.Warning);
+            }
+            
         }
 
         #endregion

@@ -88,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Automation\AwalAutomation.cs" />
+    <Compile Include="Automation\CustomMeetingsAutomation.cs" />
     <Compile Include="Automation\ITaskAutomation.cs" />
     <Compile Include="Automation\MeetingsAutomation.cs" />
     <Compile Include="Automation\ResignationsAutomation.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="DataValidation\BaseValidationHandler.cs" />
     <Compile Include="DataValidation\IDataValidation.cs" />
     <Compile Include="DataValidation\IValidationHandler.cs" />
+    <Compile Include="DataValidation\Meetings\CustomMeetingValidation.cs" />
     <Compile Include="DataValidation\Meetings\ERMeetingValidation.cs" />
     <Compile Include="DataValidation\Meetings\MeetingsValidation.cs" />
     <Compile Include="DataValidation\Resignation\ResignationValidation.cs" />
