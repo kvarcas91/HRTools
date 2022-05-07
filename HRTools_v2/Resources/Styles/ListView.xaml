@@ -1734,7 +1734,7 @@
                                 </materialDesign:PopupBox.ToggleContent>
 
                                 <Grid Background="Transparent" Margin="10 0 10 0"
-                                                Width="400">
+                                                Width="700">
 
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -1745,16 +1745,61 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
 
-                                    <DatePicker Grid.Row="0" Grid.Column="0"
+                                    <!-- First meeting -->
+                                    <Grid Grid.Column="0" Grid.Row="0">
+
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <Label Content="First Meeting" Grid.Row="0"
+                                               HorizontalAlignment="Center"
+                                               FontWeight="Bold"
+                                               Foreground="DarkSlateGray"/>
+
+                                        <DatePicker Grid.Row="1"
                                             Margin="5 5 15 5"
                                             materialDesign:HintAssist.Hint="First Meeting Date"
                                             materialDesign:HintAssist.IsFloating="True"
                                             Text="{Binding FirstMeetingDate, Mode=TwoWay, Converter={converters:DateTimeToStringConverter}, ConverterParameter=5}"/>
 
-                                    <ComboBox Grid.Row="1" Grid.Column="0"
+                                        <TextBox Grid.Row="2"
+                                            Text="{Binding FirstMeetingOwner, Mode=TwoWay}"
+                                                 Margin="5 5 15 5"
+                                                 materialDesign:HintAssist.Hint="Meeting owner login (AM/OM)"
+                                                 materialDesign:HintAssist.IsFloating="True"/>
+
+
+                                        <Grid Grid.Row="3"
+                                              Margin="5 5 15 5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBox Grid.Column="0"
+                                            Text="{Binding FirstMeetingHRSupport, Mode=TwoWay}"
+                                                 materialDesign:HintAssist.Hint="HR support login"
+                                                 materialDesign:HintAssist.IsFloating="True"/>
+
+                                            <Button Grid.Column="1" VerticalAlignment="Top"
+                                                Margin="0 5"
+                                                ToolTip="Assign yourself as owner"
+                                                Style="{StaticResource MaterialDesignFlatButton}"
+                                                Command="{Binding ElementName=customMeetingsListView, Path=DataContext.OnMeetinngHRSupportAssignementCommand}"
+                                                CommandParameter="1">
+                                                <materialDesign:PackIcon Kind="PersonOutline" Foreground="DarkSlateGray"/>
+                                            </Button>
+
+                                        </Grid>
+
+                                        <ComboBox Grid.Row="4"
                                             BorderThickness="0"
                                             Margin="5 5 15 5"
                                             SelectedValue=""
@@ -1763,33 +1808,79 @@
                                             materialDesign:HintAssist.IsFloating="True"
                                             ItemsSource="{Binding FirstMeetingOutcomeList}"
                                             SelectedItem="{Binding FirstMeetingOutcome, Mode=TwoWay}">
-                                    </ComboBox>
+                                        </ComboBox>
+                                    </Grid>
 
-                                    <DatePicker Grid.Row="0" Grid.Column="1"
+                                    <!-- Second meeting -->
+                                    <Grid Grid.Column="1" Grid.Row="0">
+
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <Label Content="Second Meeting" Grid.Row="0"
+                                               HorizontalAlignment="Center"
+                                               FontWeight="Bold"
+                                               Foreground="DarkSlateGray"/>
+                                        
+                                        <DatePicker Grid.Row="1"
                                             Margin="5 5 15 5"
                                             materialDesign:HintAssist.Hint="Second Meeting Date"
                                             materialDesign:HintAssist.IsFloating="True"
                                             Text="{Binding SecondMeetingDate, Mode=TwoWay, Converter={converters:DateTimeToStringConverter}, ConverterParameter=5}"/>
 
+                                        <TextBox Grid.Row="2"
+                                            Text="{Binding SecondMeetingOwner, Mode=TwoWay}"
+                                                 Margin="5 5 15 5"
+                                                 materialDesign:HintAssist.Hint="Meeting owner login (AM/OM)"
+                                                 materialDesign:HintAssist.IsFloating="True"/>
 
-                                    <ComboBox Grid.Row="1" Grid.Column="1"
+
+                                        <Grid Grid.Row="3"
+                                              Margin="5 5 15 5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBox Grid.Column="0"
+                                            Text="{Binding SecondMeetingHRSupport, Mode=TwoWay}"
+                                                 materialDesign:HintAssist.Hint="HR support login"
+                                                 materialDesign:HintAssist.IsFloating="True"/>
+
+                                            <Button Grid.Column="1" VerticalAlignment="Top"
+                                                Margin="0 5"
+                                                ToolTip="Assign yourself as owner"
+                                                Style="{StaticResource MaterialDesignFlatButton}"
+                                                Command="{Binding ElementName=customMeetingsListView, Path=DataContext.OnMeetinngHRSupportAssignementCommand}"
+                                                CommandParameter="2">
+                                                <materialDesign:PackIcon Kind="PersonOutline" Foreground="DarkSlateGray"/>
+                                            </Button>
+
+                                        </Grid>
+
+                                        <ComboBox Grid.Row="4"
                                             BorderThickness="0"
                                             Margin="5 5 15 5"
                                             SelectedValue=""
                                             VerticalContentAlignment="Center"
                                             materialDesign:HintAssist.Hint="Outcomes"
                                             materialDesign:HintAssist.IsFloating="True"
-                                                  IsEnabled="{Binding FirstMeetingOutcome, Converter={converters:MeetingOutcomeToNextStageConverter}}"
                                             ItemsSource="{Binding SecondMeetingOutcomeList}"
                                             SelectedItem="{Binding SecondMeetingOutcome, Mode=TwoWay}">
-                                    </ComboBox>
+                                        </ComboBox>
+                                    </Grid>
 
 
-                                    <Separator Grid.Row="2" Grid.ColumnSpan="2" BorderBrush="LightGray" BorderThickness="1"
+                                    <Separator Grid.Row="1" Grid.ColumnSpan="2" BorderBrush="LightGray" BorderThickness="1"
                                             Margin="1"/>
 
 
-                                    <StackPanel Grid.Row="3" Grid.Column="0"
+                                    <StackPanel Grid.Row="2" Grid.Column="0"
                                                    Orientation="Horizontal"
                                                     HorizontalAlignment="Left">
 

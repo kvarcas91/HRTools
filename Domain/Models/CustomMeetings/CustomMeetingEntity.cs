@@ -53,6 +53,9 @@ namespace Domain.Models.CustomMeetings
         public string SecondMeetingOutcome { get; set; }
         public string Actor { get; set; }
 
+        public List<string> FirstMeetingOutcomeList { get; private set; }
+        public List<string> SecondMeetingOutcomeList { get; private set; }
+
         public ObservableCollection<CaseFile> RelatedFiles { get; private set; }
         public int FileCount { get; set; }
         public DateTime CaseAge { get; set; }
@@ -177,16 +180,55 @@ namespace Domain.Models.CustomMeetings
             }
         }
 
-        public void SetAge()
+        public void Prepare(string emplId)
+        {
+            SetFiles();
+            SetAge();
+            SetActor(emplId);
+            SetOutcomes();
+        }
+
+        private void SetAge()
         {
             DateTime endDate = ClosedAt.Equals(DateTime.MinValue) ? DateTime.Now : ClosedAt;
             CaseAge = DateTime.Now.AddDays(-(endDate - CreatedAt).Days);
         }
 
-        public void SetActor(string emplId)
+        private void SetActor(string emplId)
         {
             if (ClaimantID == emplId) Actor = "Claimant";
             else Actor = "Respondent";
+        }
+
+        private void SetOutcomes()
+        {
+            switch (MeetingType)
+            {
+                case "Investigation":
+                case "ADAPT":
+                case "Time Fraud":
+                case "Eligibility":
+                    FirstMeetingOutcomeList = new List<string> { "", "NFA", "Proceed to Disciplinary Hearing" };
+                    SecondMeetingOutcomeList = new List<string> { "", "NFA", "Verbal Warning", "Written Warning", "Final Warning", "Termination" };
+                    break;
+                case "Appeal":
+                    FirstMeetingOutcomeList = new List<string> { "", "Upheld", "Overturned" };
+                    break;
+                case "Grievance":
+                    FirstMeetingOutcomeList = new List<string> { "", "NFA", "Mediation", "Informal Resolution", "Proceed to Disciplinary Hearing" };
+                    SecondMeetingOutcomeList = new List<string> { "", "NFA", "Verbal Warning", "Written Warning", "Final Warning", "Termination" };
+                    break;
+                case "Formal Probation Review":
+                    FirstMeetingOutcomeList = new List<string> { "", "NFA", "Extension", "Probation Failed/Termination" };
+                    break;
+                case "TWA":
+                    FirstMeetingOutcomeList = new List<string> { "", "NFA", "Temporary Work Adjustments" };
+                    break;
+                default:
+                    FirstMeetingOutcomeList = new List<string>();
+                    SecondMeetingOutcomeList = new List<string>();
+                    break;
+            }
         }
     }
 }

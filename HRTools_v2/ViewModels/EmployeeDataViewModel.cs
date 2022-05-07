@@ -1122,7 +1122,7 @@ namespace HRTools_v2.ViewModels
             if (response.Success)
             {
                 SendToast("Meeting has been created!", NotificationType.Success);
-                meeting.SetAge();
+                meeting.Prepare(SelectedEmployee.EmployeeID);
                 CustomMeetingsList.Insert(0, meeting);
                 HasCustomMeetingsData = CustomMeetingsList.Count > 0;
                 if (TimeLineToggleSelection == TimelineOrigin.CustomMeetings || TimeLineToggleSelection == TimelineOrigin.ALL) GetTimeline(SelectedEmployee.EmployeeID, TimeLineToggleSelection);
@@ -1157,9 +1157,7 @@ namespace HRTools_v2.ViewModels
             var list = await repo.GetEmployeeCustomMeetingsAsync(id);
             foreach (var item in list)
             {
-                item.SetFiles();
-                item.SetAge();
-                item.SetActor(SelectedEmployee.EmployeeID);
+                item.Prepare(SelectedEmployee.EmployeeID);
             }
 
             CustomMeetingsList.AddRange(list);

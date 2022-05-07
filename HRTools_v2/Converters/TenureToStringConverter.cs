@@ -25,7 +25,8 @@ namespace HRTools_v2.Converters
             var monthDaySeparator = months > 0 ? " " : "";
             var daysText = days > 0 ? days > 1 ? $"{days} days" : $"{days} day" : "";
 
-            if (years + months + days == 0) return "Created today";
+            if (years + months + days == 0 && lastHireDate == DateTime.Today) return "Created today";
+            if (years + months + days == 0 && lastHireDate != DateTime.Today) return "1 day";
 
             return $"{yearText}{yearMonthSeparator}{monthText}{monthDaySeparator}{daysText}";
         }

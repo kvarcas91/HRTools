@@ -80,7 +80,7 @@ namespace Domain.Repository
             awal.UpdatedAt = DateTime.Now;
             awal.UpdatedBy = Environment.UserName;
             if (awal.DisciplinaryDate != DateTime.MinValue && string.IsNullOrEmpty(awal.Outcome)) awal.AwalStatus = AwalStatus.Pending;
-            if (awal.Outcome != null && !awal.Outcome.Equals("Cancelled"))
+            if (!string.IsNullOrEmpty(awal.Outcome) && !awal.Outcome.Equals("Cancelled"))
             {
                 switch(awal.Outcome)
                 {
