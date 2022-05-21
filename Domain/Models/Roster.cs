@@ -1,6 +1,7 @@
 ﻿using Domain.Factory;
 using Domain.Interfaces;
 using Domain.IO;
+using Domain.Models.AWAL;
 using Domain.Storage;
 using System;
 
@@ -42,6 +43,21 @@ namespace Domain.Models
             JobTitle = string.Empty;
             FCLM = string.Empty;
             ShiftPattern = string.Empty;
+        }
+
+        public Roster (AwalEntity awal)
+        {
+            EmployeeID = awal.EmployeeID;
+            UserID = awal.UserID;
+            EmployeeName = awal.EmployeeName;
+            DepartmentID = awal.DepartmentID;
+            ManagerName = awal.ManagerName;
+            EmploymentType = awal.EmploymentType;
+            AgencyCode = string.Empty;
+            JobTitle = string.Empty;
+            EmploymentStartDate = awal.EmploymentStartDate;
+            ShiftPattern = awal.ShiftPattern;
+            FCLM = String.Empty;
         }
 
         public bool HasValue(string key)

@@ -167,6 +167,7 @@
     <Compile Include="Args\NavigationArgs.cs" />
     <Compile Include="Args\ShowToastArgs.cs" />
     <Compile Include="Converters\AwalConverter\AwalStatusToColorConverter.cs" />
+    <Compile Include="Converters\AwalConverter\AwalStatusToggleToTextConverter.cs" />
     <Compile Include="Converters\AwalConverter\AwalTextDecorationConverter.cs" />
     <Compile Include="Converters\AwalConverter\AwalTextForegroundConverter.cs" />
     <Compile Include="Converters\AwalConverter\AwalTextSizeConverter.cs" />

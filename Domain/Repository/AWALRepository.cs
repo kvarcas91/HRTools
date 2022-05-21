@@ -32,6 +32,12 @@ namespace Domain.Repository
             return GetCachedAsync<AwalEntity>(query);
         }
 
+        public Task<IEnumerable<AwalEntity>> GetAwalList()
+        {
+            var query = $"SELECT * FROM awal WHERE awalStatus in ({(int)AwalStatus.Active},{(int)AwalStatus.Pending}) ORDER BY firstNCNSDate DESC;";
+            return GetCachedAsync<AwalEntity>(query);
+        }
+
         public Task<Response> InsertAllAsync(IList<IDataImportObject> awalList) => base.InsertAllAsync(awalList, "awal");
 
         public Task<Response> InsertAsync(AwalEntity awal)

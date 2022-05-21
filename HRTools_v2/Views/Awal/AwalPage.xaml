@@ -11,7 +11,50 @@
              d:Background="{DynamicResource Background}"
              xmlns:converters="clr-namespace:HRTools_v2.Converters"
              d:DesignHeight="750" d:DesignWidth="1400">
+
     <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="42"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Controls -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+
             
+
+        </StackPanel>
+
+        <Separator Grid.Row="1" BorderBrush="LightGray" BorderThickness="1"/>
+
+        <!-- Data -->
+        <Grid Grid.Row="2">
+
+            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                             IsIndeterminate="True"
+                                             Width="90"
+                                             Height="90" 
+                                             Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='EmployeeAwalSummaryLoading'}"/>
+
+            <ListView x:Name="awalCompleteListView"
+                                    ItemsSource="{Binding AwalList}"
+                                        Style="{StaticResource AwalCompleteListView}"
+                                          Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='EmployeeAwalSummaryLoaded'}"/>
+
+            <TextBlock Text="No Data"
+                                           Visibility="{Binding HasAwalData, Converter={StaticResource InverseBoolToVisConverter}}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"
+                                           Foreground="Gray"
+                                           FontSize="{StaticResource NoDataFontSize}"/>
+
+
+        </Grid>
+        
     </Grid>
+   
+
 </UserControl>
