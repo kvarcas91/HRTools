@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Data
 {
-    public class RosterDataManager
+    public class RosterDataManager : DataManager
     {
         
         public Task<IList<Roster>> GetWebRosterAsync(IWebStream dataStream, string rosterUrl)
@@ -20,13 +20,7 @@ namespace Domain.Data
             });
         }
 
-        public Task WriteRosterAsync(IDataStream dataStream, IEnumerable<Roster> rosterList)
-        {
-            return Task.Run(() =>
-            {
-                dataStream.Write(rosterList);
-            });
-        }
+        public Task WriteRosterAsync(IDataStream dataStream, IEnumerable<Roster> rosterList) => WriteToCsvAsync(dataStream, rosterList);
 
         public Roster CreateRosterObject(string[] fields, Dictionary<string, int> map)
         {

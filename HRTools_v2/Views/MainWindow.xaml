@@ -81,7 +81,7 @@
                             Style="{StaticResource MaterialDesignFlatButton}"
                                 Height="50"
                             Command="{Binding NavigateCommand}"
-                            CommandParameter="Resignations">
+                            CommandParameter="ResignationsPage">
                             <StackPanel Orientation="Vertical">
                                 <materialDesign:PackIcon Kind="PersonRemoveOutline"
                                                              HorizontalAlignment="Center"

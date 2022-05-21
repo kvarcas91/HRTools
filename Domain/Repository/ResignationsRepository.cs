@@ -6,6 +6,7 @@ using Domain.Models.Resignations;
 using Domain.Storage;
 using Domain.Types;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Domain.Repository
@@ -53,6 +54,8 @@ namespace Domain.Repository
             Automate(new ResignationEntity { EmployeeID = emplId}, AutomationAction.OnUpdate);
             return ExecuteAsync(query);
         }
+
+        public Task<IEnumerable<ResignationEntity>> GetAll() => GetCachedAsync<ResignationEntity>("SELECT * FROM resignations ORDER BY lastWorkingDay DESC;");
 
         private void Automate(ResignationEntity obj, AutomationAction action)
         {

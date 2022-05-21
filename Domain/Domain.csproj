@@ -106,6 +106,7 @@
     <Compile Include="DataValidation\Resignation\ResignationValidation.cs" />
     <Compile Include="DataValidation\Resignation\ResignationTextValidation.cs" />
     <Compile Include="DataValidation\ValidationRequest.cs" />
+    <Compile Include="Data\DataManager.cs" />
     <Compile Include="Data\RosterDataManager.cs" />
     <Compile Include="Data\SearchProvider.cs" />
     <Compile Include="Data\SettingsManager.cs" />

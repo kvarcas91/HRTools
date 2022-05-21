@@ -2,7 +2,7 @@
 {
     public interface IWritable
     {
-        string GetHeader();
-        string GetRow();
+        string GetDataHeader();
+        string GetDataRow();
     }
 }

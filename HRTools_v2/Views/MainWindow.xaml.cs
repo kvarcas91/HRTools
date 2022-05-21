@@ -2,6 +2,7 @@
 using HRTools_v2.Helpers;
 using HRTools_v2.ViewModels;
 using HRTools_v2.Views.Awal;
+using HRTools_v2.Views.Resignations;
 using Prism.Ioc;
 using Prism.Regions;
 using System;
@@ -26,6 +27,7 @@ namespace HRTools_v2.Views
         private EmployeeData _employeeData;
         private AppSettings _appSettings;
         private AwalPage _awal;
+        private ResignationsPage _resignations;
 
         public MainWindow(IContainerExtension container, IRegionManager regionManager)
         {
@@ -74,24 +76,14 @@ namespace HRTools_v2.Views
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
 
-            //AutoUpdater.ShowSkipButton = false;
-            //AutoUpdater.RunUpdateAsAdmin = false;
-            //AutoUpdater.ReportErrors = true;
-            //AutoUpdater.Start("https://github.com/kvarcas91/HRTools/blob/master/HRTools_v2/versionControl.xml");
-
-            //DispatcherTimer timer = new DispatcherTimer { Interval = TimeSpan.FromMinutes(10) };
-            //timer.Tick += delegate
-            //{
-            //    AutoUpdater.Start("https://github.com/kvarcas91/HRTools/blob/master/HRTools_v2/versionControl.xml");
-            //};
-            //timer.Start();
-
+           
 
             _loaderPage = _container.Resolve<LoaderPage>();
             _homePage = _container.Resolve<HomePage>();
             _employeeData = _container.Resolve<EmployeeData>();
             _appSettings = _container.Resolve<AppSettings>();
             _awal = _container.Resolve<AwalPage>();
+            _resignations = _container.Resolve<ResignationsPage>();
 
             _region = _regionManager.Regions["ContentRegion"];
             _ = _region.Add(_loaderPage);
@@ -99,6 +91,7 @@ namespace HRTools_v2.Views
             _ = _region.Add(_employeeData);
             _ = _region.Add(_appSettings);
             _ = _region.Add(_awal);
+            _ = _region.Add(_resignations);
         }
 
         private void OnSearchBoxKeyDown(object sender, System.Windows.Input.KeyEventArgs e)

@@ -32,9 +32,10 @@ namespace Domain.Repository
             return GetCachedAsync<AwalEntity>(query);
         }
 
-        public Task<IEnumerable<AwalEntity>> GetAwalList()
+        public Task<IEnumerable<AwalEntity>> GetAwalList(bool all = false)
         {
-            var query = $"SELECT * FROM awal WHERE awalStatus in ({(int)AwalStatus.Active},{(int)AwalStatus.Pending}) ORDER BY firstNCNSDate DESC;";
+            var allQuery = all ? "" : $"WHERE awalStatus in ({(int)AwalStatus.Active},{(int)AwalStatus.Pending})";
+            var query = $"SELECT * FROM awal {allQuery} ORDER BY firstNCNSDate DESC;";
             return GetCachedAsync<AwalEntity>(query);
         }
 

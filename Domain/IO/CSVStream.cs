@@ -56,11 +56,11 @@ namespace Domain.IO
                 {
                     if (!isHeaderWritten)
                     {
-                        stream.WriteLine(item.GetHeader());
+                        stream.WriteLine(item.GetDataHeader());
                         isHeaderWritten = true;
                     }
 
-                    stream.WriteLine(item.GetRow());
+                    stream.WriteLine(item.GetDataRow());
                 }
             }
 

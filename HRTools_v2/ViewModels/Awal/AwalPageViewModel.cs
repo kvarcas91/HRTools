@@ -1,10 +1,13 @@
-﻿using Domain.Extensions;
+﻿using Domain.Data;
+using Domain.Extensions;
+using Domain.IO;
 using Domain.Models;
 using Domain.Models.AWAL;
 using Domain.Repository;
 using Domain.Storage;
 using Domain.Types;
 using HRTools_v2.Args;
+using HRTools_v2.Helpers;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -47,6 +50,9 @@ namespace HRTools_v2.ViewModels.Awal
         private DelegateCommand<AwalEntity> _openEmployeeViewCommand = null;
         public DelegateCommand<AwalEntity> OpenEmployeeViewCommand => _openEmployeeViewCommand ?? (_openEmployeeViewCommand = new DelegateCommand<AwalEntity>(OpenEmployeeView));
 
+        private DelegateCommand _exportAwalCommand = null;
+        public DelegateCommand ExportAwalCommand => _exportAwalCommand ?? (_exportAwalCommand = new DelegateCommand(ExportAwal));
+
         public AwalPageViewModel(AWALRepository repository, IEventAggregator eventAggregator)
         {
             _isCurrentPage = false;
@@ -58,14 +64,13 @@ namespace HRTools_v2.ViewModels.Awal
 
         #region Data Getters
 
-        private async Task GetAwal()
+        private async void GetAwal()
         {
             if (!_isCurrentPage) return;
 
             AwalList.Clear();
 
-            WidgedState &= ~HomePageWidgetState.EmployeeAwalSummaryLoaded;
-            WidgedState |= HomePageWidgetState.EmployeeAwalSummaryLoading;
+            WidgedState = HomePageWidgetState.EmployeeAwalSummaryLoading;
 
 
             var data = await _repository.GetAwalList();
@@ -74,11 +79,26 @@ namespace HRTools_v2.ViewModels.Awal
 
             HasAwalData = AwalList.Count > 0;
 
-            WidgedState &= ~HomePageWidgetState.EmployeeAwalSummaryLoading;
-            WidgedState |= HomePageWidgetState.EmployeeAwalSummaryLoaded;
+            WidgedState = HomePageWidgetState.EmployeeAwalSummaryLoaded;
         }
 
         #endregion
+
+        private async void ExportAwal()
+        {
+            var dialog = new DialogHelper(".csv", "CSV Files|*.csv", "Save AWAL data");
+            var path = dialog.ShowSaveDialog();
+            if (string.IsNullOrEmpty(path)) return;
+
+            WidgedState = HomePageWidgetState.EmployeeAwalSummaryLoading;
+            var csvStream = new CSVStream(path);
+            var dataManager = new DataManager();
+            var list = await _repository.GetAwalList(true);
+            await dataManager.WriteToCsvAsync(csvStream, list);
+            WidgedState = HomePageWidgetState.EmployeeAwalSummaryLoaded;
+
+            FileHelper.RunProcess(path);
+        }
 
         private void OpenEmployeeView(AwalEntity awal)
         {

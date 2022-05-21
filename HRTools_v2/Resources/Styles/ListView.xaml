@@ -2438,7 +2438,7 @@
                                 <ColumnDefinition Width="0.3*"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="0.5*"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
                             <Grid Grid.Column="0">
@@ -2589,44 +2589,6 @@
                             Orientation="Horizontal"
                                     HorizontalAlignment="Right">
 
-                                <!-- Info -->
-                                <Grid Background="Transparent" Margin="0 0 5 0">
-                                    <materialDesign:PackIcon Kind="InfoCircleOutline" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="DarkSlateGray"/>
-                                    <Grid.ToolTip>
-
-                                        <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="Auto"/>
-                                            </Grid.RowDefinitions>
-
-                                            <TextBlock Grid.Row="0" Visibility="{Binding CreatedBy, Converter={converters:NullToVisibilityConverter}, ConverterParameter='tooltip'}">
-                                    <Run Text="{Binding CreatedBy, Converter={converters:UserToTextConverter}, ConverterParameter='created'}"/>
-                                    <Run Text="{Binding CreatedAt, Converter={converters:DateTimeToToolTipConverter}}"/>
-                                            </TextBlock>
-
-                                            <TextBlock Grid.Row="1" Visibility="{Binding UpdatedBy, Converter={converters:NullToVisibilityConverter}, ConverterParameter='tooltip'}">
-                                    <Run Text="{Binding UpdatedBy, Converter={converters:UserToTextConverter}, ConverterParameter='updated'}"/>
-                                    <Run Text="{Binding UpdatedAt, Converter={converters:DateTimeToToolTipConverter}}"/>
-                                            </TextBlock>
-
-                                            <TextBlock Grid.Row="2" Visibility="{Binding BridgeCreatedBy, Converter={converters:NullToVisibilityConverter}, ConverterParameter='tooltip'}">
-                                    <Run Text="{Binding BridgeCreatedBy, Converter={converters:UserToTextConverter}, ConverterParameter='bridged'}"/>
-                                    <Run Text="{Binding BridgeCreatedAt, Converter={converters:DateTimeToToolTipConverter}}"/>
-                                            </TextBlock>
-
-                                            <TextBlock Grid.Row="3" Visibility="{Binding CloseBridge, Converter={converters:NullToVisibilityConverter}, ConverterParameter='tooltip'}"
-                                                       Margin="0 5 0 0">
-                                                <Run Text='"'/>
-                                                <Run Text="{Binding ReasonForClosure}" FontStyle="Italic"/>
-                                                <Run Text='"'/>
-                                            </TextBlock>
-                                        </Grid>
-                                    </Grid.ToolTip>
-                                </Grid>
-
                             <Button Background="Transparent" 
                                             Padding="10"
                                                 ToolTip="Open Employee View"
@@ -2645,6 +2607,161 @@
                         </StackPanel>
 
                         </Grid>
+
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style  x:Key="ResignationsCompleteListView" TargetType="{x:Type ListView}" BasedOn="{StaticResource ListViewOnMouseOverDisabled}">
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+
+                    <Grid Margin="10" VerticalAlignment="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="0.3*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="0.3*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="0.3*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Grid.Column="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Width="30" Height="30"  CornerRadius="50" BorderBrush="DarkSlateGray" 
+                                        Background="{StaticResource Background}"
+                                BorderThickness="1">
+                                <TextBlock HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center"
+                                       Text="{Binding UserID, Converter={converters:LoginToInitialsConverter}}"
+                                        FontSize="12"/>
+                            </Border>
+
+                            <StackPanel Orientation="Vertical" Grid.Column="1" Margin="10 0 0 0">
+
+                                <TextBlock 
+                                    Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                       Foreground="{DynamicResource PrimaryHueMidBrush}"
+                                    Text="{Binding UserID, Converter={converters:LoginToFullNameConverter}}"
+                                        FontWeight="Bold"
+                                        FontSize="12"/>
+
+                                <TextBlock Grid.Row="0"
+                                    Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                       Foreground="Gray"
+                                           FontSize="10"
+                                           Text="{Binding CreatedAt, Converter={converters:DateTimeToStringConverter}}"
+                                           />
+
+                            </StackPanel>
+
+                        </Grid>
+
+                         <!--Separator--> 
+                        <Rectangle Grid.Column="1"
+                                    VerticalAlignment="Stretch" 
+                                           Fill="LightGray" Width="1"
+                                           Margin="5 2"/>
+
+                        
+                        <StackPanel Grid.Column="2" Orientation="Vertical"
+                                            Margin="5">
+                            <TextBlock 
+                                   Text="Last working day"
+                                FontSize="{StaticResource SecondaryListFontSize}"
+                                Foreground="Gray"/>
+                            <TextBlock 
+                                  Text="{Binding LastWorkingDay, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"/>
+                        </StackPanel>
+
+
+                        <StackPanel Grid.Column="3" Orientation="Vertical"
+                                            Margin="5">
+                            <TextBlock 
+                                   Text="Reason of resignation"
+                                FontSize="{StaticResource SecondaryListFontSize}"
+                                Foreground="Gray"/>
+                            <TextBlock 
+                                  Text="{Binding ReasonForResignation}"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="4" Orientation="Vertical"
+                                            Margin="5">
+                            <TextBlock 
+                                   Text="TT"
+                                FontSize="{StaticResource SecondaryListFontSize}"
+                                Foreground="Gray"/>
+                            <TextBlock 
+                                  Text="{Binding TTLink}"/>
+                        </StackPanel>
+
+                        <!--Separator-->
+                        <Rectangle Grid.Column="5"
+                                    VerticalAlignment="Stretch" 
+                                           Fill="LightGray" Width="1"
+                                           Margin="5 2"/>
+
+                        <StackPanel Grid.Column="6" Orientation="Vertical"
+                                            Margin="5">
+                            <TextBlock 
+                                   Text="Submitted by"
+                                FontSize="{StaticResource SecondaryListFontSize}"
+                                Foreground="Gray"/>
+                            <TextBlock 
+                                    Text="{Binding CreatedBy, Converter={converters:LoginToFullNameConverter}}"/>
+                        </StackPanel>
+
+
+                        <!-- Controls -->
+                        <StackPanel Grid.Column="10"
+                            Orientation="Horizontal"
+                                    HorizontalAlignment="Right">
+
+                            <Button Background="Transparent" 
+                                            Padding="10"
+                                                ToolTip="Open TT"
+                                            materialDesign:ShadowAssist.ShadowEdges="None"
+                                            materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                    Command="{Binding ElementName=resignationsCompleteListView, Path=DataContext.OpenTTLinkCommand}"
+                                    CommandParameter="{Binding}"
+                                            BorderThickness="0">
+
+                                <materialDesign:PackIcon Kind="WebSync" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+
+                            </Button>
+                            
+                            <Button Background="Transparent" 
+                                            Padding="10"
+                                                ToolTip="Open Employee View"
+                                            materialDesign:ShadowAssist.ShadowEdges="None"
+                                            materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                    Command="{Binding ElementName=resignationsCompleteListView, Path=DataContext.OpenEmployeeViewCommand}"
+                                    CommandParameter="{Binding}"
+                                            BorderThickness="0">
+
+                                <materialDesign:PackIcon Kind="PersonArrowRight" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+
+                            </Button>
+
+                        </StackPanel>
+
+                    </Grid>
 
                 </DataTemplate>
             </Setter.Value>

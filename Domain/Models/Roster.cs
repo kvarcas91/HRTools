@@ -2,6 +2,7 @@
 using Domain.Interfaces;
 using Domain.IO;
 using Domain.Models.AWAL;
+using Domain.Models.Resignations;
 using Domain.Storage;
 using System;
 
@@ -57,7 +58,21 @@ namespace Domain.Models
             JobTitle = string.Empty;
             EmploymentStartDate = awal.EmploymentStartDate;
             ShiftPattern = awal.ShiftPattern;
-            FCLM = String.Empty;
+            FCLM = string.Empty;
+        }
+
+        public Roster (ResignationEntity entity)
+        {
+            EmployeeID = entity.EmployeeID;
+            UserID = entity.UserID;
+            EmployeeName = entity.Name;
+            DepartmentID = string.Empty;
+            ManagerName = entity.Manager;
+            EmploymentType = string.Empty;
+            AgencyCode = string.Empty;
+            EmploymentStartDate= entity.EmploymentStartDate;
+            ShiftPattern = entity.Shift;
+            FCLM = string.Empty;
         }
 
         public bool HasValue(string key)
@@ -78,14 +93,16 @@ namespace Domain.Models
             return hasValue;
         }
 
-        public string GetHeader()
+        public string GetDataHeader()
         {
             return "EmployeeID,UserID,EmployeeName,DepartmentID,EmploymentStartDate,EmploymentType,ManagerName,AgencyCode,JobTitle,FCLM,ShiftPattern";
         }
 
-        public string GetRow()
+        public string GetDataRow()
         {
-            return $"{FileHelper.VerifyCSV(EmployeeID)},{FileHelper.VerifyCSV(UserID)},{FileHelper.VerifyCSV(EmployeeName)},{FileHelper.VerifyCSV(DepartmentID)},{FileHelper.VerifyCSV(EmploymentStartDate.ToString(DataStorage.ShortPreviewDateFormat))},{FileHelper.VerifyCSV(EmploymentType)},{FileHelper.VerifyCSV(ManagerName)},{FileHelper.VerifyCSV(AgencyCode)},{FileHelper.VerifyCSV(JobTitle)},{FileHelper.VerifyCSV(FCLM)}, {FileHelper.VerifyCSV(ShiftPattern)}";
+            return $"{FileHelper.VerifyCSV(EmployeeID)},{FileHelper.VerifyCSV(UserID)},{FileHelper.VerifyCSV(EmployeeName)},{FileHelper.VerifyCSV(DepartmentID)}," +
+                $"{FileHelper.VerifyCSV(EmploymentStartDate.ToString(DataStorage.ShortPreviewDateFormat))},{FileHelper.VerifyCSV(EmploymentType)},{FileHelper.VerifyCSV(ManagerName)},{FileHelper.VerifyCSV(AgencyCode)}," +
+                $"{FileHelper.VerifyCSV(JobTitle)},{FileHelper.VerifyCSV(FCLM)}, {FileHelper.VerifyCSV(ShiftPattern)}";
         }
 
         public object ReadFromCSV(string[] fields, DataMap dataMap)
@@ -110,5 +127,7 @@ namespace Domain.Models
         {
             return string.Empty;
         }
+
+        public string GetHeader() => GetDataHeader();
     }
 }

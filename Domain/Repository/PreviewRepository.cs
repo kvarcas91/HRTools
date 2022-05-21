@@ -15,7 +15,7 @@ namespace Domain.Repository
         public Task<DataPreview> GetPreviewAsync()
         {
             string query = $@"SELECT (SELECT COUNT(*) FROM awal) as 'TotalAWALCount', 
-                                     (SELECT COUNT(*) FROM awal where awalStatus = '{(int)AwalStatus.Active}') as 'OpenAWALCount', 
+                                     (SELECT COUNT(*) FROM awal where awalStatus in ({(int)AwalStatus.Active},{(int)AwalStatus.Pending})) as 'OpenAWALCount', 
                                      (SELECT COUNT(*) FROM resignations) as 'TotalResignationsCount',
                                      (SELECT COUNT(*) FROM meetings) as 'TotalERMeetingsCount',
                                      (SELECT COUNT(*) FROM meetings where meetingStatus in ('{CaseStatus.Open}','{CaseStatus.Pending}')) as 'OpenERMeetingsCount',

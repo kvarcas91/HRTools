@@ -7,7 +7,7 @@ using System;
 
 namespace Domain.Models.AWAL
 {
-    public class AwalEntity : IDataImportObject, IEmployee
+    public class AwalEntity : IDataImportObject, IEmployee, IWritable
     {
         public string ID { get; set; }
         public string EmployeeID { get; set; }
@@ -113,5 +113,20 @@ namespace Domain.Models.AWAL
             return this;
         }
 
+        public string GetDataHeader()
+        {
+            return "EmployeeID, UserID, EmployeeName, DepartmentID, EmploymentType, EmploymentStartDate, ManagerName, ShiftPattern, AwalStatus, FirstNCNSDate, Awal1SentDate, Awal2SentDate,DisciplinaryDate,Outcome," +
+                "ReasonForClosure,BridgeCreatedBy,BridgeCreatedAt,CreatedBy,CreatedAt,UpdatedBy,UpdatedAt";
+        }
+
+        public string GetDataRow()
+        {
+            return $"{EmployeeID.VerifyCSV()},{UserID.VerifyCSV()},{EmployeeName.VerifyCSV()},{DepartmentID.VerifyCSV()},{EmploymentType.VerifyCSV()}," +
+                $"{EmploymentStartDate.ToString(DataStorage.ShortPreviewDateFormat).VerifyCSV()},{ManagerName.VerifyCSV()},{ShiftPattern.VerifyCSV()},{AwalStatus.ToString().VerifyCSV()}," +
+                $"{FirstNCNSDate.ToString(DataStorage.ShortPreviewDateFormat).VerifyCSV()},{Awal1SentDate.ToString(DataStorage.ShortPreviewDateFormat).VerifyCSV()}," +
+                $"{Awal2SentDate.ToString(DataStorage.ShortPreviewDateFormat).VerifyCSV()},{DisciplinaryDate.ToString(DataStorage.ShortPreviewDateFormat).VerifyCSV()},{Outcome.VerifyCSV()},{ReasonForClosure.VerifyCSV()}," +
+                $"{BridgeCreatedBy.VerifyCSV()},{BridgeCreatedAt.ToString(DataStorage.LongPreviewDateFormat).VerifyCSV()},{CreatedBy.VerifyCSV()},{CreatedAt.ToString(DataStorage.LongPreviewDateFormat).VerifyCSV()}," +
+                $"{CreatedBy.VerifyCSV()},{UpdatedAt.ToString(DataStorage.LongPreviewDateFormat).VerifyCSV()}";
+        }
     }
 }

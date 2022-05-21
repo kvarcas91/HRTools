@@ -71,6 +71,7 @@
                             name TEXT,
                             manager TEXT,
                             shift TEXT,
+                            employmentStartDate TEXT,
                             lastWorkingDay TEXT,
                             ttLink TEXT,
                             createdBy TEXT,
