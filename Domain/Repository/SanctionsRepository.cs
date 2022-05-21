@@ -12,7 +12,7 @@ namespace Domain.Repository
 {
     public sealed class SanctionsRepository : BaseRepository
     {
-        public bool CanModify (SanctionEntity sanction)
+        public bool CanModify (SanctionEntry sanction)
         {
             string query = string.Empty;
             DateTime sanctDate;
@@ -34,7 +34,7 @@ namespace Domain.Repository
 
         public Task<Response> InsertAllAsync(IList<IDataImportObject> sanctionList) => base.InsertAllAsync(sanctionList, "sanctions");
 
-        public Task<SanctionEntity> OverrideSanctionAsync(SanctionEntity sanction)
+        public Task<SanctionEntry> OverrideSanctionAsync(SanctionEntry sanction)
         {
             var sanct = sanction;
             return Task.Run(() =>
@@ -63,7 +63,7 @@ namespace Domain.Repository
             
         }
 
-        public Task<SanctionEntity> ReissueSanctionAsync(SanctionEntity sanction)
+        public Task<SanctionEntry> ReissueSanctionAsync(SanctionEntry sanction)
         {
             var sanct = sanction;
             return Task.Run(() =>
@@ -91,7 +91,7 @@ namespace Domain.Repository
             });
         }
 
-        public Task<Response> InsertAsync(SanctionEntity sanction)
+        public Task<Response> InsertAsync(SanctionEntry sanction)
         {
             var timelineEntry = new Timeline().Create(sanction.EmployeeID, TimelineOrigin.Sanctions);
             timelineEntry.EventMessage = $"{sanction.Sanction} has been recorded by {Environment.UserName} and is active until {sanction.SanctionEndDate.ToString(DataStorage.ShortPreviewDateFormat)}";
@@ -101,10 +101,16 @@ namespace Domain.Repository
             return ExecuteAsync(query);
         }
 
-        public Task<IEnumerable<SanctionEntity>> GetEmployeeSanctionsAsync(string emplId)
+        public Task<IEnumerable<SanctionEntry>> GetAllAsync(bool showAll)
+        {
+            var openQuery = showAll ? "" : $"WHERE sanctionEndDate > '{DateTime.Now.ToString(DataStorage.ShortDBDateFormat)}'";
+            return GetCachedAsync<SanctionEntry>($"SELECT * FROM sanctions {openQuery} ORDER BY createdAt DESC;");
+        }
+
+        public Task<IEnumerable<SanctionEntry>> GetEmployeeSanctionsAsync(string emplId)
         {
             string query = $@"SELECT * FROM sanctions WHERE employeeID = '{emplId}' ORDER BY createdAt DESC;";
-            return GetCachedAsync<SanctionEntity>(query);
+            return GetCachedAsync<SanctionEntry>(query);
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Domain.DataManager
             }
         }
 
-        public static DateTime GetSanctionEndDate(SanctionEntity sanction) => GetSanctionEndDate(sanction.Sanction, sanction.SanctionStartDate);
+        public static DateTime GetSanctionEndDate(SanctionEntry sanction) => GetSanctionEndDate(sanction.Sanction, sanction.SanctionStartDate);
         
         public static MeetingType GetMeetingType(string sanction)
         {

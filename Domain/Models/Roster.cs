@@ -3,6 +3,7 @@ using Domain.Interfaces;
 using Domain.IO;
 using Domain.Models.AWAL;
 using Domain.Models.Resignations;
+using Domain.Models.Sanctions;
 using Domain.Storage;
 using System;
 
@@ -71,6 +72,20 @@ namespace Domain.Models
             EmploymentType = string.Empty;
             AgencyCode = string.Empty;
             EmploymentStartDate= entity.EmploymentStartDate;
+            ShiftPattern = entity.Shift;
+            FCLM = string.Empty;
+        }
+
+        public Roster (SanctionEntry entity)
+        {
+            EmployeeID = entity.EmployeeID;
+            UserID = entity.UserID;
+            EmployeeName = entity.EmployeeName;
+            DepartmentID = string.Empty;
+            ManagerName = entity.Manager;
+            EmploymentType = string.Empty;
+            AgencyCode = string.Empty;
+            EmploymentStartDate = DateTime.MinValue;
             ShiftPattern = entity.Shift;
             FCLM = string.Empty;
         }

@@ -63,7 +63,7 @@ namespace Domain.Automation
         {
             if (_newObj.Outcome.Equals("Termination")) return string.Empty;
             var stringBuilder = new StringBuilder();
-            var sanction = new SanctionEntity().Init().SetEmployee(_newObj).SetSanction(_newObj.Outcome, _newObj.DisciplinaryDate);
+            var sanction = new SanctionEntry().Init().SetEmployee(_newObj).SetSanction(_newObj.Outcome, _newObj.DisciplinaryDate);
             var timelineEntry = new Timeline().Create(sanction.EmployeeID, TimelineOrigin.Sanctions);
             timelineEntry.EventMessage = $"{sanction.Sanction} has been recorded by {Environment.UserName} and is active until {sanction.SanctionEndDate.ToString(DataStorage.ShortPreviewDateFormat)}";
 

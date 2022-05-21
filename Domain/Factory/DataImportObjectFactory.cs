@@ -22,7 +22,7 @@ namespace Domain.Factory
                 case DataImportType.CustomMeetings:
                     return (IDataImportObject)new CustomMeetingEntity().ReadFromCSV(fields, map);
                 case DataImportType.Sanctions:
-                    return (IDataImportObject)new SanctionEntity().ReadFromCSV(fields, map);
+                    return (IDataImportObject)new SanctionEntry().ReadFromCSV(fields, map);
                 default:
                     return null;
             }

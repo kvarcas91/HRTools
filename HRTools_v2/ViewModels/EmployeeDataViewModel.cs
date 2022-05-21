@@ -319,8 +319,8 @@ namespace HRTools_v2.ViewModels
 
         #region Sanction Props
 
-        private ObservableCollection<SanctionEntity> _sanctionsList;
-        public ObservableCollection<SanctionEntity> SanctionsList
+        private ObservableCollection<SanctionEntry> _sanctionsList;
+        public ObservableCollection<SanctionEntry> SanctionsList
         {
             get { return _sanctionsList; }
             set { SetProperty(ref _sanctionsList, value); }
@@ -477,11 +477,11 @@ namespace HRTools_v2.ViewModels
         private DelegateCommand _addSanctionCommand = null;
         public DelegateCommand AddSanctionCommand => _addSanctionCommand ?? (_addSanctionCommand = new DelegateCommand(AddSanction));
 
-        private DelegateCommand<SanctionEntity?> _onSanctionOverrideCommand = null;
-        public DelegateCommand<SanctionEntity?> OnSanctionOverrideCommand => _onSanctionOverrideCommand ?? (_onSanctionOverrideCommand = new DelegateCommand<SanctionEntity?>(OnSanctionOverride));
+        private DelegateCommand<SanctionEntry?> _onSanctionOverrideCommand = null;
+        public DelegateCommand<SanctionEntry?> OnSanctionOverrideCommand => _onSanctionOverrideCommand ?? (_onSanctionOverrideCommand = new DelegateCommand<SanctionEntry?>(OnSanctionOverride));
 
-        private DelegateCommand<SanctionEntity?> _onSanctionReissueCommand = null;
-        public DelegateCommand<SanctionEntity?> OnSanctionReissueCommand => _onSanctionReissueCommand ?? (_onSanctionReissueCommand = new DelegateCommand<SanctionEntity?>(OnSanctionReissue));
+        private DelegateCommand<SanctionEntry?> _onSanctionReissueCommand = null;
+        public DelegateCommand<SanctionEntry?> OnSanctionReissueCommand => _onSanctionReissueCommand ?? (_onSanctionReissueCommand = new DelegateCommand<SanctionEntry?>(OnSanctionReissue));
 
         #endregion
 
@@ -587,7 +587,7 @@ namespace HRTools_v2.ViewModels
             IsOnAwal = false;
             TimeLineToggleSelection = TimelineOrigin.ALL;
 
-            SanctionsList = new ObservableCollection<SanctionEntity>();
+            SanctionsList = new ObservableCollection<SanctionEntry>();
             AwalList = new ObservableCollection<AwalEntity>();
             AwalSanctionList = new List<string>();
             Timeline = new ObservableCollection<Timeline>();
@@ -1398,7 +1398,7 @@ namespace HRTools_v2.ViewModels
             SanctionState &= ~SanctionWidgetState.EditIdle;
             SanctionState |= SanctionWidgetState.EditInProgress;
 
-            var sanction = new SanctionEntity().Init().SetEmployee(SelectedEmployee).SetSanction(SelectedSanction, SanctionStartDate);
+            var sanction = new SanctionEntry().Init().SetEmployee(SelectedEmployee).SetSanction(SelectedSanction, SanctionStartDate);
 
             var sRepo = new SanctionsRepository();
             var response = await sRepo.InsertAsync(sanction);
@@ -1426,7 +1426,7 @@ namespace HRTools_v2.ViewModels
             EmployeeLiveSanctions = await _previewRepository.GetLiveSanctionsPreviewAsync(id);
         }
 
-        private async void OnSanctionOverride(SanctionEntity? sanction)
+        private async void OnSanctionOverride(SanctionEntry? sanction)
         {
             if (!sanction.HasValue)
             {
@@ -1467,7 +1467,7 @@ namespace HRTools_v2.ViewModels
             
         }
 
-        private async void OnSanctionReissue(SanctionEntity? sanction)
+        private async void OnSanctionReissue(SanctionEntry? sanction)
         {
             if (!sanction.HasValue)
             {

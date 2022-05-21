@@ -149,6 +149,7 @@
     <Compile Include="Models\Roster.cs" />
     <Compile Include="Models\RosterImportMap.cs" />
     <Compile Include="Models\Sanctions\SanctionEntity.cs" />
+    <Compile Include="Models\Sanctions\SanctionEntry.cs" />
     <Compile Include="Models\Sanctions\SanctionPreview.cs" />
     <Compile Include="Models\Sanctions\SanctionsImportMap.cs" />
     <Compile Include="Models\Settings.cs" />

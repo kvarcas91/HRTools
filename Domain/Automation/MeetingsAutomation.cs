@@ -55,7 +55,7 @@ namespace Domain.Automation
         {
             if (_newObj.SecondMeetingOutcome.Equals("NFA") || _newObj.SecondMeetingOutcome.Equals("Cancelled")) return string.Empty;
             var stringBuilder = new StringBuilder();
-            var sanction = new SanctionEntity().Init().SetEmployee(_newObj).SetSanction(_newObj.SecondMeetingOutcome, _newObj.SecondMeetingDate);
+            var sanction = new SanctionEntry().Init().SetEmployee(_newObj).SetSanction(_newObj.SecondMeetingOutcome, _newObj.SecondMeetingDate);
             var timelineEntry = new Timeline().Create(sanction.EmployeeID, TimelineOrigin.Sanctions);
             timelineEntry.EventMessage = $"{sanction.Sanction} has been recorded by {Environment.UserName} and is active until {sanction.SanctionEndDate.ToString(DataStorage.ShortPreviewDateFormat)}";
 

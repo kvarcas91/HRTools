@@ -3,6 +3,7 @@ using HRTools_v2.Helpers;
 using HRTools_v2.ViewModels;
 using HRTools_v2.Views.Awal;
 using HRTools_v2.Views.Resignations;
+using HRTools_v2.Views.Sanctions;
 using Prism.Ioc;
 using Prism.Regions;
 using System;
@@ -28,6 +29,7 @@ namespace HRTools_v2.Views
         private AppSettings _appSettings;
         private AwalPage _awal;
         private ResignationsPage _resignations;
+        private SanctionsPage _sanctions;
 
         public MainWindow(IContainerExtension container, IRegionManager regionManager)
         {
@@ -84,6 +86,7 @@ namespace HRTools_v2.Views
             _appSettings = _container.Resolve<AppSettings>();
             _awal = _container.Resolve<AwalPage>();
             _resignations = _container.Resolve<ResignationsPage>();
+            _sanctions = _container.Resolve<SanctionsPage>();
 
             _region = _regionManager.Regions["ContentRegion"];
             _ = _region.Add(_loaderPage);
@@ -92,6 +95,7 @@ namespace HRTools_v2.Views
             _ = _region.Add(_appSettings);
             _ = _region.Add(_awal);
             _ = _region.Add(_resignations);
+            _ = _region.Add(_sanctions);
         }
 
         private void OnSearchBoxKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
