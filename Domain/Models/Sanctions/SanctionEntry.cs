@@ -36,7 +36,7 @@ namespace Domain.Models.Sanctions
         {
             return $"{EmployeeID.VerifyCSV()},{UserID.VerifyCSV()},{EmployeeName.VerifyCSV()},{Shift.VerifyCSV()},{Manager.VerifyCSV()},{MeetingType.ToString().VerifyCSV()},{Sanction.VerifyCSV()}," +
                 $"{SanctionStartDate.ToString(DataStorage.ShortPreviewDateFormat).VerifyCSV()},{SanctionEndDate.ToString(DataStorage.ShortPreviewDateFormat).VerifyCSV()},{CreatedBy.VerifyCSV()}," +
-                $"{SanctionEndDate.ToString(DataStorage.LongPreviewDateFormat).VerifyCSV()},{Overriden},{OverridenBy.VerifyCSV()},{OverridenAt.ToString(DataStorage.LongPreviewDateFormat).VerifyCSV()}";
+                $"{CreatedAt.ToString(DataStorage.LongPreviewDateFormat).VerifyCSV()},{Overriden},{OverridenBy.VerifyCSV()},{OverridenAt.ToString(DataStorage.LongPreviewDateFormat).VerifyCSV()}";
         }
 
         public string GetHeader() =>

@@ -101,11 +101,14 @@ namespace Domain.Repository
             return ExecuteAsync(query);
         }
 
-        public Task<IEnumerable<SanctionEntry>> GetAllAsync(bool showAll)
+        public Task<IEnumerable<SanctionEntry>> GetAllAsync(bool showAll, string createdBy)
         {
-            var openQuery = showAll ? "" : $"WHERE sanctionEndDate > '{DateTime.Now.ToString(DataStorage.ShortDBDateFormat)}'";
-            return GetCachedAsync<SanctionEntry>($"SELECT * FROM sanctions {openQuery} ORDER BY createdAt DESC;");
+            var createdByQuery = string.IsNullOrEmpty(createdBy) || createdBy.Equals("All") ? "" : createdBy;
+            var openQuery = showAll ? "" : $"AND sanctionEndDate > '{DateTime.Now.ToString(DataStorage.ShortDBDateFormat)}'";
+            return GetCachedAsync<SanctionEntry>($"SELECT * FROM sanctions WHERE createdBy LIKE '%{createdByQuery}%' {openQuery} ORDER BY createdAt DESC;");
         }
+
+        public Task<IEnumerable<string>> GetAllSanctionCreatorsAsync() => GetCachedAsync<string>("SELECT DISTINCT createdBy FROM sanctions ORDER BY createdBy");
 
         public Task<IEnumerable<SanctionEntry>> GetEmployeeSanctionsAsync(string emplId)
         {

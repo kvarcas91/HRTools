@@ -2850,7 +2850,10 @@
                                 FontSize="{StaticResource SecondaryListFontSize}"
                                 Foreground="Gray"/>
                             <TextBlock 
-                                  Text="{Binding Sanction}"/>
+                                  Text="{Binding Sanction}"
+                                 TextDecorations="{Binding SanctionEndDate, Converter={converters:SanctionTextDecorationConverter}}"
+                                       FontSize="{Binding SanctionEndDate, Converter={converters:SanctionTextSizeConverter}}"
+                                   Foreground="{Binding SanctionEndDate, Converter={converters:SanctionTextForegroundConverter}}"/>
                         </StackPanel>
 
                         <!-- Sanction start date -->
@@ -2861,7 +2864,10 @@
                                 FontSize="{StaticResource SecondaryListFontSize}"
                                 Foreground="Gray"/>
                             <TextBlock 
-                                  Text="{Binding SanctionStartDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"/>
+                                  Text="{Binding SanctionStartDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"
+                                 TextDecorations="{Binding SanctionEndDate, Converter={converters:SanctionTextDecorationConverter}}"
+                                       FontSize="{Binding SanctionEndDate, Converter={converters:SanctionTextSizeConverter}}"
+                                   Foreground="{Binding SanctionEndDate, Converter={converters:SanctionTextForegroundConverter}}"/>
                         </StackPanel>
 
                         <!-- Sanction end date -->
@@ -2872,7 +2878,10 @@
                                 FontSize="{StaticResource SecondaryListFontSize}"
                                 Foreground="Gray"/>
                             <TextBlock 
-                                  Text="{Binding SanctionEndDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"/>
+                                  Text="{Binding SanctionEndDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"
+                                 TextDecorations="{Binding SanctionEndDate, Converter={converters:SanctionTextDecorationConverter}}"
+                                       FontSize="{Binding SanctionEndDate, Converter={converters:SanctionTextSizeConverter}}"
+                                   Foreground="{Binding SanctionEndDate, Converter={converters:SanctionTextForegroundConverter}}"/>
                         </StackPanel>
 
                         <!--Separator-->

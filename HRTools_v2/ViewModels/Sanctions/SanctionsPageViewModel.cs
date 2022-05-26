@@ -11,12 +11,8 @@ using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HRTools_v2.ViewModels.Sanctions
 {
@@ -33,6 +29,13 @@ namespace HRTools_v2.ViewModels.Sanctions
             set { SetProperty(ref _showAllSanctions, value); GetData(); }
         }
 
+        private string _selectedCreator;
+        public string SelectedCreator
+        {
+            get => _selectedCreator;
+            set { SetProperty(ref _selectedCreator, value); GetData(); }
+        }
+
         private HomePageWidgetState _widgedState;
         public HomePageWidgetState WidgedState
         {
@@ -45,6 +48,13 @@ namespace HRTools_v2.ViewModels.Sanctions
         {
             get { return _sanctionsList; }
             set { SetProperty(ref _sanctionsList, value); }
+        }
+
+        private ObservableCollection<string> _sanctionsCreatorList;
+        public ObservableCollection<string> SanctionsCreatorList
+        {
+            get { return _sanctionsCreatorList; }
+            set { SetProperty(ref _sanctionsCreatorList, value); }
         }
 
         private bool _hasData;
@@ -68,15 +78,26 @@ namespace HRTools_v2.ViewModels.Sanctions
             _eventAggregator = eventAggregator;
             _repository = new SanctionsRepository();
             SanctionsList = new ObservableCollection<SanctionEntry>();
+            SanctionsCreatorList = new ObservableCollection<string>();
+            _selectedCreator = "All";
+        }
+
+        private async void SetSanctionCreators()
+        {
+            SanctionsCreatorList.Clear();
+            SanctionsCreatorList.Add("All");
+            SanctionsCreatorList.AddRange(await _repository.GetAllSanctionCreatorsAsync());
         }
 
         private async void GetData()
         {
             if (!_isCurrentPage) return;
+            
+            SanctionsList.Clear();
 
             WidgedState = HomePageWidgetState.SummaryLoading;
 
-            SanctionsList.AddRange(await _repository.GetAllAsync(ShowAllSanctions));
+            SanctionsList.AddRange(await _repository.GetAllAsync(ShowAllSanctions, SelectedCreator));
             HasData = SanctionsList.Count > 0;
 
             WidgedState = HomePageWidgetState.SummaryLoaded;
@@ -119,6 +140,7 @@ namespace HRTools_v2.ViewModels.Sanctions
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
            _isCurrentPage = true;
+            SetSanctionCreators();
             GetData();
         }
 

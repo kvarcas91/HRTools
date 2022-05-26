@@ -23,6 +23,18 @@
         <StackPanel Grid.Row="0" Orientation="Horizontal"
                     HorizontalAlignment="Right">
 
+            <ComboBox Grid.Column="2"
+                      BorderThickness="0"
+                      SelectedIndex="1"
+                                  Margin="5 0 10 0"
+                                  materialDesign:HintAssist.Hint="Sanction creator"
+                                  materialDesign:HintAssist.IsFloating="True"
+                      ItemsSource="{Binding SanctionsCreatorList}"
+                      SelectedItem="{Binding SelectedCreator, Mode=TwoWay}"
+                      IsSynchronizedWithCurrentItem="True"
+                      >
+            </ComboBox>
+
             <CheckBox Content="{Binding ShowAllSanctions, Converter={converters:SanctionToggleToTextConverter}}"
                     HorizontalAlignment="Center"
                     Style="{StaticResource MaterialDesignFilterChipPrimaryOutlineCheckBox}"
@@ -60,6 +72,30 @@
                                     ItemsSource="{Binding SanctionsList}"
                                         Style="{StaticResource SanctionsCompleteListView}"
                                           Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='SummaryLoaded'}"/>
+
+            <!--<DataGrid Grid.Row="1"
+                      Background="Transparent"
+                     Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='SummaryLoaded'}"
+                ItemsSource="{Binding SanctionsList}" 
+                      AutoGenerateColumns="False"
+                  IsReadOnly="True">
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="EmployeeID" Binding="{Binding EmployeeID}"/>
+                    <DataGridTextColumn Header="UserID" Binding="{Binding UserID}"/>
+                    <DataGridTextColumn Header="Employee Name" Binding="{Binding EmployeeName}"/>
+                    <DataGridTextColumn Header="Shift" Binding="{Binding Shift}"/>
+                    <DataGridTextColumn Header="Manager" Binding="{Binding Manager}"/>
+                    <DataGridTextColumn Header="Sanction" Binding="{Binding Sanction}"/>
+                    <DataGridTextColumn Header="Start Date" Binding="{Binding SanctionStartDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"/>
+                    <DataGridTextColumn Header="End Date" Binding="{Binding SanctionEndDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"/>
+                    <DataGridTextColumn Header="Created By" Binding="{Binding CreatedBy}"/>
+                    <DataGridTextColumn Header="Created At" Binding="{Binding CreatedAt, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"/>
+                    <DataGridTextColumn Header="Overriden By" Binding="{Binding OverridenBy}"/>
+                    <DataGridTextColumn Header="Overriden At" Binding="{Binding OverridenAt, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"/>
+                </DataGrid.Columns>
+
+            </DataGrid>-->
 
             <TextBlock Text="No Data"
                                            Visibility="{Binding HasData, Converter={StaticResource InverseBoolToVisConverter}}"
