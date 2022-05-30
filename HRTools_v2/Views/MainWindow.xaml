@@ -98,7 +98,7 @@
                             Style="{StaticResource MaterialDesignFlatButton}"
                                 Height="50"
                             Command="{Binding NavigateCommand}"
-                            CommandParameter="Meetings">
+                            CommandParameter="MeetingsPage">
                             <StackPanel Orientation="Vertical">
                                 <materialDesign:PackIcon Kind="Handshake"
                                                              HorizontalAlignment="Center"

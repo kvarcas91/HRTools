@@ -1,0 +1,269 @@
+﻿<UserControl x:Class="HRTools_v2.Views.Meetings.MeetingsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HRTools_v2.Views.Meetings"
+            mc:Ignorable="d" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             d:Background="{DynamicResource Background}"
+             xmlns:converters="clr-namespace:HRTools_v2.Converters"
+             d:DesignHeight="750" d:DesignWidth="1400">
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="42"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Controls -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+
+
+            <ComboBox Grid.Column="2"
+                      BorderThickness="0"
+                      SelectedIndex="1"
+                                  Margin="5 0 20 0"
+                                  materialDesign:HintAssist.Hint="Meeting Status"
+                                  materialDesign:HintAssist.IsFloating="True"
+                      ItemsSource="{Binding MeetingStatusList}"
+                      SelectedItem="{Binding SelectedMeetingStatus, Mode=TwoWay}"
+                      IsSynchronizedWithCurrentItem="True">
+            </ComboBox>
+
+            <ComboBox Grid.Column="2"
+                      BorderThickness="0"
+                      SelectedIndex="1"
+                                  Margin="10 0 10 0"
+                                  materialDesign:HintAssist.Hint="Manager"
+                                  materialDesign:HintAssist.IsFloating="True"
+                      ItemsSource="{Binding ManagerList}"
+                      SelectedItem="{Binding SelectedManager, Mode=TwoWay}"
+                      IsSynchronizedWithCurrentItem="True">
+            </ComboBox>
+
+            <Grid>
+
+                <Button Background="Transparent"
+                    Margin="10 0 5 0"
+                        Width="160"
+                    BorderBrush="LightGray"
+                        Command="{Binding ImportMeetingsFileCommand}"
+                        Visibility="{Binding IsMeetingImportLoading, Converter={StaticResource InverseBoolToVisConverter}}"
+                    materialDesign:ShadowAssist.ShadowEdges="None"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="AccountReactivate" VerticalAlignment="Center"/>
+                        <TextBlock Text="Import meetings file" VerticalAlignment="Center"
+                                                       FontSize="{DynamicResource SecondaryFontSize}"
+                                                       Margin="10 0 0 0"/>
+                    </StackPanel>
+                </Button>
+
+                <Border Background="Transparent"
+                        Margin="10 0 0 0"
+                        
+                          Width="160"
+                         Visibility="{Binding IsMeetingImportLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        >
+                    <Grid Height="10"
+                          HorizontalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Ellipse x:Name="PART_Ellipse0" Grid.Column="0" Fill="{StaticResource LoaderElipseBackground}"/>
+                        <Ellipse x:Name="PART_Ellipse1" Grid.Column="2" Fill="{StaticResource LoaderElipseBackground}"/>
+                        <Ellipse x:Name="PART_Ellipse2" Grid.Column="4" Fill="{StaticResource LoaderElipseBackground}"/>
+                        <Ellipse x:Name="PART_Ellipse3" Grid.Column="6" Fill="{StaticResource LoaderElipseBackground}"/>
+                        <Ellipse x:Name="PART_Ellipse4" Grid.Column="8" Fill="{StaticResource LoaderElipseBackground}"/>
+                    </Grid>
+                    <Border.Resources>
+                        <Style TargetType="Ellipse">
+                            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                            <Setter Property="Width" Value="10"/>
+                            <Setter Property="Height" Value="10"/>
+                            <Setter Property="RenderTransform">
+                                <Setter.Value>
+                                    <ScaleTransform ScaleX="0" ScaleY="0"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Border.Resources>
+                    <Border.Triggers>
+                        <EventTrigger RoutedEvent="Loaded">
+                            <BeginStoryboard Storyboard="{StaticResource loader}"/>
+                        </EventTrigger>
+                    </Border.Triggers>
+                </Border>
+            </Grid>
+           
+
+            <materialDesign:PopupBox   Grid.Column="3"
+                                           Margin="10 0 5 0">
+
+                <materialDesign:PopupBox.ToggleContent
+                        >
+
+                    <materialDesign:PackIcon Kind="DotsVertical"
+                                                    Margin="10"
+                                                 ToolTip="Data options.."
+                                                 Foreground="{DynamicResource PrimaryHueDarkBrush}"/>
+
+                </materialDesign:PopupBox.ToggleContent>
+
+                <StackPanel Orientation="Vertical">
+
+                    <StackPanel Background="Transparent">
+                        <Button Background="{DynamicResource CardBackground}"
+                                            IsEnabled="{Binding EmplStatus, Converter={converters:EmploymentStatusToIsEnabledConverter}, ConverterParameter=1}"
+                                            BorderBrush="LightGray"
+                                                Command="{Binding ChangeEmployeeStatusCommand}"
+                                                CommandParameter="Activate"
+                                            materialDesign:ShadowAssist.ShadowEdges="None"
+                                            materialDesign:ShadowAssist.ShadowDepth="Depth0">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="AccountReactivate" VerticalAlignment="Center"/>
+                                <TextBlock Text="Activate" VerticalAlignment="Center"
+                                                       FontSize="{DynamicResource SecondaryFontSize}"
+                                                       Margin="10 0 0 0"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button Background="{DynamicResource CardBackground}" 
+                                            BorderBrush="LightGray"
+                                                IsEnabled="{Binding EmplStatus, Converter={converters:EmploymentStatusToIsEnabledConverter}, ConverterParameter=2}"
+                                            Command="{Binding ChangeEmployeeStatusCommand}"
+                                                CommandParameter="Suspend"
+                                                materialDesign:ShadowAssist.ShadowEdges="None"
+                                            materialDesign:ShadowAssist.ShadowDepth="Depth0">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="AccountRemoveOutline" VerticalAlignment="Center"/>
+                                <TextBlock Text="Suspend" 
+                                                       FontSize="{DynamicResource SecondaryFontSize}"
+                                                       VerticalAlignment="Center"
+                                                       Margin="10 0 0 0"/>
+                            </StackPanel>
+                        </Button>
+
+                    </StackPanel>
+                </StackPanel>
+
+            </materialDesign:PopupBox>
+
+        </StackPanel>
+
+        <Separator Grid.Row="1" BorderBrush="LightGray" BorderThickness="1"/>
+
+        <Grid Grid.Row="2">
+
+            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                             IsIndeterminate="True"
+                                             Width="90"
+                                             Height="90" 
+                                             Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='SummaryLoading'}"/>
+
+            <!--<ListBox x:Name="meetingsListView"
+                                Grid.Row="2"
+                 Background="Transparent"
+                               ItemsSource="{Binding MeetingsList}"
+                                Style="{StaticResource MeetingsSnippetListBox}"
+                                    Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='SummaryLoaded'}"/>-->
+
+
+
+            <DataGrid Grid.Row="1"
+                      Background="Transparent"
+                     
+                ItemsSource="{Binding MeetingsList}" 
+                      AutoGenerateColumns="False"
+                       Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='SummaryLoaded'}"
+                  IsReadOnly="True">
+
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Grid.Column="0"  VerticalAlignment="Center" >
+                                    <StackPanel Orientation="Horizontal">
+                                         <Ellipse Fill="{Binding MeetingStatus, Converter={converters:MeetingStatusToColorConverter}}"
+                                                 Width="5"
+                                                 Height="5"
+                                                  Margin="0 0 5 0"
+                                                 VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding MeetingStatus}"
+                                           VerticalAlignment="Center" 
+                                   TextDecorations="{Binding MeetingStatus, Converter={converters:MeetingTextDecorationConverter}}"
+                                       FontSize="{Binding MeetingStatus, Converter={converters:MeetingTextSizeConverter}}"
+                                   Foreground="{Binding MeetingStatus, Converter={converters:MeetingTextForegroundConverter}}"
+                                         Padding="0 0 5 2"/>
+                                    </StackPanel>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.Header>
+                            <TextBlock Text="Meeting Status"/>
+                        </DataGridTemplateColumn.Header>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTextColumn Header="Case ID" Binding="{Binding ID}"/>
+                    <DataGridTextColumn Header="Meeting Stage" Binding="{Binding MeetingProgress}"/>
+                    <DataGridTextColumn Header="Employee Name" Binding="{Binding EmployeeName}"/>
+                    <DataGridTextColumn Header="Shift" Binding="{Binding ShiftPattern}"/>
+                    <DataGridTextColumn Header="Manager" Binding="{Binding ManagerName}"/>
+                    <DataGridTextColumn Header="First Meeting Date" Binding="{Binding FirstMeetingDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"/>
+                    <DataGridTextColumn Header="First meeting outcome" Binding="{Binding FirstMeetingOutcome}"/>
+                    <DataGridTextColumn Header="Second Meeting Date" Binding="{Binding SecondMeetingDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"/>
+                    <DataGridTextColumn Header="Second meeting outcome" Binding="{Binding SecondMeetingOutcome}"/>
+
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Background="Transparent" 
+                                            Padding="10"
+                                                ToolTip="Open Employee View"
+                                            materialDesign:ShadowAssist.ShadowEdges="None"
+                                            materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                    Command="{Binding Path=DataContext.OpenEmployeeViewCommand,RelativeSource= {RelativeSource FindAncestor,
+  AncestorType={x:Type DataGrid}}}"
+                                    CommandParameter="{Binding}"
+                                            BorderThickness="0">
+
+                                    <materialDesign:PackIcon Kind="PersonArrowRight" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+
+            </DataGrid>
+
+
+
+
+            <TextBlock Text="No Data"
+                Visibility="{Binding HasData, Converter={StaticResource InverseBoolToVisConverter}}"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Foreground="Gray"
+                FontSize="{StaticResource NoDataFontSize}"/>
+
+        </Grid>
+
+    </Grid>
+</UserControl>

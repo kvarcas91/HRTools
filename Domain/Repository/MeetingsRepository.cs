@@ -32,6 +32,15 @@ namespace Domain.Repository
         public Task<IEnumerable<MeetingsEntity>> GetEmployeeMeetingsAsync(string emplId) => 
             GetCachedAsync<MeetingsEntity>($"SELECT * FROM meetings WHERE employeeID = '{emplId}' ORDER BY createdAt DESC");
 
+        public Task<IEnumerable<MeetingsEntity>> GetMeetingsAsync(string selectedMeetingStatus, string selectedManager)
+        {
+            var query = string.IsNullOrEmpty(selectedMeetingStatus) || selectedMeetingStatus.Equals("Open/Pending") ? "('Open', 'Pending')" : "('Closed')";
+            var managerQuery = string.IsNullOrEmpty(selectedManager) || selectedManager.Equals("All") ? "" : $"AND managerName LIKE '%{selectedManager}%'";
+            return GetCachedAsync<MeetingsEntity>($"SELECT * FROM meetings WHERE meetingStatus in {query} {managerQuery} ORDER BY createdAt DESC;");
+        }
+
+        public Task<IEnumerable<string>> GetMeetingsDistinctManagersAsync() => GetCachedAsync<string>("SELECT DISTINCT managerName FROM meetings WHERE managerName NOT LIKE '' ORDER BY managerName;");
+
         public Task<IEnumerable<CustomMeetingEntity>> GetEmployeeCustomMeetingsAsync(string emplId) =>
             GetCachedAsync<CustomMeetingEntity>($"SELECT * FROM custom_meetings WHERE claimantID = '{emplId}' OR respondentID = '{emplId}' ORDER BY createdAt DESC");
 

@@ -2,6 +2,7 @@
 using Domain.Interfaces;
 using Domain.IO;
 using Domain.Models.AWAL;
+using Domain.Models.Meetings;
 using Domain.Models.Resignations;
 using Domain.Models.Sanctions;
 using Domain.Storage;
@@ -59,6 +60,21 @@ namespace Domain.Models
             JobTitle = string.Empty;
             EmploymentStartDate = awal.EmploymentStartDate;
             ShiftPattern = awal.ShiftPattern;
+            FCLM = string.Empty;
+        }
+
+        public Roster(MeetingsEntity meeting)
+        {
+            EmployeeID = meeting.EmployeeID;
+            UserID = meeting.UserID;
+            EmployeeName = meeting.EmployeeName;
+            DepartmentID = meeting.DepartmentID;
+            ManagerName = meeting.ManagerName;
+            EmploymentType = string.Empty;
+            AgencyCode = string.Empty;
+            JobTitle = string.Empty;
+            EmploymentStartDate = DateTime.MinValue;
+            ShiftPattern = meeting.ShiftPattern;
             FCLM = string.Empty;
         }
 
