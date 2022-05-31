@@ -92,6 +92,7 @@
     <Compile Include="Automation\ITaskAutomation.cs" />
     <Compile Include="Automation\MeetingsAutomation.cs" />
     <Compile Include="Automation\ResignationsAutomation.cs" />
+    <Compile Include="DataManager\ERMeetingsImportManager.cs" />
     <Compile Include="DataManager\LoggerManager.cs" />
     <Compile Include="DataManager\SanctionManager.cs" />
     <Compile Include="DataValidation\AwalValidation.cs" />
@@ -141,6 +142,7 @@
     <Compile Include="Models\DataSnips\EmployeeStatusSnip.cs" />
     <Compile Include="Models\EmplComment.cs" />
     <Compile Include="Models\EmplTask.cs" />
+    <Compile Include="Models\Meetings\ERMeetingImportMap.cs" />
     <Compile Include="Models\Meetings\MeetingsEntity.cs" />
     <Compile Include="Models\Meetings\MeetingsEntry.cs" />
     <Compile Include="Models\Meetings\MeetingsImportMap.cs" />

@@ -42,6 +42,35 @@ namespace Domain.Models.Meetings
             MeetingStatus = "Open";
         }
 
+        public MeetingsEntity(ERMeetingImportMap entry, Roster empl) : this()
+        {
+            if (empl != null)
+            {
+                UserID = empl.UserID;
+                EmployeeName = empl.EmployeeName;
+                ShiftPattern = empl.ShiftPattern;
+                ManagerName = empl.ManagerName;
+                DepartmentID = empl.DepartmentID;
+            }
+
+            ID = entry.CaseNumber;
+
+            EmployeeID = entry.EmployeeID;
+            CreatedBy = "er_import";
+            MeetingType = entry.MeetingType;
+            Paperless = false;
+            SetProgress(entry.Task);
+            if (string.IsNullOrEmpty(MeetingProgress))
+            {
+                FirstMeetingDate = entry.DueDate;
+                return;
+            }
+            
+            if (MeetingProgress.Contains("Informal") || MeetingProgress.Contains("Investigation")) FirstMeetingDate = entry.DueDate;
+            else SecondMeetingDate = entry.DueDate;
+            
+        }
+
         public MeetingsEntity(MeetingsEntry entry, Roster empl) : this()
         {
             EmployeeID = empl.EmployeeID;
@@ -94,17 +123,34 @@ namespace Domain.Models.Meetings
                 {SecondMeetingDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)},'{SecondMeetingOutcome}','{MeetingStatus}',{CreatedAt.DbNullableSanityCheck(DataStorage.LongDBDateFormat)},'{CreatedBy}',
                 {UpdatedAt.DbNullableSanityCheck(DataStorage.LongDBDateFormat)},'{UpdatedBy}','{Convert.ToUInt16(IsERCaseStatusOpen)}','{Convert.ToUInt16(Paperless)}')";
 
+        private void SetProgress(string task)
+        {
+            switch (MeetingType)
+            {
+                case MeetingType.Health:
+                    MeetingProgress = task.Contains("Informal") ? "Informal Health Review" : "Formal Health Review";
+                    FirstMeetingOutcomeList = new List<string> { "NFA", "Proceed to FHRM" };
+                    SecondMeetingOutcomeList = new List<string> { "NFA", "1st LoC", "2nd LoC", "3rd LoC", "Termination" };
+                    break;
+                case MeetingType.Disciplinary:
+                    MeetingProgress = task.Contains("Investigation") ? "Investigation" : "Disciplinary";
+                    FirstMeetingOutcomeList = new List<string> { "NFA", "Proceed to Disciplinary" };
+                    SecondMeetingOutcomeList = new List<string> { "NFA", "Verbal Warning", "Written Warning", "Final Warning", "Termination" };
+                    break;
+            }
+        }
+
         public void SetProgress()
         {
             switch(MeetingType)
             {
                 case MeetingType.Health:
-                    MeetingProgress = string.IsNullOrEmpty(FirstMeetingOutcome) || FirstMeetingOutcome.Equals("NFA") || FirstMeetingOutcome.Equals("Cancelled") ? "Informal Health Review" : "Formal Health Review";
+                    MeetingProgress = (string.IsNullOrEmpty(FirstMeetingOutcome) && SecondMeetingDate == DateTime.MinValue) || FirstMeetingOutcome.Equals("NFA") || FirstMeetingOutcome.Equals("Cancelled") ? "Informal Health Review" : "Formal Health Review";
                     FirstMeetingOutcomeList = new List<string> { "NFA", "Proceed to FHRM" };
                     SecondMeetingOutcomeList = new List<string> { "NFA", "1st LoC", "2nd LoC", "3rd LoC", "Termination" };
                     break;
                 case MeetingType.Disciplinary:
-                    MeetingProgress = string.IsNullOrEmpty(FirstMeetingOutcome) || FirstMeetingOutcome.Equals("NFA") || FirstMeetingOutcome.Equals("Cancelled") ? "Investigation" : "Disciplinary";
+                    MeetingProgress = (string.IsNullOrEmpty(FirstMeetingOutcome) && SecondMeetingDate == DateTime.MinValue) || FirstMeetingOutcome.Equals("NFA") || FirstMeetingOutcome.Equals("Cancelled") ? "Investigation" : "Disciplinary";
                     FirstMeetingOutcomeList = new List<string> { "NFA", "Proceed to Disciplinary" };
                     SecondMeetingOutcomeList = new List<string> { "NFA", "Verbal Warning", "Written Warning", "Final Warning", "Termination" };
                     break;

@@ -68,12 +68,12 @@
                                              Height="90" 
                                              Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='SummaryLoading'}"/>
 
-            <ListView x:Name="sanctionsCompleteListView"
+            <!--<ListView x:Name="sanctionsCompleteListView"
                                     ItemsSource="{Binding SanctionsList}"
                                         Style="{StaticResource SanctionsCompleteListView}"
-                                          Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='SummaryLoaded'}"/>
+                                          Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='SummaryLoaded'}"/>-->
 
-            <!--<DataGrid Grid.Row="1"
+            <DataGrid Grid.Row="1"
                       Background="Transparent"
                      Visibility="{Binding WidgedState, Converter={converters:HomePageWidgetStateToVisibilityConverter}, ConverterParameter='SummaryLoaded'}"
                 ItemsSource="{Binding SanctionsList}" 
@@ -81,21 +81,85 @@
                   IsReadOnly="True">
 
                 <DataGrid.Columns>
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <!-- Employee Info -->
+                                <Grid Grid.Column="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Width="30" Height="30"  CornerRadius="50" BorderBrush="DarkSlateGray" 
+                                        Background="{StaticResource Background}"
+                                BorderThickness="1">
+                                        <TextBlock HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center"
+                                       Text="{Binding UserID, Converter={converters:LoginToInitialsConverter}}"
+                                        FontSize="12"/>
+                                    </Border>
+
+                                    <StackPanel Orientation="Vertical" Grid.Column="1" Margin="10 0 0 0">
+
+                                        <TextBlock 
+                                    Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                       Foreground="{DynamicResource PrimaryHueMidBrush}"
+                                    Text="{Binding UserID, Converter={converters:LoginToFullNameConverter}}"
+                                        FontWeight="Bold"
+                                        FontSize="12"/>
+
+                                        <TextBlock Grid.Row="0"
+                                    Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                       Foreground="Gray"
+                                           FontSize="10"
+                                           Text="{Binding CreatedAt, Converter={converters:DateTimeToStringConverter}}"
+                                           />
+
+                                    </StackPanel>
+
+                                </Grid>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.Header>
+                            <TextBlock Text="Employee"/>
+                        </DataGridTemplateColumn.Header>
+                    </DataGridTemplateColumn>
                     <DataGridTextColumn Header="EmployeeID" Binding="{Binding EmployeeID}"/>
                     <DataGridTextColumn Header="UserID" Binding="{Binding UserID}"/>
-                    <DataGridTextColumn Header="Employee Name" Binding="{Binding EmployeeName}"/>
                     <DataGridTextColumn Header="Shift" Binding="{Binding Shift}"/>
                     <DataGridTextColumn Header="Manager" Binding="{Binding Manager}"/>
                     <DataGridTextColumn Header="Sanction" Binding="{Binding Sanction}"/>
                     <DataGridTextColumn Header="Start Date" Binding="{Binding SanctionStartDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"/>
                     <DataGridTextColumn Header="End Date" Binding="{Binding SanctionEndDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"/>
                     <DataGridTextColumn Header="Created By" Binding="{Binding CreatedBy}"/>
-                    <DataGridTextColumn Header="Created At" Binding="{Binding CreatedAt, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"/>
                     <DataGridTextColumn Header="Overriden By" Binding="{Binding OverridenBy}"/>
                     <DataGridTextColumn Header="Overriden At" Binding="{Binding OverridenAt, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"/>
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Background="Transparent" 
+                                            Padding="10"
+                                                ToolTip="Open Employee View"
+                                            materialDesign:ShadowAssist.ShadowEdges="None"
+                                            materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                    Command="{Binding Path=DataContext.OpenEmployeeViewCommand,RelativeSource= {RelativeSource FindAncestor,
+  AncestorType={x:Type DataGrid}}}"
+                                    CommandParameter="{Binding}"
+                                            BorderThickness="0">
+
+                                    <materialDesign:PackIcon Kind="PersonArrowRight" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
 
-            </DataGrid>-->
+            </DataGrid>
 
             <TextBlock Text="No Data"
                                            Visibility="{Binding HasData, Converter={StaticResource InverseBoolToVisConverter}}"

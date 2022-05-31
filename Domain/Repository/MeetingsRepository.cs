@@ -25,18 +25,40 @@ namespace Domain.Repository
             _validator = new MeetingsValidation();
         }
 
-        public Task<Response> InsertAllAsync(IList<IDataImportObject> awalList) => base.InsertAllAsync(awalList, "meetings");
+        public Task<Response> InsertAllAsync(IList<IDataImportObject> meetingList) => base.InsertAllAsync(meetingList, "meetings");
 
-        public Task<Response> InsertCustomAllAsync(IList<IDataImportObject> awalList) => base.InsertAllAsync(awalList, "custom_meetings");
+        public Task<Response> UpdateAllAsync(IList<MeetingsEntity> meetingsList)
+        {
+            StringBuilder queryBuilder = new StringBuilder();
+            foreach (var item in meetingsList)
+            {
+                queryBuilder.Append($@"UPDATE meetings SET meetingStatus = '{item.MeetingStatus}', firstMeetingDate = {item.FirstMeetingDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)}, 
+                                    secondMeetingDate = {item.SecondMeetingDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)}, 
+                                    shiftPattern = '{item.ShiftPattern}', managerName = '{item.ManagerName.DbSanityCheck()}', employeeName = '{item.EmployeeName.DbSanityCheck()}', departmentID = '{item.DepartmentID}',
+                                    isERCaseStatusOpen = '{Convert.ToInt32(item.IsERCaseStatusOpen)}' WHERE id = '{item.ID}';");
+            }
+
+            return ExecuteAsync(queryBuilder.ToString());
+        }
+
+        public Task<Response> InsertAllAsync(IList<MeetingsEntity> meetingList) => base.InsertAllAsync(meetingList, "meetings");
+
+        public Task<Response> InsertCustomAllAsync(IList<IDataImportObject> meetingList) => base.InsertAllAsync(meetingList, "custom_meetings");
 
         public Task<IEnumerable<MeetingsEntity>> GetEmployeeMeetingsAsync(string emplId) => 
             GetCachedAsync<MeetingsEntity>($"SELECT * FROM meetings WHERE employeeID = '{emplId}' ORDER BY createdAt DESC");
 
-        public Task<IEnumerable<MeetingsEntity>> GetMeetingsAsync(string selectedMeetingStatus, string selectedManager)
+        public Task<IEnumerable<MeetingsEntity>> GetMeetingsAsync() => GetCachedAsync<MeetingsEntity>($"SELECT * FROM meetings;");
+
+        public Task<IEnumerable<MeetingsEntity>> GetMeetingsAsync(string selectedMeetingStatus, string selectedManager, string selectedMeetingType)
         {
             var query = string.IsNullOrEmpty(selectedMeetingStatus) || selectedMeetingStatus.Equals("Open/Pending") ? "('Open', 'Pending')" : "('Closed')";
             var managerQuery = string.IsNullOrEmpty(selectedManager) || selectedManager.Equals("All") ? "" : $"AND managerName LIKE '%{selectedManager}%'";
-            return GetCachedAsync<MeetingsEntity>($"SELECT * FROM meetings WHERE meetingStatus in {query} {managerQuery} ORDER BY createdAt DESC;");
+            var conj = string.IsNullOrEmpty(managerQuery) ? "AND" : "";
+
+            var meetingTypeQuery = selectedMeetingType.Equals("All") ? "" : $"{conj} ((firstMeetingDate < '{DateTime.Now.ToString(DataStorage.ShortDBDateFormat)}' AND secondMeetingDate is NULL) OR (secondMeetingDate < '{DateTime.Now.ToString(DataStorage.ShortDBDateFormat)}'))";
+
+            return GetCachedAsync<MeetingsEntity>($"SELECT * FROM meetings WHERE meetingStatus in {query} {managerQuery} {meetingTypeQuery} ORDER BY createdAt DESC;");
         }
 
         public Task<IEnumerable<string>> GetMeetingsDistinctManagersAsync() => GetCachedAsync<string>("SELECT DISTINCT managerName FROM meetings WHERE managerName NOT LIKE '' ORDER BY managerName;");

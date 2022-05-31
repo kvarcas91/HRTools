@@ -23,11 +23,21 @@
         <StackPanel Grid.Row="0" Orientation="Horizontal"
                     HorizontalAlignment="Right">
 
+            <ComboBox Grid.Column="2"
+                      BorderThickness="0"
+                      SelectedIndex="1"
+                                  Margin="10 0 20 0"
+                                  materialDesign:HintAssist.Hint="Meeting Progress"
+                                  materialDesign:HintAssist.IsFloating="True"
+                      ItemsSource="{Binding SelectedMeetingTypeList}"
+                      SelectedItem="{Binding SelectedMeetingType, Mode=TwoWay}"
+                      IsSynchronizedWithCurrentItem="True">
+            </ComboBox>
 
             <ComboBox Grid.Column="2"
                       BorderThickness="0"
                       SelectedIndex="1"
-                                  Margin="5 0 20 0"
+                                  Margin="10 0 20 0"
                                   materialDesign:HintAssist.Hint="Meeting Status"
                                   materialDesign:HintAssist.IsFloating="True"
                       ItemsSource="{Binding MeetingStatusList}"
@@ -127,34 +137,65 @@
                 <StackPanel Orientation="Vertical">
 
                     <StackPanel Background="Transparent">
-                        <Button Background="{DynamicResource CardBackground}"
-                                            IsEnabled="{Binding EmplStatus, Converter={converters:EmploymentStatusToIsEnabledConverter}, ConverterParameter=1}"
-                                            BorderBrush="LightGray"
-                                                Command="{Binding ChangeEmployeeStatusCommand}"
-                                                CommandParameter="Activate"
-                                            materialDesign:ShadowAssist.ShadowEdges="None"
-                                            materialDesign:ShadowAssist.ShadowDepth="Depth0">
+                        <Button Background="Transparent"
+                    Margin="10 0 5 0"
+                    BorderBrush="LightGray"
+                        Command="{Binding ExportOutstandingMeetingsCommand}"
+                    materialDesign:ShadowAssist.ShadowEdges="None"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0">
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="AccountReactivate" VerticalAlignment="Center"/>
-                                <TextBlock Text="Activate" VerticalAlignment="Center"
-                                                       FontSize="{DynamicResource SecondaryFontSize}"
+                                <materialDesign:PackIcon Kind="FileExcelOutline" VerticalAlignment="Center"/>
+                                <TextBlock Text="Export Outstanding + Current Week Meetings to CSV" VerticalAlignment="Center"
+                                                       FontSize="{StaticResource SecondaryFontSize}"
                                                        Margin="10 0 0 0"/>
                             </StackPanel>
                         </Button>
 
-                        <Button Background="{DynamicResource CardBackground}" 
-                                            BorderBrush="LightGray"
-                                                IsEnabled="{Binding EmplStatus, Converter={converters:EmploymentStatusToIsEnabledConverter}, ConverterParameter=2}"
-                                            Command="{Binding ChangeEmployeeStatusCommand}"
-                                                CommandParameter="Suspend"
-                                                materialDesign:ShadowAssist.ShadowEdges="None"
-                                            materialDesign:ShadowAssist.ShadowDepth="Depth0">
+                        <Button Background="Transparent"
+                    Margin="10 0 5 0"
+                    BorderBrush="LightGray"
+                        Command="{Binding ExportMeetingsCommand}"
+                    materialDesign:ShadowAssist.ShadowEdges="None"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0">
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="AccountRemoveOutline" VerticalAlignment="Center"/>
-                                <TextBlock Text="Suspend" 
-                                                       FontSize="{DynamicResource SecondaryFontSize}"
-                                                       VerticalAlignment="Center"
+                                <materialDesign:PackIcon Kind="FileExcelOutline" VerticalAlignment="Center"/>
+                                <TextBlock Text="Export All Meetings to CSV" VerticalAlignment="Center"
+                                                       FontSize="{StaticResource SecondaryFontSize}"
                                                        Margin="10 0 0 0"/>
+                                
+                                
+                            </StackPanel>
+                        </Button>
+
+                        <Button Background="Transparent"
+                    Margin="10 0 5 0"
+                    BorderBrush="LightGray"
+                        Command="{Binding ExportSelectedMeetingsCommand}"
+                    materialDesign:ShadowAssist.ShadowEdges="None"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="FileExcelOutline" VerticalAlignment="Center"/>
+                                <TextBlock Text="Export Current Selection to CSV" VerticalAlignment="Center"
+                                                       FontSize="{StaticResource SecondaryFontSize}"
+                                                       Margin="10 0 0 0"/>
+
+
+                            </StackPanel>
+                        </Button>
+
+                        <Button Background="Transparent"
+                    Margin="10 0 5 0"
+                    BorderBrush="LightGray"
+                        Command="{Binding AlignAMCommand}"
+                    materialDesign:ShadowAssist.ShadowEdges="None"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="RefreshAuto" VerticalAlignment="Center"/>
+                                <TextBlock Text="Align AMs for all Open Cases" VerticalAlignment="Center"
+                                                       FontSize="{StaticResource SecondaryFontSize}"
+                                                       Margin="10 0 0 0"/>
+
+
                             </StackPanel>
                         </Button>
 

@@ -18,7 +18,9 @@ namespace Domain.Factory
                 case DataImportType.Awal:
                     return (IDataImportObject)new AwalEntity().ReadFromCSV(fields, map);
                 case DataImportType.Meetings:
-                        return (IDataImportObject)new MeetingsEntity().ReadFromCSV(fields, map);
+                    return (IDataImportObject)new MeetingsEntity().ReadFromCSV(fields, map);
+                case DataImportType.ERMeeting:
+                    return (IDataImportObject)new ERMeetingImportMap().ReadFromCSV(fields,map);
                 case DataImportType.CustomMeetings:
                     return (IDataImportObject)new CustomMeetingEntity().ReadFromCSV(fields, map);
                 case DataImportType.Sanctions:
