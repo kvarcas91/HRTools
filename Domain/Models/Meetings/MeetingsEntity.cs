@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace Domain.Models.Meetings
 {
-    public class MeetingsEntity : IEmployee, IDataImportObject
+    public class MeetingsEntity : IEmployee, IDataImportObject, IWritable
     {
         public string ID { get; set; }
         public string EmployeeID { get; set; }
@@ -157,5 +157,14 @@ namespace Domain.Models.Meetings
             }
         }
 
+        public string GetDataHeader() =>
+            "Case Number, EmployeeID, UserID, Name, Manager, Shift, Department, Meeting Type, FirstMeetingDate, FirstMeetingOutcome, SecondMeetingDate, SecondMeetingOutcome, MeetingStatus, Paperless";
+
+        public string GetDataRow()
+        {
+            return $"{ID.VerifyCSV()},{EmployeeID.VerifyCSV()},{UserID.VerifyCSV()},{EmployeeName.VerifyCSV()},{ManagerName.VerifyCSV()},{ShiftPattern.VerifyCSV()},{DepartmentID.VerifyCSV()}," +
+                $"{MeetingProgress.VerifyCSV()},{FirstMeetingDate.ToString(DataStorage.ShortPreviewDateFormat).VerifyCSV()},{FirstMeetingOutcome.VerifyCSV()}," +
+                $"{SecondMeetingDate.ToString(DataStorage.ShortPreviewDateFormat).VerifyCSV()},{SecondMeetingOutcome.VerifyCSV()},{MeetingStatus.VerifyCSV()},{Paperless}";
+        }
     }
 }

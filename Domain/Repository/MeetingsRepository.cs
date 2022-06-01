@@ -63,6 +63,19 @@ namespace Domain.Repository
 
         public Task<IEnumerable<string>> GetMeetingsDistinctManagersAsync() => GetCachedAsync<string>("SELECT DISTINCT managerName FROM meetings WHERE managerName NOT LIKE '' ORDER BY managerName;");
 
+        public Task<IEnumerable<MeetingsEntity>> GetOutstandingMeetingsAsync()
+        {
+            var currentDayOfWeek = (int)DateTime.Now.DayOfWeek;
+            var date = DateTime.Now.AddDays(6 - currentDayOfWeek);
+            string meetingDeadlineDate =  date.AddDays(1).ToString("yyyy-MM-dd");
+
+            string query = $@"select * from meetings where meetingStatus in ('Open', 'Pending') AND meetingType IN (1,2) AND 
+                                ((firstMeetingDate NOT NULL AND firstMeetingDate < '{meetingDeadlineDate}' AND secondMeetingDate IS NULL AND firstMeetingOutcome = '') OR
+                                (secondMeetingDate NOT NULL AND secondMeetingDate < '{meetingDeadlineDate}' AND secondMeetingOutcome = ''))";
+
+            return GetCachedAsync<MeetingsEntity>(query);
+        }
+
         public Task<IEnumerable<CustomMeetingEntity>> GetEmployeeCustomMeetingsAsync(string emplId) =>
             GetCachedAsync<CustomMeetingEntity>($"SELECT * FROM custom_meetings WHERE claimantID = '{emplId}' OR respondentID = '{emplId}' ORDER BY createdAt DESC");
 

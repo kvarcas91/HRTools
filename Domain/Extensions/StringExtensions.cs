@@ -22,10 +22,6 @@ namespace Domain.Extensions
 
         public static string VerifyCSV(this string data)
         {
-            if (data.Contains("this is some"))
-            {
-
-            }
             if (string.IsNullOrEmpty(data)) return string.Empty;
 
             if (data.Contains(","))

@@ -1,4 +1,5 @@
-﻿using Domain.DataManager;
+﻿using Domain.Data;
+using Domain.DataManager;
 using Domain.Factory;
 using Domain.IO;
 using Domain.Models;
@@ -13,6 +14,7 @@ using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -100,6 +102,15 @@ namespace HRTools_v2.ViewModels.Meetings
 
         private DelegateCommand _importMeetingsFileCommand = null;
         public DelegateCommand ImportMeetingsFileCommand => _importMeetingsFileCommand ?? (_importMeetingsFileCommand = new DelegateCommand(ImportMeetings));
+
+        private DelegateCommand _exportOutstandingMeetingsCommand = null;
+        public DelegateCommand ExportOutstandingMeetingsCommand => _exportOutstandingMeetingsCommand ?? (_exportOutstandingMeetingsCommand = new DelegateCommand(ExportOutstandingMeetings));
+
+        private DelegateCommand _exportMeetingsCommand = null;
+        public DelegateCommand ExportMeetingsCommand => _exportMeetingsCommand ?? (_exportMeetingsCommand = new DelegateCommand(ExportMeetings));
+
+        private DelegateCommand _exportSelectedMeetingsCommand = null;
+        public DelegateCommand ExportSelectedMeetingsCommand => _exportSelectedMeetingsCommand ?? (_exportSelectedMeetingsCommand = new DelegateCommand(ExportSelectedMeetings));
 
         private DelegateCommand<MeetingsEntity> _openEmployeeViewCommand = null;
         public DelegateCommand<MeetingsEntity> OpenEmployeeViewCommand => _openEmployeeViewCommand ?? (_openEmployeeViewCommand = new DelegateCommand<MeetingsEntity>(OpenEmployeeView));
@@ -230,6 +241,52 @@ namespace HRTools_v2.ViewModels.Meetings
         {
             _eventAggregator.GetEvent<ShowToastArgs>().Publish((message, notificationType));
         }
+
+        #region Exports
+
+        private async void ExportOutstandingMeetings()
+        {
+            var dialog = new DialogHelper(".csv", "CSV Files|*.csv", "Save sanctions data");
+            var path = dialog.ShowSaveDialog();
+            if (string.IsNullOrEmpty(path)) return;
+
+            var list = await _repository.GetOutstandingMeetingsAsync();
+            Export(path, list.OrderBy(x => x.ManagerName));
+        }
+
+        private async void ExportMeetings()
+        {
+            var dialog = new DialogHelper(".csv", "CSV Files|*.csv", "Save sanctions data");
+            var path = dialog.ShowSaveDialog();
+            if (string.IsNullOrEmpty(path)) return;
+
+            var list = await _repository.GetMeetingsAsync();
+            Export(path, list);
+        }
+
+        private void ExportSelectedMeetings()
+        {
+            var dialog = new DialogHelper(".csv", "CSV Files|*.csv", "Save sanctions data");
+            var path = dialog.ShowSaveDialog();
+            if (string.IsNullOrEmpty(path)) return;
+
+            Export(path, MeetingsList);
+        }
+
+        private async void Export(string path, IEnumerable<MeetingsEntity> list)
+        {
+            var csvStream = new CSVStream(path);
+            var dataManager = new DataManager();
+            foreach (var item in list)
+            {
+                item.SetProgress();
+            }
+            await dataManager.WriteToCsvAsync(csvStream, list);
+
+            FileHelper.RunProcess(path);
+        }
+
+        #endregion
 
         #region Navigation
 

@@ -12,5 +12,7 @@ namespace Domain.Extensions
         {
             return date.Equals(DateTime.MinValue) ? "NULL" : $"'{date.ToString(f)}'";
         }
+
+
     }
 }
