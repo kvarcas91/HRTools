@@ -128,7 +128,7 @@ namespace HRTools_v2.ViewModels.Meetings
             MeetingsList = new ObservableCollection<MeetingsEntity>();
             SelectedManager = "All";
             _selectedMeetingStatus = "Open/Pending";
-            MeetingStatusList = new ObservableCollection<string> { "Open/Pending", "Closed"};
+            MeetingStatusList = new ObservableCollection<string> { "Open/Pending", "Open", "Pending", "Closed"};
             SelectedMeetingTypeList = new ObservableCollection<string> { "All", "Outstanding" };
             _selectedMeetingType = "All";
             ManagerList = new ObservableCollection<string>();
@@ -141,7 +141,6 @@ namespace HRTools_v2.ViewModels.Meetings
             if (!_isCurrentPage) return;
 
             MeetingsList.Clear();
-            Console.WriteLine("GetData");
 
             WidgedState = HomePageWidgetState.SummaryLoading;
 
@@ -256,7 +255,7 @@ namespace HRTools_v2.ViewModels.Meetings
 
         private async void ExportMeetings()
         {
-            var dialog = new DialogHelper(".csv", "CSV Files|*.csv", "Save sanctions data");
+            var dialog = new DialogHelper(".csv", "CSV Files|*.csv", "Save meetings data");
             var path = dialog.ShowSaveDialog();
             if (string.IsNullOrEmpty(path)) return;
 
@@ -266,7 +265,7 @@ namespace HRTools_v2.ViewModels.Meetings
 
         private void ExportSelectedMeetings()
         {
-            var dialog = new DialogHelper(".csv", "CSV Files|*.csv", "Save sanctions data");
+            var dialog = new DialogHelper(".csv", "CSV Files|*.csv", "Save meetings data");
             var path = dialog.ShowSaveDialog();
             if (string.IsNullOrEmpty(path)) return;
 

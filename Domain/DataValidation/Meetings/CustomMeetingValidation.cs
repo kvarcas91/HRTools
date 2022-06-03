@@ -91,49 +91,62 @@ namespace Domain.DataValidation.Meetings
                 return;
             }
 
-            var firstHRSupport = DataStorage.RosterList.Where(x => x.UserID == validation.Data.FirstMeetingHRSupport.Trim()).FirstOrDefault();
-            if (!string.IsNullOrEmpty(validation.Data.FirstMeetingHRSupport) && firstHRSupport == null)
+            if (!string.IsNullOrEmpty(validation.Data.FirstMeetingHRSupport))
             {
-                validation.ValidationResponse = new Response
+                var firstHRSupport = DataStorage.RosterList.Where(x => x.UserID == validation.Data.FirstMeetingHRSupport.Trim()).FirstOrDefault();
+                if (!string.IsNullOrEmpty(validation.Data.FirstMeetingHRSupport) && firstHRSupport == null)
                 {
-                    Success = false,
-                    Message = "Invalid first HR support login"
-                };
-                return;
+                    validation.ValidationResponse = new Response
+                    {
+                        Success = false,
+                        Message = "Invalid first HR support login"
+                    };
+                    return;
+                }
+            }
+            
+            if (!string.IsNullOrEmpty(validation.Data.SecondMeetingHRSupport))
+            {
+                var secondHRSupport = DataStorage.RosterList.Where(x => x.UserID == validation.Data.SecondMeetingHRSupport.Trim()).FirstOrDefault();
+                if (!string.IsNullOrEmpty(validation.Data.SecondMeetingHRSupport) && secondHRSupport == null)
+                {
+                    validation.ValidationResponse = new Response
+                    {
+                        Success = false,
+                        Message = "Invalid second HR support login"
+                    };
+                    return;
+                }
             }
 
-            var secondHRSupport = DataStorage.RosterList.Where(x => x.UserID == validation.Data.SecondMeetingHRSupport.Trim()).FirstOrDefault();
-            if (!string.IsNullOrEmpty(validation.Data.SecondMeetingHRSupport) && secondHRSupport == null)
+            if (!string.IsNullOrEmpty(validation.Data.FirstMeetingOwner))
             {
-                validation.ValidationResponse = new Response
+                var firstOwner = DataStorage.RosterList.Where(x => x.UserID == validation.Data.FirstMeetingOwner.Trim()).FirstOrDefault();
+                if (!string.IsNullOrEmpty(validation.Data.FirstMeetingOwner) && firstOwner == null)
                 {
-                    Success = false,
-                    Message = "Invalid second HR support login"
-                };
-                return;
+                    validation.ValidationResponse = new Response
+                    {
+                        Success = false,
+                        Message = "Invalid first meeting owner login"
+                    };
+                    return;
+                }
             }
 
-            var firstOwner = DataStorage.RosterList.Where(x => x.UserID == validation.Data.FirstMeetingOwner.Trim()).FirstOrDefault();
-            if (!string.IsNullOrEmpty(validation.Data.FirstMeetingOwner) && firstOwner == null)
+            if (!string.IsNullOrEmpty(validation.Data.SecondMeetingOwner))
             {
-                validation.ValidationResponse = new Response
+                var secondOwner = DataStorage.RosterList.Where(x => x.UserID == validation.Data.SecondMeetingOwner.Trim()).FirstOrDefault();
+                if (!string.IsNullOrEmpty(validation.Data.SecondMeetingOwner) && secondOwner == null)
                 {
-                    Success = false,
-                    Message = "Invalid first meeting owner login"
-                };
-                return;
+                    validation.ValidationResponse = new Response
+                    {
+                        Success = false,
+                        Message = "Invalid second meeting owner login"
+                    };
+                    return;
+                }
             }
 
-            var secondOwner = DataStorage.RosterList.Where(x => x.UserID == validation.Data.SecondMeetingOwner.Trim()).FirstOrDefault();
-            if (!string.IsNullOrEmpty(validation.Data.SecondMeetingOwner) && secondOwner == null)
-            {
-                validation.ValidationResponse = new Response
-                {
-                    Success = false,
-                    Message = "Invalid second meeting owner login"
-                };
-                return;
-            }
 
             if (_nextHandler != null) _nextHandler.Validate(validation);
         }

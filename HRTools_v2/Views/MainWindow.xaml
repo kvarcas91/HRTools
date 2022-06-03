@@ -59,7 +59,24 @@
                             </StackPanel>
                         </Button>
 
-                        <!-- AWAL -->
+                    <!-- Dashboard -->
+                    <Button Padding="0 8 0 8"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                                Height="50"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="DashboardPage">
+                        <StackPanel Orientation="Vertical">
+                            <materialDesign:PackIcon Kind="ViewDashboardOutline"
+                                                             HorizontalAlignment="Center"
+                                                         Width="20" Height="20"/>
+
+                            <TextBlock Text="Dashboard"
+                               Typography.Capitals="AllSmallCaps"
+                                   Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- AWAL -->
                         <Button Padding="0 8 0 8"
                             Style="{StaticResource MaterialDesignFlatButton}"
                                 Height="50"
@@ -110,7 +127,24 @@
                             </StackPanel>
                         </Button>
 
-                        <!-- Sanctions -->
+                    <!-- Meetings -->
+                    <Button Padding="0 8 0 8"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                                Height="50"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="CustomMeetingsPage">
+                        <StackPanel Orientation="Vertical">
+                            <materialDesign:PackIcon Kind="HandshakeOutline"
+                                                             HorizontalAlignment="Center"
+                                                         Width="20" Height="20"/>
+
+                            <TextBlock Text="Custom Meetings"
+                               Typography.Capitals="AllSmallCaps"
+                                   Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Sanctions -->
                         <Button Padding="0 8 0 8"
                             Style="{StaticResource MaterialDesignFlatButton}"
                                 Height="50"

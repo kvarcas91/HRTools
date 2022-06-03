@@ -1,7 +1,7 @@
-﻿using AutoUpdaterDotNET;
-using HRTools_v2.Helpers;
+﻿using HRTools_v2.Helpers;
 using HRTools_v2.ViewModels;
 using HRTools_v2.Views.Awal;
+using HRTools_v2.Views.Dashboard;
 using HRTools_v2.Views.Meetings;
 using HRTools_v2.Views.Resignations;
 using HRTools_v2.Views.Sanctions;
@@ -10,7 +10,6 @@ using Prism.Regions;
 using System;
 using System.Windows;
 using System.Windows.Interop;
-using System.Windows.Threading;
 
 namespace HRTools_v2.Views
 {
@@ -32,6 +31,8 @@ namespace HRTools_v2.Views
         private ResignationsPage _resignations;
         private SanctionsPage _sanctions;
         private MeetingsPage _meetings;
+        private CustomMeetingsPage _customMeetings;
+        private DashboardPage _dashboard;
 
         public MainWindow(IContainerExtension container, IRegionManager regionManager)
         {
@@ -84,22 +85,26 @@ namespace HRTools_v2.Views
 
             _loaderPage = _container.Resolve<LoaderPage>();
             _homePage = _container.Resolve<HomePage>();
+            _dashboard = _container.Resolve<DashboardPage>();
             _employeeData = _container.Resolve<EmployeeData>();
             _appSettings = _container.Resolve<AppSettings>();
             _awal = _container.Resolve<AwalPage>();
             _resignations = _container.Resolve<ResignationsPage>();
             _sanctions = _container.Resolve<SanctionsPage>();
             _meetings = _container.Resolve<MeetingsPage>();
+            _customMeetings = _container.Resolve<CustomMeetingsPage>();
 
             _region = _regionManager.Regions["ContentRegion"];
             _ = _region.Add(_loaderPage);
             _ = _region.Add(_homePage);
+            _ = _region.Add(_dashboard);
             _ = _region.Add(_employeeData);
             _ = _region.Add(_appSettings);
             _ = _region.Add(_awal);
             _ = _region.Add(_resignations);
             _ = _region.Add(_sanctions);
             _ = _region.Add(_meetings);
+            _ = _region.Add(_customMeetings);
         }
 
         private void OnSearchBoxKeyDown(object sender, System.Windows.Input.KeyEventArgs e)

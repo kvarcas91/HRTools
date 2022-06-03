@@ -50,9 +50,11 @@ namespace Domain.Repository
 
         public Task<IEnumerable<MeetingsEntity>> GetMeetingsAsync() => GetCachedAsync<MeetingsEntity>($"SELECT * FROM meetings;");
 
+        public Task<IEnumerable<CustomMeetingEntity>> GetCustomMeetingsAsync() => GetCachedAsync<CustomMeetingEntity>($"SELECT * FROM custom_meetings;");
+
         public Task<IEnumerable<MeetingsEntity>> GetMeetingsAsync(string selectedMeetingStatus, string selectedManager, string selectedMeetingType)
         {
-            var query = string.IsNullOrEmpty(selectedMeetingStatus) || selectedMeetingStatus.Equals("Open/Pending") ? "('Open', 'Pending')" : "('Closed')";
+            var query = string.IsNullOrEmpty(selectedMeetingStatus) || selectedMeetingStatus.Equals("Open/Pending") ? "('Open', 'Pending')" : $"('{selectedMeetingStatus}')";
             var managerQuery = string.IsNullOrEmpty(selectedManager) || selectedManager.Equals("All") ? "" : $"AND managerName LIKE '%{selectedManager}%'";
             var conj = string.IsNullOrEmpty(managerQuery) ? "AND" : "";
 
@@ -61,7 +63,19 @@ namespace Domain.Repository
             return GetCachedAsync<MeetingsEntity>($"SELECT * FROM meetings WHERE meetingStatus in {query} {managerQuery} {meetingTypeQuery} ORDER BY createdAt DESC;");
         }
 
+        public Task<IEnumerable<CustomMeetingEntity>> GetCustomMeetingsAsync(string selectedMeetingStatus, string selectedHRSupport, string meetingType)
+        {
+            var query = string.IsNullOrEmpty(selectedMeetingStatus) || selectedMeetingStatus.Equals("Open/Pending") ? "('Open', 'Pending')" : $"('{selectedMeetingStatus}')";
+            var selectedHRSupportQuery = selectedHRSupport.Equals("All") ? "" : $"AND (firstMeetingHRSupport LIKE '%{selectedHRSupport}%' OR secondMeetingHRSupport LIKE '%{selectedHRSupport}%')";
+            var meetingTypeQuery = meetingType.Equals("All") ? "" : $"AND meetingType = '{meetingType}'";
+
+            return GetCachedAsync<CustomMeetingEntity>($"SELECT * FROM custom_meetings WHERE meetingStatus in {query} {selectedHRSupportQuery} {meetingTypeQuery} ORDER BY createdAt DESC;");
+        }
+
         public Task<IEnumerable<string>> GetMeetingsDistinctManagersAsync() => GetCachedAsync<string>("SELECT DISTINCT managerName FROM meetings WHERE managerName NOT LIKE '' ORDER BY managerName;");
+
+        public Task<IEnumerable<string>> GetCustomMeetingsDistinctHRSupportAsync() =>
+            GetCachedAsync<string>("select firstMeetingHRSupport from custom_meetings where firstMeetingHRSupport not like '' union select secondMeetingHRSupport from custom_meetings where secondMeetingHRSupport not like '';");
 
         public Task<IEnumerable<MeetingsEntity>> GetOutstandingMeetingsAsync()
         {

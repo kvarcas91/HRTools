@@ -118,9 +118,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ViewModels\Dashboard\DashboardPageViewModel.cs" />
+    <Compile Include="ViewModels\Meetings\CustomMeetingsPageViewModel.cs" />
     <Compile Include="ViewModels\Meetings\MeetingsPageViewModel.cs" />
     <Compile Include="ViewModels\Resignations\ResignationsPageViewModel.cs" />
     <Compile Include="ViewModels\Sanctions\SanctionsPageViewModel.cs" />
+    <Compile Include="Views\Dashboard\DashboardPage.xaml.cs">
+      <DependentUpon>DashboardPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Meetings\CustomMeetingsPage.xaml.cs">
+      <DependentUpon>CustomMeetingsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Meetings\MeetingsPage.xaml.cs">
       <DependentUpon>MeetingsPage.xaml</DependentUpon>
     </Compile>
@@ -151,6 +159,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Awal\AwalPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Dashboard\DashboardPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -253,6 +265,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Values\Dim.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Meetings\CustomMeetingsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

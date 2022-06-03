@@ -1,5 +1,6 @@
 ﻿using Domain.Extensions;
 using Domain.Factory;
+using Domain.Interfaces;
 using Domain.IO;
 using Domain.Storage;
 using System;
@@ -8,7 +9,7 @@ using System.Collections.ObjectModel;
 
 namespace Domain.Models.CustomMeetings
 {
-    public class CustomMeetingEntity : IDataImportObject
+    public class CustomMeetingEntity : IDataImportObject, IWritable
     {
         public string ID { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -180,6 +181,11 @@ namespace Domain.Models.CustomMeetings
             }
         }
 
+        public void Prepare()
+        {
+            SetAge();
+        }
+
         public void Prepare(string emplId)
         {
             SetFiles();
@@ -205,7 +211,7 @@ namespace Domain.Models.CustomMeetings
             switch (MeetingType)
             {
                 case "Investigation":
-                case "ADAPT":
+                case "Adapt":
                 case "Time Fraud":
                 case "Eligibility":
                     FirstMeetingOutcomeList = new List<string> { "", "NFA", "Proceed to Disciplinary Hearing" };
@@ -232,6 +238,23 @@ namespace Domain.Models.CustomMeetings
                     SecondMeetingOutcomeList = new List<string>();
                     break;
             }
+        }
+
+        public string GetDataHeader() =>
+            "MeetingStatus,ExactID,MeetingType,ClaimantID,ClaimantName,ClaimantUserID,ClaimantManager,ClaimantDepartment,ClaimantShift,ClaimantEmploymentStartDate,RespondentID,RespondentName,RespondentUserID," +
+            "RespondentManager,RespondentDepartment,RespondentShift,RespondentEmploymentStartDate,FirstMeetingDate,FirstMeetingOwner,FirstMeetingHRSupport,FirstMeetingOutcome,SecondMeetingDate,SecondMeetingOwner," +
+            "SecondMeetingHRSupport,SecondMeetingOutcome, Paperless, IsUnionPresent,IsWIMRaised,ClosedAt,ClosedBy";
+        
+
+        public string GetDataRow()
+        {
+            return $"{MeetingStatus.VerifyCSV()},{ExactCaseID.VerifyCSV()},{MeetingType.VerifyCSV()},{ClaimantID.VerifyCSV()},{ClaimantName.VerifyCSV()},{ClaimantUserID.VerifyCSV()},{ClaimantManager.VerifyCSV()}," +
+                $"{ClaimantDepartment.VerifyCSV()},{ClaimantShift.VerifyCSV()},{ClaimantEmploymentStartDate.ToString(DataStorage.ShortPreviewDateFormat).VerifyCSV()},{RespondentID.VerifyCSV()},{RespondentName.VerifyCSV()}," +
+                $"{RespondentUserID.VerifyCSV()},{RespondentManager.VerifyCSV()},{RespondentDepartment.VerifyCSV()},{RespondentShift.VerifyCSV()}," +
+                $"{RespondentEmploymentStartDate.ToString(DataStorage.ShortPreviewDateFormat).VerifyCSV()},{FirstMeetingDate.ToString(DataStorage.ShortPreviewDateFormat).VerifyCSV()},{FirstMeetingOwner.VerifyCSV()}," +
+                $"{FirstMeetingHRSupport.VerifyCSV()},{FirstMeetingOutcome.VerifyCSV()},{SecondMeetingDate.ToString(DataStorage.ShortPreviewDateFormat).VerifyCSV()},{SecondMeetingOwner.VerifyCSV()}," +
+                $"{SecondMeetingHRSupport.VerifyCSV()},{SecondMeetingOutcome.VerifyCSV()},{Paperless},{IsUnionPresent},{IsWIMRaised},{ClosedAt.ToString(DataStorage.LongPreviewDateFormat).VerifyCSV()}," +
+                $"{ClosedBy.VerifyCSV()}";
         }
     }
 }

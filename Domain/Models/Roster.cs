@@ -2,6 +2,7 @@
 using Domain.Interfaces;
 using Domain.IO;
 using Domain.Models.AWAL;
+using Domain.Models.CustomMeetings;
 using Domain.Models.Meetings;
 using Domain.Models.Resignations;
 using Domain.Models.Sanctions;
@@ -75,6 +76,22 @@ namespace Domain.Models
             JobTitle = string.Empty;
             EmploymentStartDate = DateTime.MinValue;
             ShiftPattern = meeting.ShiftPattern;
+            FCLM = string.Empty;
+        }
+
+        public Roster(CustomMeetingEntity meeting)
+        {
+            var isClaimant = !string.IsNullOrEmpty(meeting.ClaimantID);
+            EmployeeID = isClaimant ? meeting.ClaimantID : meeting.RespondentID;
+            UserID = isClaimant ? meeting.ClaimantUserID : meeting.RespondentUserID;
+            EmployeeName = isClaimant ? meeting.ClaimantName : meeting.RespondentName;
+            DepartmentID = isClaimant ? meeting.ClaimantDepartment : meeting.RespondentDepartment;
+            ManagerName = isClaimant ? meeting.ClaimantManager : meeting.RespondentManager;
+            EmploymentType = string.Empty;
+            AgencyCode = string.Empty;
+            JobTitle = string.Empty;
+            EmploymentStartDate = isClaimant ? meeting.ClaimantEmploymentStartDate : meeting.RespondentEmploymentStartDate;
+            ShiftPattern = isClaimant ? meeting.ClaimantShift : meeting.RespondentShift;
             FCLM = string.Empty;
         }
 
