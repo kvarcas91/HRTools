@@ -245,7 +245,7 @@ namespace HRTools_v2.ViewModels.Meetings
 
         private async void ExportOutstandingMeetings()
         {
-            var dialog = new DialogHelper(".csv", "CSV Files|*.csv", "Save sanctions data");
+            var dialog = new DialogHelper(".csv", "CSV Files|*.csv", "Save meetings data");
             var path = dialog.ShowSaveDialog();
             if (string.IsNullOrEmpty(path)) return;
 

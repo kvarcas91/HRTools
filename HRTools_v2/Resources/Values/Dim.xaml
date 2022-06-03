@@ -10,6 +10,7 @@
     <core:Double x:Key="SecondaryFontSize">10</core:Double>
     <core:Double x:Key="IntermediateFontSize">11</core:Double>
     <core:Double x:Key="DashboardValueHeader">17</core:Double>
+    <core:Double x:Key="DashboardMinValueHeader">14</core:Double>
     <core:Double x:Key="DashboardMainValue">22</core:Double>
     <core:Double x:Key="DashboardSecondaryValue">16</core:Double>
 

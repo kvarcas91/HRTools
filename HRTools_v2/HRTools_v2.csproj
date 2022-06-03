@@ -118,6 +118,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\ProgressToColorConverter.cs" />
     <Compile Include="ViewModels\Dashboard\DashboardPageViewModel.cs" />
     <Compile Include="ViewModels\Meetings\CustomMeetingsPageViewModel.cs" />
     <Compile Include="ViewModels\Meetings\MeetingsPageViewModel.cs" />

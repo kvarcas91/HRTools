@@ -8,9 +8,1767 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             d:Background="{DynamicResource Background}"
+             d:Background="{StaticResource Background}"
+             xmlns:converters="clr-namespace:HRTools_v2.Converters"
              d:DesignHeight="1750" d:DesignWidth="1400">
+
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Controls -->
+        <Grid Margin="10">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="1"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                                Command="{Binding ChangeWeekCommand}"
+                                CommandParameter="-1"
+                                ToolTip="Previous week">
+                <materialDesign:PackIcon
+                                Kind="ArrowBack"/>
+            </Button>
+
+            <ComboBox 
+                            Grid.Column="2"
+                            BorderThickness="0"
+                            Margin="5"
+                            FontSize="12"
+                            materialDesign:HintAssist.Hint="Year"
+                            materialDesign:HintAssist.IsFloating="True"
+                            ItemsSource="{Binding YearList}"
+                            SelectedItem="{Binding Year, Mode=TwoWay}"
+                            IsSynchronizedWithCurrentItem="True">
+            </ComboBox>
+
+            <ComboBox 
+                            Grid.Column="3"
+                            BorderThickness="0"
+                            Margin="5"
+                            FontSize="12"
+                            materialDesign:HintAssist.Hint="Week"
+                            materialDesign:HintAssist.IsFloating="True"
+                            ItemsSource="{Binding WeekList}"
+                            SelectedItem="{Binding WeekNumber, Mode=TwoWay}"
+                            IsSynchronizedWithCurrentItem="True">
+            </ComboBox>
+
+            <Button Grid.Column="4"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                                Command="{Binding ChangeWeekCommand}"
+                                CommandParameter="1"
+                                ToolTip="Next week">
+                <materialDesign:PackIcon
+                                Kind="ArrowRight"/>
+            </Button>
+
+            <Button Grid.Column="5"
+                Background="Transparent"
+                    Margin="10 0 5 0"
+                    BorderBrush="LightGray"
+                        Command="{Binding ExportCurrentSelectionCommand}"
+                    materialDesign:ShadowAssist.ShadowEdges="None"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="FileExcelOutline" VerticalAlignment="Center"/>
+                    <TextBlock Text="Export Current Selection to CSV" VerticalAlignment="Center"
+                                                       FontSize="{StaticResource SecondaryFontSize}"
+                                                       Margin="10 0 0 0"/>
+
+
+                </StackPanel>
+            </Button>
+
+        </Grid>
+
+
+        <TabControl Grid.Row="1"
+                            materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                    SelectedIndex="{Binding SelectedTabIndex}"
+                                    HorizontalContentAlignment="Left">
+
+
+            <!-- Meetings -->
+            <TabItem Header="Meetings" VerticalContentAlignment="Center">
+
+                <Grid Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+
+                    <Grid Grid.Row="2"
+                          Margin="0 40"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0 20">
+
+                            <!-- Completed Meetings -->
+                            <Grid Margin="10"
+                            Width="160">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                        Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 2"
+                            Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}">
+
+                                    <TextBlock 
+                            VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                        Padding="0 2 0 0"
+                        Foreground="{DynamicResource PrimaryHueDarkBrush}"
+                        TextTrimming="CharacterEllipsis">
+                                <Run Text="{Binding MeetingMetrics.CompletedMeetingsCount}"
+                                        FontSize="{StaticResource DashboardMainValue}" Foreground="{StaticResource PrimaryHueMidBrush}"/>
+                                <Run Text=" / " Foreground="Gray" FontSize="{StaticResource DashboardSecondaryValue}"/>
+                                <Run Text="{Binding MeetingMetrics.TotalCaseCount}" 
+                                        Foreground="Gray"
+                                        FontSize="{StaticResource DashboardSecondaryValue}"/>
+                                    </TextBlock>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="Completed Meetings"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="140"/>
+
+
+                            </Grid>
+
+                            <!-- Sanctions issued -->
+                            <Grid Margin="10"
+                            Width="150">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                         Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 15"
+                            Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}">
+
+                                    <TextBlock Grid.Column="1"
+                            VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                        Padding="0 2 0 0"
+                        Foreground="{DynamicResource PrimaryHueDarkBrush}"
+                        TextTrimming="CharacterEllipsis">
+                                <Run Text="{Binding MeetingMetrics.IssuedSanctionCount}" 
+                                        Foreground="{StaticResource PrimaryHueMidBrush}"
+                                         FontSize="{StaticResource DashboardSecondaryValue}"/>
+                                    </TextBlock>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="Sanctions"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="160"/>
+
+
+                            </Grid>
+
+                            <!-- NFA issued -->
+                            <Grid Margin="10"
+                            Width="150">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                        Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 15"
+                            Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}">
+
+                                    <TextBlock Grid.Column="1"
+                            VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                        Padding="0 2 0 0"
+                        Foreground="{DynamicResource PrimaryHueDarkBrush}"
+                        TextTrimming="CharacterEllipsis">
+                                <Run Text="{Binding MeetingMetrics.IssuedNFACount}" 
+                                        Foreground="{StaticResource PrimaryHueMidBrush}"
+                                         FontSize="{StaticResource DashboardSecondaryValue}"/>
+                                    </TextBlock>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="NFA"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="160"/>
+
+
+                            </Grid>
+
+                            <!-- Cancelled -->
+                            <Grid Margin="10"
+                            Width="150">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                         Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 15"
+                            Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}">
+
+                                    <TextBlock Grid.Column="1"
+                            VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                        Padding="0 2 0 0"
+                        Foreground="{DynamicResource PrimaryHueDarkBrush}"
+                        TextTrimming="CharacterEllipsis">
+                                <Run Text="{Binding MeetingMetrics.CancelledCount}" 
+                                       Foreground="{StaticResource PrimaryHueMidBrush}"
+                                         FontSize="{StaticResource DashboardSecondaryValue}"/>
+                                    </TextBlock>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="Cancelled"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="160"/>
+
+
+                            </Grid>
+
+                            <!-- Pending -->
+                            <Grid Margin="10"
+                            Width="150">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                         Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 15"
+                            Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}">
+
+                                    <TextBlock Grid.Column="1"
+                            VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                        Padding="0 2 0 0"
+                        TextTrimming="CharacterEllipsis">
+                                <Run Text="{Binding MeetingMetrics.PendingCount}" 
+                                     Foreground="{StaticResource PrimaryHueMidBrush}"
+                                         FontSize="{StaticResource DashboardSecondaryValue}"/>
+                                    </TextBlock>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="Pending"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="160"/>
+
+
+                            </Grid>
+
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Orientation="Horizontal"
+                                    HorizontalAlignment="Center" Margin="0 20">
+
+                            <!-- Overturn Rate -->
+                            <Grid Margin="10"
+                            Width="150">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                         Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 15">
+
+                                    <Grid>
+
+                                        <Border Background="Transparent"
+                                BorderBrush="{Binding MeetingMetrics.OverturnRate, Converter={converters:ProgressToColorConverter}}"
+                                BorderThickness="1.5"
+                                Margin="1"
+                                Opacity="0.5"
+                                Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}"
+                                CornerRadius="{Binding ActualHeight, RelativeSource={RelativeSource self}}"
+                                Width="{Binding ActualHeight, RelativeSource={RelativeSource self}}">
+
+                                            <TextBlock  
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center">
+                                    <Run Text="{Binding MeetingMetrics.OverturnRate}" Foreground="Black"/>
+                                    <Run Text="%" Foreground="Black"/>
+                                            </TextBlock>
+                                        </Border>
+
+                                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            Height="80"
+                            Width="80"
+                            Value="99.9"
+                            Foreground="LightGray"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
+
+                                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            Height="80"
+                            Width="80"
+                            Foreground="{Binding MeetingMetrics.OverturnRate, Converter={converters:ProgressToColorConverter}}"
+                            Value="{Binding MeetingMetrics.OverturnRate, Converter={converters:ProgressConverter}}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                                                     Panel.ZIndex="1"/>
+
+                                    </Grid>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="Overturn Rate"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="160"/>
+
+
+                            </Grid>
+
+                            <!-- NFA Rate -->
+                            <Grid Margin="10"
+                            Width="150">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                         Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 15">
+
+                                    <Grid>
+
+                                        <Border Background="Transparent"
+                                BorderBrush="{Binding MeetingMetrics.NFARate, Converter={converters:ProgressToColorConverter}}"
+                                BorderThickness="1.5"
+                                Margin="1"
+                                Opacity="0.5"
+                                Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}"
+                                CornerRadius="{Binding ActualHeight, RelativeSource={RelativeSource self}}"
+                                Width="{Binding ActualHeight, RelativeSource={RelativeSource self}}">
+
+                                            <TextBlock  
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center" FontSize="14">
+                                    <Run Text="{Binding MeetingMetrics.NFARate}" Foreground="Black"/>
+                                    <Run Text="%" Foreground="Black"/>
+                                            </TextBlock>
+                                        </Border>
+
+                                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            Height="80"
+                            Width="80"
+                            Value="99.9"
+                            Foreground="LightGray"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
+
+                                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            Height="80"
+                            Width="80"
+                            Foreground="{Binding MeetingMetrics.NFARate, Converter={converters:ProgressToColorConverter}}"
+                            Value="{Binding MeetingMetrics.NFARate, Converter={converters:ProgressConverter}}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                                                     Panel.ZIndex="1"/>
+
+                                    </Grid>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="NFA Rate"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="160"/>
+
+
+                            </Grid>
+
+                            <!-- CancelledRate Rate -->
+                            <Grid Margin="10"
+                            Width="150">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                         Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 15">
+
+                                    <Grid>
+
+                                        <Border Background="Transparent"
+                                BorderBrush="{Binding MeetingMetrics.CancelledRate, Converter={converters:ProgressToColorConverter}}"
+                                BorderThickness="1.5"
+                                Margin="1"
+                                Opacity="0.5"
+                                Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}"
+                                CornerRadius="{Binding ActualHeight, RelativeSource={RelativeSource self}}"
+                                Width="{Binding ActualHeight, RelativeSource={RelativeSource self}}">
+
+                                            <TextBlock  
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center" FontSize="14">
+                                    <Run Text="{Binding MeetingMetrics.CancelledRate}" Foreground="Black"/>
+                                    <Run Text="%" Foreground="Black"/>
+                                            </TextBlock>
+                                        </Border>
+
+                                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            Height="80"
+                            Width="80"
+                            Value="99.9"
+                            Foreground="LightGray"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
+
+                                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            Height="80"
+                            Width="80"
+                            Foreground="{Binding MeetingMetrics.CancelledRate, Converter={converters:ProgressToColorConverter}}"
+                            Value="{Binding MeetingMetrics.CancelledRate, Converter={converters:ProgressConverter}}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                                                     Panel.ZIndex="1"/>
+
+                                    </Grid>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="Cancellation Rate"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="160"/>
+
+
+                            </Grid>
+
+                            <!-- Paperless Rate -->
+                            <Grid Margin="10"
+                            Width="150">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                         Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 15">
+
+                                    <Grid>
+
+                                        <Border Background="Transparent"
+                                BorderBrush="{Binding MeetingMetrics.PaperlessRate, Converter={converters:ProgressToColorConverter}}"
+                                BorderThickness="1.5"
+                                Margin="1"
+                                Opacity="0.5"
+                                Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}"
+                                CornerRadius="{Binding ActualHeight, RelativeSource={RelativeSource self}}"
+                                Width="{Binding ActualHeight, RelativeSource={RelativeSource self}}">
+
+                                            <TextBlock  
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center" FontSize="14">
+                                    <Run Text="{Binding MeetingMetrics.PaperlessRate}" Foreground="Black"/>
+                                    <Run Text="%" Foreground="Black"/>
+                                            </TextBlock>
+                                        </Border>
+
+                                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            Height="80"
+                            Width="80"
+                            Value="99.9"
+                            Foreground="LightGray"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
+
+                                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            Height="80"
+                            Width="80"
+                            Foreground="{Binding MeetingMetrics.PaperlessRate, Converter={converters:ProgressToColorConverter}}"
+                            Value="{Binding MeetingMetrics.PaperlessRate, Converter={converters:ProgressConverter}}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                                                     Panel.ZIndex="1"/>
+
+                                    </Grid>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="Paperless"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="160"/>
+
+
+                            </Grid>
+
+                        </StackPanel>
+    
+                    </Grid>
+
+
+                </Grid>
             
+            </TabItem>
+
+            <!-- Custom Metings -->
+            <TabItem Header="Custom Meetings">
+
+
+                <Grid Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+
+                    <Grid Grid.Row="2"
+                          Margin="0 40"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0 20">
+
+                            <!-- Completed Meetings -->
+                            <Grid Margin="10"
+                            Width="160">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                        Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 2"
+                            Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}">
+
+                                    <TextBlock 
+                            VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                        Padding="0 2 0 0"
+                        Foreground="{DynamicResource PrimaryHueDarkBrush}"
+                        TextTrimming="CharacterEllipsis">
+                                <Run Text="{Binding CustomMeetingMetrics.CompletedMeetingsCount}"
+                                        FontSize="{StaticResource DashboardMainValue}" Foreground="{StaticResource PrimaryHueMidBrush}"/>
+                                <Run Text=" / " Foreground="Gray" FontSize="{StaticResource DashboardSecondaryValue}"/>
+                                <Run Text="{Binding CustomMeetingMetrics.TotalCaseCount}" 
+                                        Foreground="Gray"
+                                        FontSize="{StaticResource DashboardSecondaryValue}"/>
+                                    </TextBlock>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="Completed Meetings"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="140"/>
+
+
+                            </Grid>
+
+                            <!-- Sanctions issued -->
+                            <Grid Margin="10"
+                            Width="150">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                         Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 15"
+                            Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}">
+
+                                    <TextBlock Grid.Column="1"
+                            VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                        Padding="0 2 0 0"
+                        Foreground="{DynamicResource PrimaryHueDarkBrush}"
+                        TextTrimming="CharacterEllipsis">
+                                <Run Text="{Binding CustomMeetingMetrics.IssuedSanctionCount}" 
+                                        Foreground="{StaticResource PrimaryHueMidBrush}"
+                                         FontSize="{StaticResource DashboardSecondaryValue}"/>
+                                    </TextBlock>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="Sanctions"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="160"/>
+
+
+                            </Grid>
+
+                            <!-- NFA issued -->
+                            <Grid Margin="10"
+                            Width="150">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                        Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 15"
+                            Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}">
+
+                                    <TextBlock Grid.Column="1"
+                            VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                        Padding="0 2 0 0"
+                        Foreground="{DynamicResource PrimaryHueDarkBrush}"
+                        TextTrimming="CharacterEllipsis">
+                                <Run Text="{Binding CustomMeetingMetrics.IssuedNFACount}" 
+                                        Foreground="{StaticResource PrimaryHueMidBrush}"
+                                         FontSize="{StaticResource DashboardSecondaryValue}"/>
+                                    </TextBlock>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="NFA"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="160"/>
+
+
+                            </Grid>
+
+                            <!-- Cancelled -->
+                            <Grid Margin="10"
+                            Width="150">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                         Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 15"
+                            Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}">
+
+                                    <TextBlock Grid.Column="1"
+                            VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                        Padding="0 2 0 0"
+                        Foreground="{DynamicResource PrimaryHueDarkBrush}"
+                        TextTrimming="CharacterEllipsis">
+                                <Run Text="{Binding CustomMeetingMetrics.CancelledCount}" 
+                                       Foreground="{StaticResource PrimaryHueMidBrush}"
+                                         FontSize="{StaticResource DashboardSecondaryValue}"/>
+                                    </TextBlock>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="Cancelled"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="160"/>
+
+
+                            </Grid>
+
+                            <!-- Pending -->
+                            <Grid Margin="10"
+                            Width="150">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                         Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 15"
+                            Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}">
+
+                                    <TextBlock Grid.Column="1"
+                            VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                        Padding="0 2 0 0"
+                        TextTrimming="CharacterEllipsis">
+                                <Run Text="{Binding CustomMeetingMetrics.PendingCount}" 
+                                     Foreground="{StaticResource PrimaryHueMidBrush}"
+                                         FontSize="{StaticResource DashboardSecondaryValue}"/>
+                                    </TextBlock>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="Pending"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="160"/>
+
+
+                            </Grid>
+
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Orientation="Horizontal"
+                                    HorizontalAlignment="Center" Margin="0 20">
+
+                            <!-- Overturn Rate -->
+                            <Grid Margin="10"
+                            Width="150">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                         Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 15">
+
+                                    <Grid>
+
+                                        <Border Background="Transparent"
+                                BorderBrush="{Binding CustomMeetingMetrics.OverturnRate, Converter={converters:ProgressToColorConverter}}"
+                                BorderThickness="1.5"
+                                Margin="1"
+                                Opacity="0.5"
+                                Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}"
+                                CornerRadius="{Binding ActualHeight, RelativeSource={RelativeSource self}}"
+                                Width="{Binding ActualHeight, RelativeSource={RelativeSource self}}">
+
+                                            <TextBlock  
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center">
+                                    <Run Text="{Binding CustomMeetingMetrics.OverturnRate}" Foreground="Black"/>
+                                    <Run Text="%" Foreground="Black"/>
+                                            </TextBlock>
+                                        </Border>
+
+                                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            Height="80"
+                            Width="80"
+                            Value="99.9"
+                            Foreground="LightGray"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
+
+                                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            Height="80"
+                            Width="80"
+                            Foreground="{Binding CustomMeetingMetrics.OverturnRate, Converter={converters:ProgressToColorConverter}}"
+                            Value="{Binding CustomMeetingMetrics.OverturnRate, Converter={converters:ProgressConverter}}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                                                     Panel.ZIndex="1"/>
+
+                                    </Grid>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="Overturn Rate"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="160"/>
+
+
+                            </Grid>
+
+                            <!-- NFA Rate -->
+                            <Grid Margin="10"
+                            Width="150">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                         Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 15">
+
+                                    <Grid>
+
+                                        <Border Background="Transparent"
+                                BorderBrush="{Binding CustomMeetingMetrics.NFARate, Converter={converters:ProgressToColorConverter}}"
+                                BorderThickness="1.5"
+                                Margin="1"
+                                Opacity="0.5"
+                                Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}"
+                                CornerRadius="{Binding ActualHeight, RelativeSource={RelativeSource self}}"
+                                Width="{Binding ActualHeight, RelativeSource={RelativeSource self}}">
+
+                                            <TextBlock  
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center" FontSize="14">
+                                    <Run Text="{Binding CustomMeetingMetrics.NFARate}" Foreground="Black"/>
+                                    <Run Text="%" Foreground="Black"/>
+                                            </TextBlock>
+                                        </Border>
+
+                                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            Height="80"
+                            Width="80"
+                            Value="99.9"
+                            Foreground="LightGray"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
+
+                                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            Height="80"
+                            Width="80"
+                            Foreground="{Binding CustomMeetingMetrics.NFARate, Converter={converters:ProgressToColorConverter}}"
+                            Value="{Binding CustomMeetingMetrics.NFARate, Converter={converters:ProgressConverter}}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                                                     Panel.ZIndex="1"/>
+
+                                    </Grid>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="NFA Rate"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="160"/>
+
+
+                            </Grid>
+
+                            <!-- CancelledRate Rate -->
+                            <Grid Margin="10"
+                            Width="150">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                         Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 15">
+
+                                    <Grid>
+
+                                        <Border Background="Transparent"
+                                BorderBrush="{Binding CustomMeetingMetrics.CancelledRate, Converter={converters:ProgressToColorConverter}}"
+                                BorderThickness="1.5"
+                                Margin="1"
+                                Opacity="0.5"
+                                Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}"
+                                CornerRadius="{Binding ActualHeight, RelativeSource={RelativeSource self}}"
+                                Width="{Binding ActualHeight, RelativeSource={RelativeSource self}}">
+
+                                            <TextBlock  
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center" FontSize="14">
+                                    <Run Text="{Binding CustomMeetingMetrics.CancelledRate}" Foreground="Black"/>
+                                    <Run Text="%" Foreground="Black"/>
+                                            </TextBlock>
+                                        </Border>
+
+                                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            Height="80"
+                            Width="80"
+                            Value="99.9"
+                            Foreground="LightGray"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
+
+                                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            Height="80"
+                            Width="80"
+                            Foreground="{Binding CustomMeetingMetrics.CancelledRate, Converter={converters:ProgressToColorConverter}}"
+                            Value="{Binding CustomMeetingMetrics.CancelledRate, Converter={converters:ProgressConverter}}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                                                     Panel.ZIndex="1"/>
+
+                                    </Grid>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="Cancellation Rate"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="160"/>
+
+
+                            </Grid>
+
+                            <!-- Paperless Rate -->
+                            <Grid Margin="10"
+                            Width="150">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                         Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 15">
+
+                                    <Grid>
+
+                                        <Border Background="Transparent"
+                                BorderBrush="{Binding CustomMeetingMetrics.PaperlessRate, Converter={converters:ProgressToColorConverter}}"
+                                BorderThickness="1.5"
+                                Margin="1"
+                                Opacity="0.5"
+                                Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}"
+                                CornerRadius="{Binding ActualHeight, RelativeSource={RelativeSource self}}"
+                                Width="{Binding ActualHeight, RelativeSource={RelativeSource self}}">
+
+                                            <TextBlock  
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center" FontSize="14">
+                                    <Run Text="{Binding CustomMeetingMetrics.PaperlessRate}" Foreground="Black"/>
+                                    <Run Text="%" Foreground="Black"/>
+                                            </TextBlock>
+                                        </Border>
+
+                                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            Height="80"
+                            Width="80"
+                            Value="99.9"
+                            Foreground="LightGray"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
+
+                                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            Height="80"
+                            Width="80"
+                            Foreground="{Binding CustomMeetingMetrics.PaperlessRate, Converter={converters:ProgressToColorConverter}}"
+                            Value="{Binding CustomMeetingMetrics.PaperlessRate, Converter={converters:ProgressConverter}}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                                                     Panel.ZIndex="1"/>
+
+                                    </Grid>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="Paperless"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="160"/>
+
+
+                            </Grid>
+
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="2" Orientation="Horizontal"
+                                    HorizontalAlignment="Center" Margin="0 20">
+
+                            <!-- Union Present Count -->
+                            <Grid Margin="10"
+                            Width="150">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                         Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 15"
+                            Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}">
+
+                                    <TextBlock Grid.Column="1"
+                            VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                        Padding="0 2 0 0"
+                        TextTrimming="CharacterEllipsis">
+                                <Run Text="{Binding CustomMeetingMetrics.UnionPresentCount}" 
+                                     Foreground="{StaticResource PrimaryHueMidBrush}"
+                                         FontSize="{StaticResource DashboardSecondaryValue}"/>
+                                    </TextBlock>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="Union Present"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="160"/>
+
+
+                            </Grid>
+
+                            <!-- Union Present Count -->
+                            <Grid Margin="10"
+                            Width="150">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                         Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 15"
+                            Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}">
+
+                                    <TextBlock Grid.Column="1"
+                            VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                        Padding="0 2 0 0"
+                        TextTrimming="CharacterEllipsis">
+                                <Run Text="{Binding CustomMeetingMetrics.WimRaisedCount}" 
+                                     Foreground="{StaticResource PrimaryHueMidBrush}"
+                                         FontSize="{StaticResource DashboardSecondaryValue}"/>
+                                    </TextBlock>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="WIM Raised"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="160"/>
+
+
+                            </Grid>
+
+                        </StackPanel>
+
+                    </Grid>
+
+
+                </Grid>
+
+            </TabItem>
+
+            <!-- AWAL-->
+            <TabItem Header="AWAL">
+
+
+                <Grid Margin="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+
+                    <Grid Grid.Row="2"
+                          Margin="0 40"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center">
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0 20">
+
+                            <!-- first NCNS -->
+                            <Grid Margin="10"
+                            Width="150">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                         Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 15"
+                            Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}">
+
+                                    <TextBlock Grid.Column="1"
+                            VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                        Padding="0 2 0 0"
+                        Foreground="{DynamicResource PrimaryHueDarkBrush}"
+                        TextTrimming="CharacterEllipsis">
+                                <Run Text="{Binding AwalMetrics.FirstNCNS}" 
+                                        Foreground="{StaticResource PrimaryHueMidBrush}"
+                                         FontSize="{StaticResource DashboardSecondaryValue}"/>
+                                    </TextBlock>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="1st NCNS"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="160"/>
+
+
+                            </Grid>
+
+                            <!-- AWAL 1 sent -->
+                            <Grid Margin="10"
+                            Width="150">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                         Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 15"
+                            Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}">
+
+                                    <TextBlock Grid.Column="1"
+                            VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                        Padding="0 2 0 0"
+                        Foreground="{DynamicResource PrimaryHueDarkBrush}"
+                        TextTrimming="CharacterEllipsis">
+                                <Run Text="{Binding AwalMetrics.AWAL1sent}" 
+                                        Foreground="{StaticResource PrimaryHueMidBrush}"
+                                         FontSize="{StaticResource DashboardSecondaryValue}"/>
+                                    </TextBlock>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="AWAL 1 sent"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="160"/>
+
+
+                            </Grid>
+
+                            <!-- AWAL 2 sent -->
+                            <Grid Margin="10"
+                            Width="150">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                        Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 15"
+                            Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}">
+
+                                    <TextBlock Grid.Column="1"
+                            VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                        Padding="0 2 0 0"
+                        Foreground="{DynamicResource PrimaryHueDarkBrush}"
+                        TextTrimming="CharacterEllipsis">
+                                <Run Text="{Binding AwalMetrics.AWAL2sent}" 
+                                        Foreground="{StaticResource PrimaryHueMidBrush}"
+                                         FontSize="{StaticResource DashboardSecondaryValue}"/>
+                                    </TextBlock>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="AWAL 2 sent"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="160"/>
+
+
+                            </Grid>
+
+                            <!-- Disciplinary scheduled -->
+                            <Grid Margin="10"
+                            Width="150">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                         Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 15"
+                            Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}">
+
+                                    <TextBlock Grid.Column="1"
+                            VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                        Padding="0 2 0 0"
+                        Foreground="{DynamicResource PrimaryHueDarkBrush}"
+                        TextTrimming="CharacterEllipsis">
+                                <Run Text="{Binding AwalMetrics.DisciplinaryMeetings}" 
+                                       Foreground="{StaticResource PrimaryHueMidBrush}"
+                                         FontSize="{StaticResource DashboardSecondaryValue}"/>
+                                    </TextBlock>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="Disciplinary Scheduled"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="160"/>
+
+
+                            </Grid>
+
+                            <!-- Cancelled -->
+                            <Grid Margin="10"
+                            Width="150">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                         Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 15"
+                            Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}">
+
+                                    <TextBlock Grid.Column="1"
+                            VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                        Padding="0 2 0 0"
+                        TextTrimming="CharacterEllipsis">
+                                <Run Text="{Binding AwalMetrics.CancelledCount}" 
+                                     Foreground="{StaticResource PrimaryHueMidBrush}"
+                                         FontSize="{StaticResource DashboardSecondaryValue}"/>
+                                    </TextBlock>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="Cancelled"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="160"/>
+
+
+                            </Grid>
+
+                        </StackPanel>
+
+                    </Grid>
+
+
+                </Grid>
+
+            </TabItem>
+
+        </TabControl>
+
     </Grid>
+
 </UserControl>
