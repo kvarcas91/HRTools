@@ -80,6 +80,5 @@
 
             CompletionRate = decimal.Round(CompletedMeetingsCount / (decimal)(TotalCaseCount - (TotalCaseCount - MissedMeetingsCount - CompletedMeetingsCount)) * 100, 2);
         }
-
     }
 }

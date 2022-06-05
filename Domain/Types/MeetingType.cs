@@ -3,7 +3,7 @@
     public enum MeetingType
     {
         Default,
-        Health,
-        Disciplinary
+        Health = 1,
+        Disciplinary = 2
     }
 }

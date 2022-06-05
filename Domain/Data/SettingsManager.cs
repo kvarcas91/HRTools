@@ -22,6 +22,7 @@ namespace Domain.Data
                 output.DbTestPath = settings["DbTestPath"].Value;
                 output.LocalDbPath = settings["LocalDbPath"].Value;
                 output.CacheRefreshRateInSeconds = Convert.ToInt32(settings["CacheRefreshRateInSeconds"].Value);
+                output.EnableWebHooks = Convert.ToBoolean(settings["EnableWebHooks"].Value);
                 output.UserImgURL = settings["UserImgURL"].Value;
                 output.RosterURL = settings["RosterURL"].Value;
                 output.PunchURL = settings["PunchURL"].Value;

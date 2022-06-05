@@ -14,7 +14,7 @@ namespace Domain.Extensions
         {
             foreach (var c in str.Trim())
             {
-                if (!char.IsLetter(c)) return false;
+                if (!char.IsDigit(c)) return false;
             }
 
             return true;

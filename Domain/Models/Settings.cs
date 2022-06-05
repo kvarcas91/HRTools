@@ -17,6 +17,7 @@
         public string TestWebHook { get; set; }
         public string MeetingContentProductionPath { get; set; }
         public string MeetingContentTestPath { get; set; }
+        public bool EnableWebHooks { get; set; }
 
         public Settings()
         {
@@ -33,6 +34,7 @@
             SecurityChanelWebHook = string.Empty;
             AwalChanelWebHook = string.Empty;
             TestWebHook = string.Empty;
+            EnableWebHooks = false;
         }
     }
 }

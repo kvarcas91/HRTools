@@ -399,6 +399,86 @@
                         <StackPanel Grid.Row="1" Orientation="Horizontal"
                                     HorizontalAlignment="Center" Margin="0 20">
 
+                            <!-- Completion Rate Rate -->
+                            <Grid Margin="10"
+                            Width="150">
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Place holder -->
+                                <ProgressBar Grid.Row="0"
+                            Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                       Visibility="{Binding IsMetricsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            IsIndeterminate="True"
+                                         Width="80"
+                                        Height="80" Margin="0 5"/>
+
+                                <Border Padding="8 15">
+
+                                    <Grid>
+
+                                        <Border Background="Transparent"
+                                BorderBrush="{Binding MeetingMetrics.CompletionRate, Converter={converters:ProgressToColorConverter}}"
+                                BorderThickness="1.5"
+                                Margin="1"
+                                Opacity="0.5"
+                                Visibility="{Binding IsMetricsLoading, Converter={StaticResource InverseBoolToVisConverter}}"
+                                CornerRadius="{Binding ActualHeight, RelativeSource={RelativeSource self}}"
+                                Width="{Binding ActualHeight, RelativeSource={RelativeSource self}}">
+
+                                            <TextBlock  
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center">
+                                    <Run Text="{Binding MeetingMetrics.CompletionRate}" Foreground="Black"/>
+                                    <Run Text="%" Foreground="Black"/>
+                                            </TextBlock>
+                                        </Border>
+
+                                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            Height="80"
+                            Width="80"
+                            Value="99.9"
+                            Foreground="LightGray"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
+
+                                        <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                            Height="80"
+                            Width="80"
+                            Foreground="{Binding MeetingMetrics.CompletionRate, Converter={converters:ProgressToColorConverter}}"
+                            Value="{Binding MeetingMetrics.CompletionRate, Converter={converters:ProgressConverter}}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                                                     Panel.ZIndex="1"/>
+
+                                    </Grid>
+
+                                </Border>
+
+                                <Separator Grid.Row="1"
+                                Width="{StaticResource DashboardSeparatorWidth}"
+                                    VerticalAlignment="Bottom"
+                        Margin="10 0 10 0"/>
+
+                                <TextBlock Grid.Row="2"
+                        Text="Completion Rate"
+                                FontSize="{StaticResource DashboardMinValueHeader}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Padding="0 2 0 0"
+                                Foreground="Gray"
+                                Typography.Capitals="AllSmallCaps"
+                            Style="{StaticResource MaterialDesignOverlineTextBlock}"
+                                TextTrimming="CharacterEllipsis"
+                                        MaxWidth="160"/>
+
+
+                            </Grid>
+
                             <!-- Overturn Rate -->
                             <Grid Margin="10"
                             Width="150">

@@ -29,10 +29,10 @@ namespace Domain.Repository
             string endDate = firstWeekDate.AddDays(6).ToString(DataStorage.ShortDBDateFormat);
 
             string query = $@"SELECT
-                            (SELECT COUNT(*) FROM meetings WHERE secondMeetingDate >= '{startDate}%' AND secondMeetingDate <= '{endDate}%' AND firstMeetingOutcome NOT IN ('NFA','Cancelled')) +
-                            (SELECT COUNT(*) FROM meetings WHERE firstMeetingDate >= '{startDate}%' AND firstMeetingDate <= '{endDate}%') AS 'TotalCaseCount',
-                            (SELECT COUNT(*) FROM meetings WHERE secondMeetingDate >= '{startDate}%' AND secondMeetingDate <= '{endDate}%' AND secondMeetingOutcome <> '')  +
-                            (SELECT COUNT(*) FROM meetings WHERE firstMeetingDate >= '{startDate}%' AND firstMeetingDate <= '{endDate}%' AND firstMeetingOutcome <> '') AS 'CompletedMeetingsCount',
+                            (SELECT COUNT(*) FROM meetings WHERE secondMeetingDate >= '{startDate}%' AND secondMeetingDate <= '{endDate}%' AND firstMeetingOutcome NOT IN ('Cancelled')  AND secondMeetingOutcome NOT IN ('Cancelled')) +
+                            (SELECT COUNT(*) FROM meetings WHERE firstMeetingDate >= '{startDate}%' AND firstMeetingDate <= '{endDate}%' AND firstMeetingOutcome NOT IN ('Cancelled')) AS 'TotalCaseCount',
+                            (SELECT COUNT(*) FROM meetings WHERE secondMeetingDate >= '{startDate}%' AND secondMeetingDate <= '{endDate}%' AND firstMeetingOutcome NOT IN ('Cancelled') AND secondMeetingOutcome NOT IN ('', 'Cancelled'))  +
+                            (SELECT COUNT(*) FROM meetings WHERE firstMeetingDate >= '{startDate}%' AND firstMeetingDate <= '{endDate}%' AND firstMeetingOutcome NOT IN ('', 'Cancelled')) AS 'CompletedMeetingsCount',
                             (SELECT COUNT(*) FROM meetings WHERE meetingStatus in ('Open', 'Pending') AND secondMeetingDate >= '{startDate}%' AND secondMeetingOutcome = '' AND secondMeetingDate <= '{endDate}%') +
                             (SELECT COUNT(*) FROM meetings WHERE meetingStatus in ('Open', 'Pending') AND firstMeetingOutcome = '' AND firstMeetingDate >= '{startDate}%' AND firstMeetingDate <= '{endDate}%') AS 'MissedMeetingsCount',
                             (SELECT COUNT(*) FROM meetings WHERE ((secondMeetingDate >= '{startDate}%' AND secondMeetingDate <= '{endDate}%') OR (firstMeetingDate >= '{startDate}%' AND firstMeetingDate <= '{endDate}%')) AND 
@@ -56,10 +56,10 @@ namespace Domain.Repository
             string endDate = firstWeekDate.AddDays(6).ToString(DataStorage.ShortDBDateFormat);
 
             string query = $@"SELECT
-                            (SELECT COUNT(*) FROM custom_meetings WHERE secondMeetingDate >= '{startDate}%' AND secondMeetingDate <= '{endDate}%' AND firstMeetingOutcome NOT IN ('NFA','Cancelled')) +
-                            (SELECT COUNT(*) FROM custom_meetings WHERE firstMeetingDate >= '{startDate}%' AND firstMeetingDate <= '{endDate}%') AS 'TotalCaseCount',
-                            (SELECT COUNT(*) FROM custom_meetings WHERE secondMeetingDate >= '{startDate}%' AND secondMeetingDate <= '{endDate}%' AND secondMeetingOutcome <> '')  +
-                            (SELECT COUNT(*) FROM custom_meetings WHERE firstMeetingDate >= '{startDate}%' AND firstMeetingDate <= '{endDate}%' AND firstMeetingOutcome <> '') AS 'CompletedMeetingsCount',
+                            (SELECT COUNT(*) FROM custom_meetings WHERE secondMeetingDate >= '{startDate}%' AND secondMeetingDate <= '{endDate}%' AND firstMeetingOutcome NOT IN ('Cancelled') AND secondMeetingOutcome NOT IN ('Cancelled')) +
+                            (SELECT COUNT(*) FROM custom_meetings WHERE firstMeetingDate >= '{startDate}%' AND firstMeetingDate <= '{endDate}%' AND firstMeetingOutcome NOT IN ('Cancelled')) AS 'TotalCaseCount',
+                            (SELECT COUNT(*) FROM custom_meetings WHERE secondMeetingDate >= '{startDate}%' AND secondMeetingDate <= '{endDate}%' AND secondMeetingOutcome NOT IN ('', 'Cancelled') AND firstMeetingOutcome NOT IN ('Cancelled'))  +
+                            (SELECT COUNT(*) FROM custom_meetings WHERE firstMeetingDate >= '{startDate}%' AND firstMeetingDate <= '{endDate}%' AND firstMeetingOutcome NOT IN ('', 'Cancelled')) AS 'CompletedMeetingsCount',
                             (SELECT COUNT(*) FROM custom_meetings WHERE meetingStatus in ('Open', 'Pending') AND secondMeetingDate >= '{startDate}%' AND secondMeetingOutcome = '' AND secondMeetingDate <= '{endDate}%') +
                             (SELECT COUNT(*) FROM custom_meetings WHERE meetingStatus in ('Open', 'Pending') AND firstMeetingOutcome = '' AND firstMeetingDate >= '{startDate}%' AND firstMeetingDate <= '{endDate}%') AS 'MissedMeetingsCount',
                             (SELECT COUNT(*) FROM custom_meetings WHERE ((secondMeetingDate >= '{startDate}%' AND secondMeetingDate <= '{endDate}%') OR (firstMeetingDate >= '{startDate}%' AND firstMeetingDate <= '{endDate}%')) AND 
