@@ -199,7 +199,8 @@ namespace Domain.Repository
 
             var query = $@"UPDATE meetings SET firstMeetingDate = {meeting.FirstMeetingDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)}, firstMeetingOutcome = '{meeting.FirstMeetingOutcome}', 
                         secondMeetingDate = {meeting.SecondMeetingDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)}, secondMeetingOutcome = '{meeting.SecondMeetingOutcome}', updatedBy = '{Environment.UserName}', 
-                        updatedAt = '{meeting.UpdatedAt.ToString(DataStorage.LongDBDateFormat)}', meetingStatus = '{meeting.MeetingStatus}', paperless = '{Convert.ToInt16(meeting.Paperless)}' 
+                        updatedAt = '{meeting.UpdatedAt.ToString(DataStorage.LongDBDateFormat)}', meetingStatus = '{meeting.MeetingStatus}', paperless = '{Convert.ToInt16(meeting.Paperless)}',
+                        rtwDate = {meeting.RTWDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)}
                         WHERE id = '{meeting.ID}'; {timelineQuery}";
 
            
@@ -278,6 +279,20 @@ namespace Domain.Repository
             {
                 var message = string.IsNullOrEmpty(dbObj.SecondMeetingOutcome) ? $"ER meeting (ID: {meetitng.ID}) second meeting outcome ({meetitng.SecondMeetingOutcome}) has been recorded by {Environment.UserName}" :
                     $"ER meeting (ID: {meetitng.ID}) second meeting outcome has been updated by {Environment.UserName}. Changed '{dbObj.SecondMeetingOutcome}' into '{meetitng.SecondMeetingOutcome}'";
+
+                var tl = new Timeline().Create(meetitng.EmployeeID, TimelineOrigin.Meetings, message);
+                if (!haveUpdate)
+                {
+                    timelineString.Append($"{tl.GetHeader()} VALUES {tl.GetValues()}");
+                    haveUpdate = true;
+                }
+                else timelineString.Append($",{tl.GetValues()}");
+            }
+
+            if (meetitng.RTWDate != dbObj.RTWDate)
+            {
+                var message = dbObj.RTWDate == DateTime.MinValue ? $"RTW date ({meetitng.RTWDate.ToString(DataStorage.ShortPreviewDateFormat)}) has been recorded by {Environment.UserName}" : 
+                    $"RTW date has been changed from '{dbObj.RTWDate.ToString(DataStorage.ShortPreviewDateFormat)}' to '{meetitng.RTWDate.ToString(DataStorage.ShortPreviewDateFormat)}'";
 
                 var tl = new Timeline().Create(meetitng.EmployeeID, TimelineOrigin.Meetings, message);
                 if (!haveUpdate)

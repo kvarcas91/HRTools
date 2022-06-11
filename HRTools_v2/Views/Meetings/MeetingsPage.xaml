@@ -206,6 +206,77 @@
 
         </StackPanel>
 
+        <!-- Meeting ID Search Box -->
+        <Border Grid.Row="0" Grid.RowSpan="3"
+                            Margin="8"
+                            Padding="0"
+                            VerticalAlignment="Top"
+                            BorderBrush="LightGray"
+                            Background="{DynamicResource Background}"
+                            BorderThickness="1"
+                Panel.ZIndex="20"
+                HorizontalAlignment="Left"
+                MaxWidth="400px"
+                Width="400px"
+                            CornerRadius="15">
+
+            <Grid Margin="0 2 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <materialDesign:PackIcon Kind="Search"
+                                                     Margin="8 0 8 0"
+                                                     Foreground="LightGray"
+                                                     VerticalAlignment="Center"/>
+
+                <TextBox Grid.Column="1"
+                                     x:Name="searchTextBox"
+                                     VerticalAlignment="Center"
+                                     materialDesign:HintAssist.Hint="Case Id search.."
+                                     BorderThickness="0"
+                                     PreviewKeyDown="OnSearchBoxKeyDown"
+                                     Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                                     materialDesign:TextFieldAssist.HasClearButton="True"
+                            Margin="5 0"/>
+
+                <ListBox
+                                Height="280"
+                                Margin="0 0 8 8"
+                                Grid.Row="1" Grid.Column="1"
+                                BorderThickness="0.2"
+                                 ItemsSource="{Binding SuggestionList}"
+                                Style="{StaticResource MeetingsSearchListBox}"
+                                Visibility="{Binding SearchComponentState, Converter={converters:UIComponentStateToVisibilityConverter}, ConverterParameter='RequireLoaded'}"
+                                x:Name="meetingsListView"/>
+
+                <ProgressBar Grid.Row="1" Grid.Column="1"
+                                         Margin="0 20 5 10"
+                                         Height="45"
+                                         Width="45"
+                                         IsIndeterminate="True"
+
+                                         Visibility="{Binding SearchComponentState, Converter={converters:UIComponentStateToVisibilityConverter}, ConverterParameter='Loader'}"
+                                Style="{StaticResource MaterialDesignCircularProgressBar}"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="1"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       Foreground="Gray"
+                                       Margin="10"
+                                       Visibility="{Binding SearchComponentState, Converter={converters:UIComponentStateToVisibilityConverter}, ConverterParameter='Empty'}"
+                                Text="No employee found..."/>
+            </Grid>
+
+        </Border>
+
         <Separator Grid.Row="1" BorderBrush="LightGray" BorderThickness="1"/>
 
         <Grid Grid.Row="2">
@@ -260,6 +331,7 @@
                     </DataGridTemplateColumn>
 
                     <DataGridTextColumn Header="Case ID" Binding="{Binding ID}"/>
+                    <DataGridTextColumn Header="Case Age" Binding="{Binding CaseAge}"/>
                     <DataGridTextColumn Header="Meeting Stage" Binding="{Binding MeetingProgress}"/>
                     <DataGridTextColumn Header="Employee Name" Binding="{Binding EmployeeName}"/>
                     <DataGridTextColumn Header="Shift" Binding="{Binding ShiftPattern}"/>

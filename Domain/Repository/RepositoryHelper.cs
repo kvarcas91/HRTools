@@ -92,6 +92,7 @@
                             firstMeetingOutcome TEXT,
                             secondMeetingDate TEXT,
                             secondMeetingOutcome TEXT,
+                            rtwDate TEXT,
                             createdAt TEXT,
                             createdBy TEXT,
                             updatedAt TEXT,

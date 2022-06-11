@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HRTools_v2.ViewModels.Meetings;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,15 @@ namespace HRTools_v2.Views.Meetings
         public MeetingsPage()
         {
             InitializeComponent();
+        }
+
+        private void OnSearchBoxKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Down)
+            {
+                var dt = DataContext as MeetingsPageViewModel;
+                dt.HandleSearch();
+            }
         }
     }
 }

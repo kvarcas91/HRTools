@@ -39,6 +39,26 @@ namespace Domain.DataValidation.Meetings
                 return;
             }
 
+            if (validation.Data.SecondMeetingDate != DateTime.MinValue && validation.Data.FirstMeetingDate != DateTime.MinValue && validation.Data.FirstMeetingDate > validation.Data.SecondMeetingDate)
+            {
+                validation.ValidationResponse = new Response
+                {
+                    Success = false,
+                    Message = "First meeting date cannot be set after second meeting date!"
+                };
+                return;
+            }
+
+            if (validation.Data.SecondMeetingDate != DateTime.MinValue && validation.Data.FirstMeetingDate != DateTime.MinValue && validation.Data.SecondMeetingDate < validation.Data.FirstMeetingDate)
+            {
+                validation.ValidationResponse = new Response
+                {
+                    Success = false,
+                    Message = "Second meeting date cannot be set before first meeting date!"
+                };
+                return;
+            }
+
             if (validation.Data.SecondMeetingDate == DateTime.MinValue && !string.IsNullOrEmpty(validation.Data.SecondMeetingOutcome))
             {
                 validation.ValidationResponse = new Response

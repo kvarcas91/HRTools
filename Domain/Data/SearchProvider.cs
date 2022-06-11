@@ -20,6 +20,11 @@ namespace Domain.Data
             _searchIterationCap = 5;
         }
 
+        public void SetList(IEnumerable<T> list)
+        {
+            _list = list;
+        }
+
         public void SetValues(string key)
         {
             lookupValue = key;

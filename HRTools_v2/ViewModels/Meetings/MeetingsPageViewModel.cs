@@ -1,5 +1,6 @@
 ﻿using Domain.Data;
 using Domain.DataManager;
+using Domain.Extensions;
 using Domain.Factory;
 using Domain.IO;
 using Domain.Models;
@@ -22,6 +23,38 @@ namespace HRTools_v2.ViewModels.Meetings
 {
     public class MeetingsPageViewModel : BindableBase, INavigationAware
     {
+
+        #region Search
+
+        private UIComponentState _searchComponentState;
+        public UIComponentState SearchComponentState
+        {
+            get => _searchComponentState;
+            set { SetProperty(ref _searchComponentState, value); }
+        }
+
+        private string _searchText = string.Empty;
+        public string SearchText
+        {
+            get => _searchText;
+            set { SetProperty(ref _searchText, value); HandleSearch(); }
+        }
+
+        private ObservableCollection<MeetingsEntity> _suggestionList;
+        public ObservableCollection<MeetingsEntity> SuggestionList
+        {
+            get { return _suggestionList; }
+            set { SetProperty(ref _suggestionList, value); }
+        }
+
+        #endregion
+
+        private string _reasonForErClosure;
+        public string ReasonForErClosure
+        {
+            get => _reasonForErClosure;
+            set { SetProperty(ref _reasonForErClosure, value); }
+        }
 
         private bool _isCurrentPage;
 
@@ -97,6 +130,7 @@ namespace HRTools_v2.ViewModels.Meetings
 
         private readonly MeetingsRepository _repository;
         private readonly IEventAggregator _eventAggregator;
+        private readonly SearchProvider<MeetingsEntity> _dataProvider;
 
         #region Delegages
 
@@ -118,10 +152,25 @@ namespace HRTools_v2.ViewModels.Meetings
         private DelegateCommand _alignAMCommand = null;
         public DelegateCommand AlignAMCommand => _alignAMCommand ?? (_alignAMCommand = new DelegateCommand(AlignAM));
 
+        private DelegateCommand<MeetingsEntity> _onErMeetingEditCommand = null;
+        public DelegateCommand<MeetingsEntity> OnErMeetingEditCommand => _onErMeetingEditCommand ?? (_onErMeetingEditCommand = new DelegateCommand<MeetingsEntity>(EditErMeeting));
+
+        private DelegateCommand<MeetingsEntity> _onMeetingCancelCommand = null;
+        public DelegateCommand<MeetingsEntity> OnMeetingCancelCommand => _onMeetingCancelCommand ?? (_onMeetingCancelCommand = new DelegateCommand<MeetingsEntity>(CancelErMeeting));
+
+        private DelegateCommand<MeetingsEntity> _setMeetingPendingCommand = null;
+        public DelegateCommand<MeetingsEntity> SetMeetingPendingCommand => _setMeetingPendingCommand ?? (_setMeetingPendingCommand = new DelegateCommand<MeetingsEntity>(SetMeetingPending));
+
+        private DelegateCommand<MeetingsEntity> _reopenMeetingCommand = null;
+        public DelegateCommand<MeetingsEntity> ReopenMeetingCommand => _reopenMeetingCommand ?? (_reopenMeetingCommand = new DelegateCommand<MeetingsEntity>(ReopenMeeting));
+
         #endregion
 
         public MeetingsPageViewModel(IEventAggregator eventAggregator)
         {
+            SearchComponentState = UIComponentState.Hidden;
+            _dataProvider = new SearchProvider<MeetingsEntity>();
+            SuggestionList = new ObservableCollection<MeetingsEntity>();
             IsMeetingImportLoading = false;
             _eventAggregator = eventAggregator;
             _repository = new MeetingsRepository();
@@ -148,6 +197,7 @@ namespace HRTools_v2.ViewModels.Meetings
             foreach (var item in data)
             {
                 item.SetProgress();
+                item.SetAge();
             }
             MeetingsList.AddRange(data);
             HasData = MeetingsList.Count > 0;
@@ -236,6 +286,85 @@ namespace HRTools_v2.ViewModels.Meetings
             ManagerList.AddRange(await _repository.GetMeetingsDistinctManagersAsync());
         }
 
+        private async void EditErMeeting(MeetingsEntity meeting)
+        {
+            var previewRepo = new PreviewRepository();
+            var EmployeeLiveSanctions = await previewRepo.GetLiveSanctionsPreviewAsync(meeting.EmployeeID);
+            var sanction = meeting.MeetingType == MeetingType.Health ? EmployeeLiveSanctions.HealthSanction : EmployeeLiveSanctions.DisciplinarySanction;
+            if (SanctionManager.IsLesser(sanction, meeting.SecondMeetingOutcome))
+            {
+                SendToast("You cannot issue lesser sanction!", NotificationType.Information);
+                return;
+            }
+
+            var repo = new MeetingsRepository();
+            var response = await repo.UpdateAsync(meeting);
+            if (response.Success)
+            {
+                SendToast("Meeting has been updated!", NotificationType.Success);
+            }
+            else
+            {
+                SendToast(response.Message, NotificationType.Warning);
+            }
+        }
+
+        private async void SetMeetingPending(MeetingsEntity meeting)
+        {
+            var response = await _repository.ChangeMeetingStatusAsync(meeting, "Pending");
+
+            if (response.Success)
+            {
+                SendToast("Meeting status has been updated!", NotificationType.Success);
+            }
+            else
+            {
+                SendToast(response.Message, NotificationType.Warning);
+            }
+        }
+
+        private async void ReopenMeeting(MeetingsEntity meeting)
+        {
+            var response = await _repository.ChangeMeetingStatusAsync(meeting, "Open");
+
+            if (response.Success)
+            {
+                SendToast("Meeting status has been updated!", NotificationType.Success);
+            }
+            else
+            {
+                SendToast(response.Message, NotificationType.Warning);
+            }
+        }
+
+        private async void CancelErMeeting(MeetingsEntity meeting)
+        {
+            if (string.IsNullOrEmpty(ReasonForErClosure))
+            {
+                SendToast("Reason is mandatory!", NotificationType.Information);
+                return;
+            }
+
+            if (meeting.MeetingStatus != "Open" && meeting.MeetingStatus != "Pending")
+            {
+                SendToast("Meeting is already closed!", NotificationType.Information);
+                return;
+            }
+
+            var meetingRepo = new MeetingsRepository();
+            var response = await meetingRepo.CloseERMeeting(meeting, ReasonForErClosure);
+            if (response.Success)
+            {
+                SendToast("Meeting has been closed!", NotificationType.Success);
+                ReasonForErClosure = string.Empty;
+            }
+            else
+            {
+                SendToast(response.Message, NotificationType.Warning);
+            }
+
+        }
+
         private void SendToast(string message, NotificationType notificationType)
         {
             _eventAggregator.GetEvent<ShowToastArgs>().Publish((message, notificationType));
@@ -279,11 +408,60 @@ namespace HRTools_v2.ViewModels.Meetings
             foreach (var item in list)
             {
                 item.SetProgress();
+                item.SetAge();
             }
             await dataManager.WriteToCsvAsync(csvStream, list);
 
             FileHelper.RunProcess(path);
         }
+
+        #endregion
+
+        #region Search
+
+        public async void HandleSearch()
+        {
+            SuggestionList.Clear();
+
+            if (string.IsNullOrEmpty(SearchText))
+            {
+                SearchComponentState = UIComponentState.Hidden;
+                return;
+            }
+
+            SearchComponentState = UIComponentState.Loading;
+
+            if (_dataProvider.IsSearching)
+            {
+                _dataProvider.SetValues(SearchText);
+                return;
+            }
+
+            _dataProvider.SetValues(SearchText);
+            var result = await _dataProvider.LookUpAsync();
+
+            UpdateList(result);
+
+        }
+
+        private void UpdateList(List<MeetingsEntity> list)
+        {
+            if (!string.IsNullOrEmpty(SearchText))
+            {
+                if (list.Count > 50)
+                {
+                    SuggestionList.AddRange(list.GetRange(0, 49));
+                }
+                else
+                {
+                    SuggestionList.AddRange(list);
+                }
+
+                SearchComponentState = list.Count > 0 ? UIComponentState.Visible : UIComponentState.Empty;
+            }
+        }
+
+        
 
         #endregion
 
@@ -296,9 +474,16 @@ namespace HRTools_v2.ViewModels.Meetings
             _isCurrentPage = false;
         }
 
-        public void OnNavigatedTo(NavigationContext navigationContext)
+        public async void OnNavigatedTo(NavigationContext navigationContext)
         {
             _isCurrentPage = true;
+            var data = await _repository.GetMeetingsAsync();
+            foreach (var item in data)
+            {
+                item.SetProgress();
+                item.SetAge();
+            }
+            _dataProvider.SetList(data);
             GetData();
 
         }

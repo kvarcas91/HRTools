@@ -2229,7 +2229,7 @@
                                     </materialDesign:PopupBox.ToggleContent>
 
                                     <Grid Background="Transparent" Margin="10 0 10 0"
-                                                Width="400">
+                                                Width="600">
 
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
@@ -2320,6 +2320,12 @@
                                                     HorizontalAlignment="Center"
                                                     Style="{StaticResource MaterialDesignFilterChipPrimaryOutlineCheckBox}"
                                                     IsChecked="{Binding Paperless}"/>
+
+                                            <DatePicker Grid.Row="0" Grid.Column="1"
+                                            Margin="5 5 15 5"
+                                            materialDesign:HintAssist.Hint="RTW date"
+                                            materialDesign:HintAssist.IsFloating="True"
+                                            Text="{Binding RTWDate, Mode=TwoWay, Converter={converters:DateTimeToStringConverter}, ConverterParameter=5}"/>
 
                                         </StackPanel>
 

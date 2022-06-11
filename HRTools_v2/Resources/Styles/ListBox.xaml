@@ -64,6 +64,202 @@
         </Setter>
     </Style>
 
+    <Style  x:Key="MeetingsSearchListBox" TargetType="{x:Type ListBox}" BasedOn="{StaticResource ListBox}">
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Grid VerticalAlignment="Center" 
+                          HorizontalAlignment="Stretch"
+                          Margin="5">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Edit case -->
+                        <materialDesign:PopupBox Grid.Column="0" HorizontalAlignment="Left"
+                                                 VerticalAlignment="Top"
+                                     Background="Transparent"
+                                    StaysOpen="True">
+
+                            <materialDesign:PopupBox.ToggleContent>
+
+                                <Border Background="Transparent" 
+                                                Padding="10"
+                                                ToolTip="Edit case"
+                                                materialDesign:ShadowAssist.ShadowEdges="None"
+                                                materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                                BorderThickness="0">
+
+                                    <materialDesign:PackIcon Kind="EditOutline" 
+                                                                 VerticalAlignment="Center"
+                                                                 Foreground="DarkSlateGray"/>
+
+                                </Border>
+
+                            </materialDesign:PopupBox.ToggleContent>
+
+                            <Grid Background="Transparent" Margin="10 0 10 0"
+                                                Width="600">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <DatePicker Grid.Row="0" Grid.Column="0"
+                                            Margin="5 5 15 5"
+                                            materialDesign:HintAssist.Hint="First Meeting Date"
+                                            materialDesign:HintAssist.IsFloating="True"
+                                            Text="{Binding FirstMeetingDate, Mode=TwoWay, Converter={converters:DateTimeToStringConverter}, ConverterParameter=5}"/>
+
+                                <ComboBox Grid.Row="1" Grid.Column="0"
+                                            BorderThickness="0"
+                                            Margin="5 5 15 5"
+                                            SelectedValue=""
+                                            VerticalContentAlignment="Center"
+                                            materialDesign:HintAssist.Hint="Outcomes"
+                                            materialDesign:HintAssist.IsFloating="True"
+                                            ItemsSource="{Binding FirstMeetingOutcomeList}"
+                                            SelectedItem="{Binding FirstMeetingOutcome, Mode=TwoWay}">
+                                </ComboBox>
+
+                                <DatePicker Grid.Row="0" Grid.Column="1"
+                                            Margin="5 5 15 5"
+                                            materialDesign:HintAssist.Hint="Second Meeting Date"
+                                            materialDesign:HintAssist.IsFloating="True"
+                                            Text="{Binding SecondMeetingDate, Mode=TwoWay, Converter={converters:DateTimeToStringConverter}, ConverterParameter=5}"/>
+
+
+                                <ComboBox Grid.Row="1" Grid.Column="1"
+                                            BorderThickness="0"
+                                            Margin="5 5 15 5"
+                                            SelectedValue=""
+                                            VerticalContentAlignment="Center"
+                                            materialDesign:HintAssist.Hint="Outcomes"
+                                            materialDesign:HintAssist.IsFloating="True"
+                                                  IsEnabled="{Binding FirstMeetingOutcome, Converter={converters:MeetingOutcomeToNextStageConverter}}"
+                                            ItemsSource="{Binding SecondMeetingOutcomeList}"
+                                            SelectedItem="{Binding SecondMeetingOutcome, Mode=TwoWay}">
+                                </ComboBox>
+
+
+                                <Separator Grid.Row="2" Grid.ColumnSpan="2" BorderBrush="LightGray" BorderThickness="1"
+                                            Margin="1"/>
+
+
+                                <StackPanel Grid.Row="3" Grid.Column="0"
+                                                   Orientation="Horizontal"
+                                                    HorizontalAlignment="Left">
+
+                                    <Grid>
+                                        <Button
+                                            Command="{Binding ElementName=meetingsListView, Path=DataContext.SetMeetingPendingCommand}"
+                                            CommandParameter="{Binding}"
+                                            Style="{StaticResource MaterialDesignFlatButton}"
+                                            Margin="5"
+                                            ToolTip="Mark as Pending"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            Visibility="{Binding MeetingStatus, Converter={converters:MeetingStatusToStatusActionVisibilityConverter}, ConverterParameter='pending'}">
+                                            <materialDesign:PackIcon Kind="AccountPendingOutline"
+                                                                     Foreground="DarkSlateGray"/>
+                                        </Button>
+
+                                        <Button
+                                            Command="{Binding ElementName=meetingsListView, Path=DataContext.ReopenMeetingCommand}"
+                                            CommandParameter="{Binding}"
+                                            Style="{StaticResource MaterialDesignFlatButton}"
+                                            Margin="5"
+                                            ToolTip="Re-open case"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                             Visibility="{Binding MeetingStatus, Converter={converters:MeetingStatusToStatusActionVisibilityConverter}, ConverterParameter='open'}">
+                                            <materialDesign:PackIcon Kind="HeadRefreshOutline"
+                                                                     Foreground="DarkSlateGray"/>
+                                        </Button>
+                                    </Grid>
+
+                                    <CheckBox Content="Paperless"
+                                                    HorizontalAlignment="Center"
+                                                    Style="{StaticResource MaterialDesignFilterChipPrimaryOutlineCheckBox}"
+                                                    IsChecked="{Binding Paperless}"/>
+
+                                    <DatePicker Grid.Row="0" Grid.Column="1"
+                                            Margin="5 5 15 5"
+                                            materialDesign:HintAssist.Hint="RTW date"
+                                            materialDesign:HintAssist.IsFloating="True"
+                                            Text="{Binding RTWDate, Mode=TwoWay, Converter={converters:DateTimeToStringConverter}, ConverterParameter=5}"/>
+
+                                </StackPanel>
+
+                                <Button Grid.Row="3" Grid.Column="1"
+                                            HorizontalAlignment="Right"
+                                                Margin="5"
+                                                Background="Transparent" 
+                                                materialDesign:ShadowAssist.ShadowEdges="None"
+                                                materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                                                BorderBrush="DarkSlateGray"
+                                                BorderThickness="1"
+                                                Command="{Binding ElementName=meetingsListView, Path=DataContext.OnErMeetingEditCommand}"
+                                                CommandParameter="{Binding}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="CreateOutline" 
+                                                                VerticalAlignment="Center"
+                                                                Foreground="DarkSlateGray"/>
+                                        <TextBlock Margin="10 0 0 0" Text="Submit" Foreground="DarkSlateGray"/>
+                                    </StackPanel>
+                                </Button>
+
+
+                            </Grid>
+
+                        </materialDesign:PopupBox>
+
+
+                        <Ellipse Grid.Column="1"
+                            Fill="{Binding MeetingStatus, Converter={converters:MeetingStatusToColorConverter}}"
+                                                 Width="5"
+                                                 Height="5"
+                                                  Margin="0 0 10 0"
+                                                 VerticalAlignment="Center"/>
+
+                        <StackPanel Orientation="Vertical" 
+                                    Grid.Column="2">
+
+                            <!-- Employee Name -->
+                            <TextBlock 
+                                   
+                                    FontSize="{StaticResource SearchPrimaryFontSize}"
+                                   TextTrimming="WordEllipsis">
+                                <Run Text="{Binding EmployeeName}"/>
+                                <Run Text=" - "/>
+                                <Run Text="{Binding ID}"/>
+                            </TextBlock>
+                            <TextBlock 
+                                   Text="{Binding MeetingProgress}"
+                                FontSize="{StaticResource SearchSecondaryFontSize}"
+                                Foreground="Gray"
+                                   TextTrimming="WordEllipsis"/>
+
+                        </StackPanel>
+
+                       
+                    </Grid>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style  x:Key="ClaimantSearchListBox" TargetType="{x:Type ListBox}" BasedOn="{StaticResource ListBox}">
         <Setter Property="ItemTemplate">
             <Setter.Value>

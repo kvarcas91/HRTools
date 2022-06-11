@@ -38,7 +38,7 @@ namespace Domain.Extensions
         public static IList<T> Swap<T>(this IList<T> source, T item1, T item2)
         {
             int index = source.IndexOf(item1);
-            if (index < 0) throw new ArgumentNullException(typeof(T).ToString(),"item not in the source list");
+            if (index < 0) return source;
 
             source.RemoveAt(index);
             source.Insert(index, item2);

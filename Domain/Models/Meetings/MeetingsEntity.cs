@@ -8,9 +8,10 @@ using System.Collections.Generic;
 
 namespace Domain.Models.Meetings
 {
-    public class MeetingsEntity : IEmployee, IDataImportObject, IWritable
+    public class MeetingsEntity : IEmployee, IDataImportObject, IWritable, ISearchable
     {
         public string ID { get; set; }
+        public int CaseAge { get; set; }
         public string EmployeeID { get; set; }
         public string UserID { get; set; }
         public string EmployeeName { get; set; }
@@ -22,6 +23,7 @@ namespace Domain.Models.Meetings
         public string FirstMeetingOutcome { get; set; }
         public DateTime SecondMeetingDate { get; set; }
         public string SecondMeetingOutcome { get; set; }
+        public DateTime RTWDate { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public string UpdatedBy { get; set; }
@@ -40,6 +42,8 @@ namespace Domain.Models.Meetings
             CreatedAt = DateTime.Now;
             CreatedBy = Environment.UserName;
             MeetingStatus = "Open";
+            FirstMeetingOutcome = string.Empty;
+            SecondMeetingOutcome = string.Empty;
         }
 
         public MeetingsEntity(ERMeetingImportMap entry, Roster empl) : this()
@@ -116,11 +120,12 @@ namespace Domain.Models.Meetings
         }
 
         public string GetHeader() => 
-            "(id,employeeID,userID,employeeName,shiftPattern,managerName, departmentID,meetingType,firstMeetingDate,firstMeetingOutcome,secondMeetingDate,secondMeetingOutcome,meetingStatus,createdAt,createdBy,updatedAt,updatedBy,isERCaseStatusOpen,paperless)";
+            "(id,employeeID,userID,employeeName,shiftPattern,managerName, departmentID,meetingType,firstMeetingDate,firstMeetingOutcome,secondMeetingDate,secondMeetingOutcome,rtwDate,meetingStatus,createdAt,createdBy,updatedAt,updatedBy,isERCaseStatusOpen,paperless)";
 
         public string GetValues() =>
             $@"('{ID}','{EmployeeID}','{UserID}','{EmployeeName.DbSanityCheck()}','{ShiftPattern}','{ManagerName.DbSanityCheck()}', '{DepartmentID}', '{(int)MeetingType}',{FirstMeetingDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)},'{FirstMeetingOutcome}',
-                {SecondMeetingDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)},'{SecondMeetingOutcome}','{MeetingStatus}',{CreatedAt.DbNullableSanityCheck(DataStorage.LongDBDateFormat)},'{CreatedBy}',
+                {SecondMeetingDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)},'{SecondMeetingOutcome}',{RTWDate.DbNullableSanityCheck(DataStorage.ShortDBDateFormat)},
+                '{MeetingStatus}',{CreatedAt.DbNullableSanityCheck(DataStorage.LongDBDateFormat)},'{CreatedBy}',
                 {UpdatedAt.DbNullableSanityCheck(DataStorage.LongDBDateFormat)},'{UpdatedBy}','{Convert.ToUInt16(IsERCaseStatusOpen)}','{Convert.ToUInt16(Paperless)}')";
 
         private void SetProgress(string task)
@@ -158,13 +163,87 @@ namespace Domain.Models.Meetings
         }
 
         public string GetDataHeader() =>
-            "Case Number, EmployeeID, UserID, Name, Manager, Shift, Department, Meeting Type, FirstMeetingDate, FirstMeetingOutcome, SecondMeetingDate, SecondMeetingOutcome, MeetingStatus, Paperless";
+            "Case Number, Case Age, EmployeeID, UserID, Name, Manager, Shift, Department, Meeting Type, FirstMeetingDate, FirstMeetingOutcome, SecondMeetingDate, SecondMeetingOutcome, RTWDate, MeetingStatus, Paperless";
 
         public string GetDataRow()
         {
-            return $"{ID.VerifyCSV()},{EmployeeID.VerifyCSV()},{UserID.VerifyCSV()},{EmployeeName.VerifyCSV()},{ManagerName.VerifyCSV()},{ShiftPattern.VerifyCSV()},{DepartmentID.VerifyCSV()}," +
+            return $"{ID.VerifyCSV()},{CaseAge},{EmployeeID.VerifyCSV()},{UserID.VerifyCSV()},{EmployeeName.VerifyCSV()},{ManagerName.VerifyCSV()},{ShiftPattern.VerifyCSV()},{DepartmentID.VerifyCSV()}," +
                 $"{MeetingProgress.VerifyCSV()},{FirstMeetingDate.ToString(DataStorage.ShortPreviewDateFormat).VerifyCSV()},{FirstMeetingOutcome.VerifyCSV()}," +
-                $"{SecondMeetingDate.ToString(DataStorage.ShortPreviewDateFormat).VerifyCSV()},{SecondMeetingOutcome.VerifyCSV()},{MeetingStatus.VerifyCSV()},{Paperless}";
+                $"{SecondMeetingDate.ToString(DataStorage.ShortPreviewDateFormat).VerifyCSV()},{SecondMeetingOutcome.VerifyCSV()},{RTWDate.ToString(DataStorage.ShortPreviewDateFormat).VerifyCSV()},{MeetingStatus.VerifyCSV()},{Paperless}";
+        }
+
+        public void SetAge()
+        {
+            DateTime startDate = FirstMeetingDate != DateTime.MinValue ? FirstMeetingDate : CreatedAt;
+            if (ID.Equals("35082469"))
+            {
+
+            }
+            DateTime endDate = GetEndAge(startDate);
+           
+            CaseAge = (startDate == DateTime.MinValue || endDate == DateTime.MinValue) ? 0 : (endDate - startDate).Days;
+        }
+
+        private DateTime GetEndAge(DateTime startDate)
+        {
+            if (!string.IsNullOrEmpty(FirstMeetingOutcome) && string.IsNullOrEmpty(SecondMeetingOutcome))
+            {
+                switch (FirstMeetingOutcome)
+                {
+                    case "NFA":
+                    case "Cancelled":
+                        return UpdatedAt != DateTime.MinValue ? UpdatedAt : FirstMeetingDate;
+                    default:
+                        return !MeetingStatus.Equals("Closed") ? DateTime.Today : FirstMeetingDate != DateTime.MinValue ? FirstMeetingDate : startDate;
+                }
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(SecondMeetingOutcome))
+                {
+                    return !MeetingStatus.Equals("Closed") ? DateTime.Today : UpdatedAt != DateTime.MinValue ? UpdatedAt : SecondMeetingDate != DateTime.MinValue ? SecondMeetingDate : startDate;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(SecondMeetingOutcome))
+            {
+                switch (SecondMeetingOutcome)
+                {
+                    case "NFA":
+                    case "Cancelled":
+                        return UpdatedAt != DateTime.MinValue ? UpdatedAt : SecondMeetingDate;
+                    default:
+                        return !MeetingStatus.Equals("Closed") ? DateTime.Today : SecondMeetingDate != DateTime.MinValue ? SecondMeetingDate : startDate;
+                }
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(SecondMeetingOutcome))
+                {
+                    return !MeetingStatus.Equals("Closed") ? DateTime.Today : UpdatedAt != DateTime.MinValue ? UpdatedAt : SecondMeetingDate != DateTime.MinValue ? SecondMeetingDate : startDate;
+                }
+            }
+
+            return DateTime.MinValue;
+
+        }
+
+        public bool HasValue(string key)
+        {
+            if (string.IsNullOrEmpty(key)) return false;
+            bool hasValue = true;
+
+
+            var arr = key.Trim().Split(new char[] { ' ' });
+
+            foreach (var item in arr)
+            {
+                hasValue &= (EmployeeID != null && EmployeeID.Contains(item)) || (UserID != null && UserID.ToUpper().Contains(item.ToUpper())) || (EmployeeName != null && EmployeeName.ToUpper().Contains(item.ToUpper())) ||
+                    (DepartmentID != null && DepartmentID.Contains(item)) || (ManagerName != null && ManagerName.ToUpper().Contains(item.ToUpper())) || (ID != null && ID.ToUpper().Contains(item.ToUpper())) ||
+                    (ShiftPattern != null && ShiftPattern.ToUpper().Contains(item.ToUpper()));
+            }
+
+            return hasValue;
         }
     }
 }
