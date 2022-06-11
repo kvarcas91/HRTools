@@ -41,6 +41,25 @@ namespace Domain.IO
             return outputList;
         }
 
+        public IList<string> GetSingleColumn(uint columnIndex)
+        {
+            var outputList = new List<string>();
+
+            using (TextFieldParser csvParser = new TextFieldParser(_path))
+            {
+                csvParser.CommentTokens = new string[] { "#" };
+                csvParser.SetDelimiters(new string[] { "," });
+                csvParser.HasFieldsEnclosedInQuotes = true;
+
+                while (!csvParser.EndOfData)
+                {
+                    string[] fields = csvParser.ReadFields();
+                    outputList.Add(fields[columnIndex]);
+                }
+            }
+            return outputList;
+        }
+
         public Task<IList<IDataImportObject>> GetAsync(DataMap dataMap)
         {
             return Task.Run(() => Get(dataMap));

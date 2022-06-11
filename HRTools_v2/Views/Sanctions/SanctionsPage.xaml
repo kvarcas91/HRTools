@@ -19,6 +19,22 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <Button Background="Transparent"
+                    Margin="10 0 5 0"
+                    BorderBrush="LightGray"
+                HorizontalAlignment="Left"
+                        Command="{Binding GetAllCommand}"
+                        Visibility="{Binding IsCustomViewOn, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    materialDesign:ShadowAssist.ShadowEdges="None"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="ArrowBack" VerticalAlignment="Center"/>
+                <TextBlock Text="Back To Main View" VerticalAlignment="Center"
+                                                       FontSize="{DynamicResource SecondaryFontSize}"
+                                                       Margin="10 0 0 0"/>
+            </StackPanel>
+        </Button>
+
         <!-- Controls -->
         <StackPanel Grid.Row="0" Orientation="Horizontal"
                     HorizontalAlignment="Right">
@@ -40,6 +56,21 @@
                     Style="{StaticResource MaterialDesignFilterChipPrimaryOutlineCheckBox}"
                     IsChecked="{Binding ShowAllSanctions}"
                     FontSize="10"/>
+
+            <Button Background="Transparent"
+                    Margin="10 0 5 0"
+                    BorderBrush="LightGray"
+                        Command="{Binding ImportSanctionsCommand}"
+                        Visibility="{Binding IsMeetingImportLoading, Converter={StaticResource InverseBoolToVisConverter}}"
+                    materialDesign:ShadowAssist.ShadowEdges="None"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth0">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Verified" VerticalAlignment="Center"/>
+                    <TextBlock Text="Verify Sanctions in Bulk" VerticalAlignment="Center"
+                                                       FontSize="{DynamicResource SecondaryFontSize}"
+                                                       Margin="10 0 0 0"/>
+                </StackPanel>
+            </Button>
 
             <Button Background="Transparent" 
                                             Padding="10"

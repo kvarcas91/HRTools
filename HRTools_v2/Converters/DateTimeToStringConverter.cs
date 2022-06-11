@@ -1,8 +1,6 @@
-﻿using Domain.DataManager;
-using HRTools_v2.Converters.Base;
+﻿using HRTools_v2.Converters.Base;
 using System;
 using System.Globalization;
-using System.Windows.Data;
 
 namespace HRTools_v2.Converters
 {
@@ -15,7 +13,7 @@ namespace HRTools_v2.Converters
             {
                 DateTime dateTime = DateTime.Parse(value.ToString());
 
-                if (dateTime.Equals(DateTime.MinValue) && parameter.Equals("1")) return "-";
+                if (dateTime.Equals(DateTime.MinValue) && parameter != null && parameter.Equals("1")) return "-";
 
                 if (dateTime.Equals(DateTime.MinValue)) return "";
 

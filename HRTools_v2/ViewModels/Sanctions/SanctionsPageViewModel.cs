@@ -29,6 +29,13 @@ namespace HRTools_v2.ViewModels.Sanctions
             set { SetProperty(ref _showAllSanctions, value); GetData(); }
         }
 
+        private bool _isCustomViewOn;
+        public bool IsCustomViewOn
+        {
+            get => _isCustomViewOn;
+            set { SetProperty(ref _isCustomViewOn, value); }
+        }
+
         private string _selectedCreator;
         public string SelectedCreator
         {
@@ -70,6 +77,13 @@ namespace HRTools_v2.ViewModels.Sanctions
         private DelegateCommand _exportSanctionsCommand = null;
         public DelegateCommand ExportSanctionsCommand => _exportSanctionsCommand ?? (_exportSanctionsCommand = new DelegateCommand(ExportData));
 
+        private DelegateCommand _importSanctionsCommand = null;
+        public DelegateCommand ImportSanctionsCommand => _importSanctionsCommand ?? (_importSanctionsCommand = new DelegateCommand(ImportSanctions));
+
+        private DelegateCommand _getAllCommand = null;
+        public DelegateCommand GetAllCommand => _getAllCommand ?? (_getAllCommand = new DelegateCommand(GetData));
+
+
         public SanctionsPageViewModel(IEventAggregator eventAggregator)
         {
             ShowAllSanctions = false;
@@ -92,7 +106,8 @@ namespace HRTools_v2.ViewModels.Sanctions
         private async void GetData()
         {
             if (!_isCurrentPage) return;
-            
+
+            IsCustomViewOn = false;
             SanctionsList.Clear();
 
             WidgedState = HomePageWidgetState.SummaryLoading;
@@ -126,6 +141,57 @@ namespace HRTools_v2.ViewModels.Sanctions
             await dataManager.WriteToCsvAsync(csvStream, SanctionsList);
 
             FileHelper.RunProcess(path);
+        }
+
+        private async void ImportSanctions()
+        {
+            var dialog = new DialogHelper(".csv", "CSV Files|*.csv");
+            var path = dialog.ShowOpenDialog();
+            if (string.IsNullOrEmpty(path)) return;
+
+            SanctionsList.Clear();
+            WidgedState = HomePageWidgetState.SummaryLoading;
+            HasData = true;
+
+            var objList = await _repository.GetAllAsync(false, "All");
+
+            if (objList == null || objList.ToList().Count == 0)
+            {
+                SendToast("There are no live sanctions", NotificationType.Information);
+                GetData();
+                return;
+            }
+
+            var csvReader = new CSVStream(path);
+            var idList = csvReader.GetSingleColumn(0);
+
+            if (idList == null || idList.Count == 0)
+            {
+                GetData();
+                SendToast("Failed to load ID list", NotificationType.Error);
+                return;
+            }
+
+            foreach (var item in idList)
+            {
+                SanctionEntry sanction = objList.Where(x => x.EmployeeID.Equals(item)).FirstOrDefault();
+                if (!string.IsNullOrEmpty(sanction.ID))
+                {
+                    SanctionsList.Add(sanction);
+                }
+                
+            }
+
+            HasData = SanctionsList.Count > 0;
+            IsCustomViewOn = true;
+            WidgedState = HomePageWidgetState.SummaryLoaded;
+
+
+        }
+
+        private void SendToast(string message, NotificationType notificationType)
+        {
+            _eventAggregator.GetEvent<ShowToastArgs>().Publish((message, notificationType));
         }
 
         #region Navigation
