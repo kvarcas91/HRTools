@@ -18,6 +18,7 @@
         public string MeetingContentProductionPath { get; set; }
         public string MeetingContentTestPath { get; set; }
         public bool EnableWebHooks { get; set; }
+        public string UpdatePath { get; set; }
 
         public Settings()
         {

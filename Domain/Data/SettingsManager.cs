@@ -33,6 +33,7 @@ namespace Domain.Data
                 output.TestWebHook = settings["TestWebHook"].Value;
                 output.MeetingContentProductionPath = settings["MeetingContentProductionPath"].Value;
                 output.MeetingContentTestPath = settings["MeetingContentTestPath"].Value;
+                output.UpdatePath = settings["UpdatePath"].Value;
             }
             catch
             {

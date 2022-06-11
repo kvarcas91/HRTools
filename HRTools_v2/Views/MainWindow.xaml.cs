@@ -1,4 +1,6 @@
-﻿using HRTools_v2.Helpers;
+﻿using AutoUpdaterDotNET;
+using Domain.Storage;
+using HRTools_v2.Helpers;
 using HRTools_v2.ViewModels;
 using HRTools_v2.Views.Awal;
 using HRTools_v2.Views.Dashboard;
@@ -10,6 +12,7 @@ using Prism.Regions;
 using System;
 using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Threading;
 
 namespace HRTools_v2.Views
 {
@@ -81,7 +84,20 @@ namespace HRTools_v2.Views
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
 
-           
+            if (!Environment.UserName.Equals("eslut"))
+            {
+                AutoUpdater.ShowSkipButton = false;
+                AutoUpdater.RunUpdateAsAdmin = false;
+                AutoUpdater.Start(DataStorage.AppSettings.UpdatePath);
+
+                DispatcherTimer timer = new DispatcherTimer { Interval = TimeSpan.FromMinutes(10) };
+                timer.Tick += delegate
+                {
+                    AutoUpdater.Start(DataStorage.AppSettings.UpdatePath);
+                };
+                timer.Start();
+
+            }
 
             _loaderPage = _container.Resolve<LoaderPage>();
             _homePage = _container.Resolve<HomePage>();
