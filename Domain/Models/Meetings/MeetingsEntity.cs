@@ -174,7 +174,7 @@ namespace Domain.Models.Meetings
 
         public void SetAge()
         {
-            DateTime startDate = FirstMeetingDate != DateTime.MinValue ? FirstMeetingDate : CreatedAt;
+            DateTime startDate = FirstMeetingDate != DateTime.MinValue ? FirstMeetingDate : SecondMeetingDate != DateTime.MinValue ? SecondMeetingDate : CreatedAt;
             if (ID.Equals("35082469"))
             {
 
@@ -194,7 +194,7 @@ namespace Domain.Models.Meetings
                     case "Cancelled":
                         return UpdatedAt != DateTime.MinValue ? UpdatedAt : FirstMeetingDate;
                     default:
-                        return !MeetingStatus.Equals("Closed") ? DateTime.Today : FirstMeetingDate != DateTime.MinValue ? FirstMeetingDate : startDate;
+                        return !MeetingStatus.Equals("Closed") ? DateTime.Today : FirstMeetingDate != DateTime.MinValue && SecondMeetingDate == DateTime.MinValue ? FirstMeetingDate : startDate;
                 }
             }
             else

@@ -152,6 +152,7 @@
     <Compile Include="Models\Meetings\MeetingsImportMap.cs" />
     <Compile Include="Models\Resignations\ResignationEntity.cs" />
     <Compile Include="Models\Resignations\ResignationEntry.cs" />
+    <Compile Include="Models\Resignations\ResignationImportMap.cs" />
     <Compile Include="Models\Roster.cs" />
     <Compile Include="Models\RosterImportMap.cs" />
     <Compile Include="Models\Sanctions\SanctionEntity.cs" />

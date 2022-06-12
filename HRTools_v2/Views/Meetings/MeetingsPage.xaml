@@ -340,7 +340,7 @@
                     <DataGridTextColumn Header="First meeting outcome" Binding="{Binding FirstMeetingOutcome}"/>
                     <DataGridTextColumn Header="Second Meeting Date" Binding="{Binding SecondMeetingDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"/>
                     <DataGridTextColumn Header="Second meeting outcome" Binding="{Binding SecondMeetingOutcome}"/>
-
+                    <DataGridTextColumn Header="RTW Date" Binding="{Binding RTWDate, Converter={converters:DateTimeToStringConverter}, ConverterParameter=1}"/>
                     <DataGridTemplateColumn>
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>

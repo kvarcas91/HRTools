@@ -2,6 +2,7 @@
 using Domain.Models.AWAL;
 using Domain.Models.CustomMeetings;
 using Domain.Models.Meetings;
+using Domain.Models.Resignations;
 using Domain.Models.Sanctions;
 using Domain.Types;
 
@@ -25,6 +26,8 @@ namespace Domain.Factory
                     return (IDataImportObject)new CustomMeetingEntity().ReadFromCSV(fields, map);
                 case DataImportType.Sanctions:
                     return (IDataImportObject)new SanctionEntry().ReadFromCSV(fields, map);
+                case DataImportType.Resignations:
+                    return (IDataImportObject)new ResignationEntity().ReadFromCSV(fields, map);
                 default:
                     return null;
             }

@@ -4,6 +4,7 @@ using Domain.Models;
 using Domain.Models.AWAL;
 using Domain.Models.CustomMeetings;
 using Domain.Models.Meetings;
+using Domain.Models.Resignations;
 using Domain.Models.Sanctions;
 using Domain.Repository;
 using Domain.Storage;
@@ -55,6 +56,13 @@ namespace HRTools_v2.ViewModels
         {
             get => _sanctionsMap;
             set { SetProperty(ref _sanctionsMap, value); }
+        }
+
+        private ResignationImportMap _resignationsMap;
+        public ResignationImportMap ResignationsMap
+        {
+            get => _resignationsMap;
+            set { SetProperty(ref _resignationsMap, value); }
         }
 
         #region Awal
@@ -129,6 +137,24 @@ namespace HRTools_v2.ViewModels
 
         #endregion
 
+        #region Resignations
+
+        private bool _isResignationsDataImportInProgress;
+        public bool IsResignationsDataImportInProgress
+        {
+            get => _isResignationsDataImportInProgress;
+            set { SetProperty(ref _isResignationsDataImportInProgress, value); }
+        }
+
+        private string _resignationsFileName;
+        public string ResignationsFileName
+        {
+            get => _resignationsFileName;
+            set { SetProperty(ref _resignationsFileName, value); }
+        }
+
+        #endregion
+
         #endregion
 
         #region Delegates
@@ -173,6 +199,16 @@ namespace HRTools_v2.ViewModels
 
         #endregion
 
+        #region Resignations
+
+        private DelegateCommand _importResignationsFileCommand = null;
+        public DelegateCommand ImportResignationsFileCommand => _importResignationsFileCommand ?? (_importResignationsFileCommand = new DelegateCommand(ImportResignations));
+
+        private DelegateCommand _openResignationsFileCommand = null;
+        public DelegateCommand OpenResignationsFileCommand => _openResignationsFileCommand ?? (_openResignationsFileCommand = new DelegateCommand(OpenResignationsFile));
+
+        #endregion
+
         #endregion
 
         private readonly IEventAggregator _eventAggregator;
@@ -184,6 +220,7 @@ namespace HRTools_v2.ViewModels
             MeetingsMap = new MeetingsImportMap().SetDefaultValues();
             CustomMeetingsMap = new CustomMeetingImportMap().SetDefaultValues();
             SanctionsMap = new SanctionsImportMap().SetDefaultValues();
+            ResignationsMap = new ResignationImportMap().SetDefaultValues();
         }
 
         #region Awal
@@ -329,6 +366,42 @@ namespace HRTools_v2.ViewModels
             if (string.IsNullOrEmpty(path)) return;
 
             SanctionsFileName = FileHelper.FileFullName(path);
+        }
+
+        #endregion
+
+        #region Resignations
+
+        private async void ImportResignations()
+        {
+            if (string.IsNullOrEmpty(ResignationsFileName))
+            {
+                SendMessage("Import Resignations data as .csv file first", NotificationType.Information);
+                return;
+            }
+            IsResignationsDataImportInProgress = true;
+            var dataMap = new DataMap(ResignationsMap, DataImportType.Resignations);
+            var csvReader = new CSVStream(ResignationsFileName);
+            var csvOutput = csvReader.Get(dataMap);
+            var repo = new ResignationsRepository();
+            var response = await repo.InsertAllAsync(csvOutput);
+            IsResignationsDataImportInProgress = false;
+
+            if (response.Success)
+            {
+                SendMessage("Resignations data has been imported!", NotificationType.Success);
+            }
+            else SendMessage(response.Message, NotificationType.Warning);
+
+        }
+
+        private void OpenResignationsFile()
+        {
+            var dialog = new DialogHelper(".csv", "CSV Files|*.csv");
+            var path = dialog.ShowOpenDialog();
+            if (string.IsNullOrEmpty(path)) return;
+
+            ResignationsFileName = FileHelper.FileFullName(path);
         }
 
         #endregion

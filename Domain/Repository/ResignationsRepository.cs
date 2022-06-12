@@ -1,6 +1,7 @@
 ﻿using Domain.Automation;
 using Domain.DataValidation;
 using Domain.DataValidation.Resignation;
+using Domain.Factory;
 using Domain.Models;
 using Domain.Models.Resignations;
 using Domain.Storage;
@@ -19,6 +20,8 @@ namespace Domain.Repository
         {
             _validator = new ResignationValidation();
         }
+
+        public Task<Response> InsertAllAsync(IList<IDataImportObject> resignationsList) => base.InsertAllAsync(resignationsList, "resignations");
         public Task<Response> InsertAsync(ResignationEntity resignation)
         {
 
